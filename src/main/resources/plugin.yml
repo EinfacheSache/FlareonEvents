@@ -1,0 +1,8 @@
+name: FlareonEvents
+version: '1.0-SNAPSHOT'
+main: de.einfachesache.flareonEvents.FlareonEvents
+api-version: '1.21'
+commands:
+  event:
+    description: 'Main Command'
+    permission: 'event.op'
