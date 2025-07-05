@@ -51,6 +51,10 @@
   </build>
 
   <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
       <repository>
         <id>papermc-repo</id>
         <url>https://repo.papermc.io/repository/maven-public/</url>
@@ -63,9 +67,14 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.github.EinfacheSache</groupId>
+      <artifactId>easyapi</artifactId>
+      <version>9c4cf6c08b</version>
+    </dependency>
+    <dependency>
       <groupId>io.papermc.paper</groupId>
       <artifactId>paper-api</artifactId>
-      <version>1.21.6-R0.1-SNAPSHOT</version>
+      <version>1.21.4-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
