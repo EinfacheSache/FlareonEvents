@@ -13,30 +13,47 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class PlayerDeathListener implements Listener {
 
+    private static final Map<UUID, Integer> pvpKillCounts = new HashMap<>();
     NamespacedKey namespacedKey = new NamespacedKey(FlareonEvents.getPlugin(), "lightning_player_death");
 
     @EventHandler
     public void deathListener(PlayerDeathEvent event) {
 
+        Player deceased = event.getEntity();
+        Player killer = deceased.getKiller();
+
         if(Config.getEventState() == EventState.RUNNING){
             Config.addDeathParticipant(event.getPlayer().getUniqueId());
-            event.getPlayer().kick(Component.text("§4§kAA §4§lAUSLÖSCHUNG! §kAA\n§cDu bist gestorben!"));
+            deceased.kick(Component.text("§4§kAA §4§lAUSLÖSCHUNG! §kAA\n§cDu bist gestorben!"));
         }else {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    Player player = event.getPlayer();
-                    player.spigot().respawn();
-                    player.setGameMode(GameMode.ADVENTURE);
-                    player.teleport(Config.getMainSpawnLocation());
+                    deceased.spigot().respawn();
+                    deceased.setGameMode(GameMode.ADVENTURE);
+                    deceased.teleport(Config.getMainSpawnLocation());
                 }
             }.runTaskLater(FlareonEvents.getPlugin(), 2L);
         }
 
+        event.getDrops().clear();
         event.deathMessage(Component.text( "§k22 §c§lAUSLÖSCHUNG! §fEin Spieler ist gestorben §k22"));
-        event.getPlayer().getWorld().strikeLightning(event.getPlayer().getLocation().add(0,1.5,0))
+        deceased.getWorld().strikeLightning(deceased.getLocation().add(0,1.5,0))
                 .getPersistentDataContainer().set(namespacedKey, PersistentDataType.BYTE, (byte) 1);
+
+        if (killer != null && !killer.equals(deceased)) {
+            UUID uuid = killer.getUniqueId();
+            pvpKillCounts.put(uuid, pvpKillCounts.getOrDefault(uuid, 0) + 1);
+        }
+    }
+
+    public static Map<UUID, Integer> getPvpKillCounts() {
+        return pvpKillCounts;
     }
 }

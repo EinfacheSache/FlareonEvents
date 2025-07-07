@@ -1,9 +1,7 @@
 package de.einfachesache.flareonEvents.command;
 
-import de.einfachesache.flareonEvents.item.FireSword;
-import de.einfachesache.flareonEvents.item.ReinforcedPickaxe;
-import de.einfachesache.flareonEvents.item.NyxBow;
-import de.einfachesache.flareonEvents.item.PoseidonsTrident;
+import de.einfachesache.flareonEvents.item.tool.*;
+import de.einfachesache.flareonEvents.item.ingredient.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Color;
@@ -17,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class CustomItemCommand implements CommandExecutor {
 
-
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String @NotNull [] args) {
         if(!(sender instanceof Player player)){
@@ -25,40 +22,95 @@ public class CustomItemCommand implements CommandExecutor {
             return false;
         }
 
-        if(args.length == 1 && args[0].equalsIgnoreCase("FireSword")) {
-            ItemStack fireSword = FireSword.createFireSword();
-            player.getInventory().addItem(fireSword);
-            player.sendMessage(Component.text( "Item FireSword created! with ModelData: null", NamedTextColor.GREEN));
+        if (args.length != 1) {
+            player.sendMessage(Component.text(
+                    "Usage: /" + label + " <PoseidonsTrident §7|§c NyxBow §7|§c MiningPickaxe §7|§c Ingredient §7|§c all>",
+                    NamedTextColor.RED
+            ));
             return true;
         }
 
-        if(args.length == 1 && args[0].equalsIgnoreCase("ThunderTrident")) {
-            ItemStack poseidonsTrident = PoseidonsTrident.createPoseidonsTrident();
-            player.getInventory().addItem(poseidonsTrident);
-            player.sendMessage(Component.text( "Item Poseidon's Trident created! with ModelData: null" , NamedTextColor.GREEN));
-            return true;
+
+         switch (args[0].toLowerCase()) {
+            case "firesword" -> giveFireSword(player);
+            case "thundertrident", "poseidonstrident" -> givePoseidonsTrident(player);
+            case "nyxbow" -> giveNyxBow(player);
+            case "miningpickaxe" -> giveReinforcedPickaxe(player);
+             case "ingredient" -> giveIngredient(player);
+            case "all" -> giveAllItems(player);
+            default -> player.sendMessage(Component.text(
+                    "Unbekannter Item-Key. Bitte nutze FireSword, ThunderTrident, NyxBow, MiningPickaxe, Ingredient oder all.",
+                    NamedTextColor.RED
+            ));
         }
 
-        if(args.length == 1 && args[0].equalsIgnoreCase("NyxBow")) {
-            ItemStack nyxBow = NyxBow.createNyxBow();
-            player.getInventory().addItem(nyxBow);
-            player.sendMessage(Component.text( "Item Nyx Bow created! with ModelData: null" , NamedTextColor.GREEN));
-            return true;
-        }
+        return true;
+    }
 
-        if(args.length == 1 && args[0].equalsIgnoreCase("MiningPickaxe")) {
-            ItemStack miningPickaxe = ReinforcedPickaxe.createMiningPickaxe();
-            player.getInventory().addItem(miningPickaxe);
-            player.sendMessage(Component.text( "Item MiningPickaxe created! with ModelData: null" , NamedTextColor.GREEN));
-            return true;
-        }
+    private void giveFireSword(Player player) {
+        ItemStack fireSword = FireSword.createFireSword();
+        player.getInventory().addItem(fireSword);
+        player.sendMessage(Component.text(
+                "Item FireSword created! with ModelData: null",
+                NamedTextColor.GREEN
+        ));
+    }
 
-        sender.sendMessage(Component.text("--- Verwendung ---", NamedTextColor.RED));
-        sender.sendMessage(Component.text("/customitem FireSword", NamedTextColor.RED));
-        sender.sendMessage(Component.text("/customitem ThunderTrident",  NamedTextColor.RED));
-        sender.sendMessage(Component.text("/customitem NyxBow",  NamedTextColor.RED));
-        sender.sendMessage(Component.text("/customitem MiningPickaxe",  NamedTextColor.RED));
+    private void givePoseidonsTrident(Player player) {
+        ItemStack trident = PoseidonsTrident.createPoseidonsTrident();
+        player.getInventory().addItem(trident);
+        player.sendMessage(Component.text(
+                "Item Poseidon's Trident created! with ModelData: null",
+                NamedTextColor.GREEN
+        ));
+    }
 
-        return false;
+    private void giveNyxBow(Player player) {
+        ItemStack nyxBow = NyxBow.createNyxBow();
+        player.getInventory().addItem(nyxBow);
+        player.sendMessage(Component.text(
+                "Item Nyx Bow created! with ModelData: null",
+                NamedTextColor.GREEN
+        ));
+    }
+
+    private void giveReinforcedPickaxe(Player player) {
+        ItemStack pickaxe = ReinforcedPickaxe.createReinforcedPickaxe();
+        player.getInventory().addItem(pickaxe);
+        player.sendMessage(Component.text(
+                "Item Reinforced Pickaxe created! with ModelData: null",
+                NamedTextColor.GREEN
+        ));
+    }
+
+    private void giveBetterReinforcedPickaxe(Player player) {
+        ItemStack pickaxe = BetterReinforcedPickaxe.createBetterReinforcedPickaxe();
+        player.getInventory().addItem(pickaxe);
+        player.sendMessage(Component.text(
+                "Item Better Reinforced Pickaxe created! with ModelData: null",
+                NamedTextColor.GREEN
+        ));
+    }
+
+    private void giveIngredient(Player player) {
+
+        player.getInventory().addItem(GoldShard.getItem());
+        player.getInventory().addItem(MagmaShard.getItem());
+        player.getInventory().addItem(TridentSpikes.getItem());
+        player.getInventory().addItem(TridentStick.getItem());
+        player.getInventory().addItem(ReinforcedStick.getItem());
+
+        player.sendMessage(Component.text(
+                "Ingredient created!",
+                NamedTextColor.GREEN
+        ));
+    }
+
+    private void giveAllItems(Player player) {
+        giveFireSword(player);
+        givePoseidonsTrident(player);
+        giveNyxBow(player);
+        giveBetterReinforcedPickaxe(player);
+        giveReinforcedPickaxe(player);
     }
 }

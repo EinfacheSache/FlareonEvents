@@ -1,6 +1,7 @@
 package de.einfachesache.flareonEvents.item;
 
-import org.bukkit.Bukkit;
+import de.einfachesache.flareonEvents.item.tool.*;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -11,7 +12,6 @@ public class PassiveEffects {
     public static void applyPassiveEffects() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             whenInMainHand(player);
-            whenInInventory(player);
         }
     }
 
@@ -30,13 +30,11 @@ public class PassiveEffects {
         }
 
         if(NyxBow.isNyxBowItem(item)){
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 30, 1, true, false));
-        }
-    }
-
-    private static void whenInInventory(Player player) {
-        if(NyxBow.hasNyxBow(player)){
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 30, 0, true, false));
+        }
+
+        if((ReinforcedPickaxe.isReinforcedPickaxeItem(item) || BetterReinforcedPickaxe.isBetterReinforcedPickaxeItem(item)) && WorldUtils.isPlayerInCave(player)){
+            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 30, 0, true, false));
         }
     }
 }

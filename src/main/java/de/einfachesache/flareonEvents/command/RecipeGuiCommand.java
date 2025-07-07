@@ -2,6 +2,10 @@ package de.einfachesache.flareonEvents.command;
 
 import de.einfachesache.flareonEvents.FlareonEvents;
 import de.einfachesache.flareonEvents.item.*;
+import de.einfachesache.flareonEvents.item.tool.FireSword;
+import de.einfachesache.flareonEvents.item.tool.NyxBow;
+import de.einfachesache.flareonEvents.item.tool.PoseidonsTrident;
+import de.einfachesache.flareonEvents.item.tool.ReinforcedPickaxe;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -44,7 +48,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         gui.setItem(1 + 9, ItemUtils.createGuiItem(FireSword.createFireSword()));
         gui.setItem(3 + 9, ItemUtils.createGuiItem(NyxBow.createNyxBow()));
         gui.setItem(5 + 9, ItemUtils.createGuiItem(PoseidonsTrident.createPoseidonsTrident()));
-        gui.setItem(7 + 9, ItemUtils.createGuiItem(ReinforcedPickaxe.createMiningPickaxe()));
+        gui.setItem(7 + 9, ItemUtils.createGuiItem(ReinforcedPickaxe.createReinforcedPickaxe()));
 
         player.openInventory(gui);
     }
@@ -73,7 +77,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         }else if(namespaceKey.equalsIgnoreCase(PoseidonsTrident.getItemName())){
             showRecipeGUI(player, PoseidonsTrident.getPoseidonsTridentRecipe(), PoseidonsTrident.getItemName());
         }else if(namespaceKey.equalsIgnoreCase(ReinforcedPickaxe.getItemName())){
-            showRecipeGUI(player, ReinforcedPickaxe.getReinforcedPickaxe(),  ReinforcedPickaxe.getItemName());
+            showRecipeGUI(player, ReinforcedPickaxe.getReinforcedPickaxeRecipe(),  ReinforcedPickaxe.getItemName());
         }else if (namespaceKey.equalsIgnoreCase("§cZurück")){
             openGUI(player);
         }

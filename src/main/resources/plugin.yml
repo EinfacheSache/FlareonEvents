@@ -1,4 +1,7 @@
 name: FlareonEvents
+author: EinfacheSache | Tom
+website: https://einfachesache.de/discord
+description: Das offizielle Flareon Events plugin
 version: '1.0-SNAPSHOT'
 main: de.einfachesache.flareonEvents.FlareonEvents
 api-version: '1.21'
@@ -13,5 +16,7 @@ commands:
     aliases: [ ci ]
   recipegui:
     description: 'Open Recipe-Gui'
-    aliases: [ rg ]
-
+    aliases: [ rg, items, customs ]
+  update:
+    description: 'Update Custome Items'
+    permission: 'event.op'

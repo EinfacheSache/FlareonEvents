@@ -1,6 +1,6 @@
 package de.einfachesache.flareonEvents.listener;
 
-import de.einfachesache.flareonEvents.item.CustomWeapons;
+import de.einfachesache.flareonEvents.item.CustomItems;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
@@ -21,7 +21,7 @@ public class AnvilListener implements Listener {
 
         ItemMeta resultMeta = result.getItemMeta();
 
-        for (CustomWeapons item : CustomWeapons.values()) {
+        for (CustomItems item : CustomItems.values()) {
             if (item.matches(left)) {
                 item.applyName(resultMeta);
                 result.setItemMeta(resultMeta);

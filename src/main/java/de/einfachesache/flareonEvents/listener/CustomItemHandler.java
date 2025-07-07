@@ -5,6 +5,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -29,6 +30,12 @@ public class CustomItemHandler implements Listener {
         }
     }
 
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        if (isProtected(event.getItemInHand())) {
+            event.setCancelled(true);
+        }
+    }
 
     @EventHandler
     public void onItemDamage(EntityDamageEvent event) {

@@ -69,7 +69,7 @@
     <dependency>
       <groupId>com.github.EinfacheSache</groupId>
       <artifactId>easyapi</artifactId>
-      <version>9c4cf6c08b</version>
+      <version>ad675441bc</version>
     </dependency>
     <dependency>
       <groupId>io.papermc.paper</groupId>

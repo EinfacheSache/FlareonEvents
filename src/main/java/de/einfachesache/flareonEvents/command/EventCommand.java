@@ -3,6 +3,7 @@ package de.einfachesache.flareonEvents.command;
 import de.einfachesache.flareonEvents.Config;
 import de.einfachesache.flareonEvents.EventState;
 import de.einfachesache.flareonEvents.FlareonEvents;
+import de.einfachesache.flareonEvents.listener.PlayerDeathListener;
 import de.einfachesache.flareonEvents.listener.PortalCreateListener;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
@@ -51,8 +52,43 @@ public class EventCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String @NotNull [] args) {
 
         if(args.length == 0) {
-            sendUsage(sender);
+            sendUsage(sender, label);
             return false;
+        }
+
+
+        if(args[0].equalsIgnoreCase("pvp")) {
+
+            boolean pvp = Bukkit.getWorlds().getFirst().getPVP();
+            plugin.getServer().getWorlds().forEach(world -> world.setPVP(!pvp));
+            sender.sendMessage("§cPVP wurde " + ( !pvp ? "§aaktiviert!" : "§cdeaktiviert!" ));
+
+            return true;
+        }
+
+
+        if(args[0].equalsIgnoreCase("start")) {
+
+            if(Config.getEventState().getId() > 0) {
+               sender.sendMessage("§cEvent wurde bereits gestartet!");
+               return false;
+            }
+
+            startPreparingStage();
+
+            return true;
+        }
+
+
+        if(args[0].equalsIgnoreCase("stop")) {
+            if(Config.getEventState().getId() == 0) {
+                sender.sendMessage("§cEvent wurde noch nicht gestartet!");
+                return false;
+            }
+
+            stopEvent();
+
+            return true;
         }
 
 
@@ -74,31 +110,6 @@ public class EventCommand implements CommandExecutor {
 
                 return true;
             }
-        }
-
-
-        if(args[0].equalsIgnoreCase("start")) {
-
-            if(Config.isEventStarted()) {
-               sender.sendMessage("§cEvent wurde bereits gestartet!");
-               return false;
-            }
-
-            Config.setEventState(EventState.STARTING);
-
-            startEvent();
-        }
-
-
-        if(args[0].equalsIgnoreCase("stop")) {
-            if(!Config.isEventStarted()) {
-                sender.sendMessage("§cEvent wurde noch nicht gestartet!");
-                return false;
-            }
-
-            Config.setEventState(EventState.PAUSED);
-
-            stopEvent();
         }
 
 
@@ -132,7 +143,6 @@ public class EventCommand implements CommandExecutor {
                 return true;
             }
 
-
             Location location = player.getLocation();
             Config.setMainSpawnLocation(location);
             sender.sendMessage("§aMainSpawn wurde gesetzt!");
@@ -140,7 +150,9 @@ public class EventCommand implements CommandExecutor {
 
         }
 
-        sendUsage(sender);
+
+        sendUsage(sender, label);
+
         return false;
     }
 
@@ -148,12 +160,13 @@ public class EventCommand implements CommandExecutor {
         return ("true".equalsIgnoreCase(input) || "false".equalsIgnoreCase(input)) && Boolean.parseBoolean(input);
     }
 
-    private void sendUsage(CommandSender sender){
+    private void sendUsage(CommandSender sender, String label){
         sender.sendMessage(Component.text("--- Verwendung ---", NamedTextColor.RED));
-        sender.sendMessage(Component.text("/event start", NamedTextColor.RED));
-        sender.sendMessage(Component.text("/event stop",  NamedTextColor.RED));
-        sender.sendMessage(Component.text("/event reset (player) [true/false]",  NamedTextColor.RED));
-        sender.sendMessage(Component.text("/event setspawn [number]",  NamedTextColor.RED));
+        sender.sendMessage(Component.text("/" + label + " start", NamedTextColor.RED));
+        sender.sendMessage(Component.text("/" + label + " stop",  NamedTextColor.RED));
+        sender.sendMessage(Component.text("/" + label + " pvp",  NamedTextColor.RED));
+        sender.sendMessage(Component.text("/" + label + " reset (player) [true/false]",  NamedTextColor.RED));
+        sender.sendMessage(Component.text("/" + label + " setspawn [number]",  NamedTextColor.RED));
     }
 
     public static void resetPlayer(Player player, boolean potionReset, boolean completeReset) {
@@ -178,17 +191,47 @@ public class EventCommand implements CommandExecutor {
         player.setGameMode(GameMode.SURVIVAL);
     }
 
-    public void startEvent() {
+    private void startPreparingStage() {
 
+        Config.setEventState(EventState.PREPARING);
+        Bukkit.getServer().getOnlinePlayers().forEach(player -> {
+            player.showTitle(Title.title(
+                    Component.text("BEREIT?", NamedTextColor.GREEN),
+                    Component.text("Das Event startet in 5 Minuten!", NamedTextColor.YELLOW),
+                    times));
+            player.playSound(notifySound);
+        });
+
+        startCountdownTimerSchedule();
+
+        tasks.add(new BukkitRunnable() {
+            @Override
+            public void run() {
+                startEvent();
+            }
+        }.runTaskLater(plugin, 3 * 60 * 20L));
+    }
+
+    private void startEvent() {
+
+        PlayerDeathListener.getPvpKillCounts().clear();
+
+        Config.setEventState(EventState.STARTING);
+        Config.clearParticipant();
         Config.clearDeathParticipant();
+        Config.setStopSince(0);
+
+        plugin.getServer().getWorlds().forEach(world -> world.setPVP(false));
 
         World world = Bukkit.getWorlds().getFirst();
         WorldBorder border = world.getWorldBorder();
         border.setCenter(0,0);
         border.setSize(3000);
         world.setTime(6000);
+        world.setClearWeatherDuration(20 * 60 * 20);
 
         Iterator<Location> locationIterator = Config.getPlayerSpawnLocations().stream().iterator();
+
 
         Bukkit.getServer().getOnlinePlayers().stream()
                 .filter(player -> !player.isOp())
@@ -205,8 +248,8 @@ public class EventCommand implements CommandExecutor {
                         player.setFlying(false);
 
                         player.showTitle(Title.title(
-                                Component.text("BEREIT?", NamedTextColor.GREEN),
-                                Component.text("Das Event startet in Kürze!", NamedTextColor.YELLOW),
+                                Component.text("ACHTUNG!", NamedTextColor.GREEN),
+                                Component.text("Event Start in Kürze!", NamedTextColor.YELLOW),
                                 times));
                         player.playSound(notifySound);
                     } else {
@@ -219,12 +262,11 @@ public class EventCommand implements CommandExecutor {
         plugin.getServer().broadcast(
                 Component.text("Mach dich bereit, der Countdown läuft. Das Event startet in Kürze!", NamedTextColor.YELLOW));
 
-        startCountdownTimerSchedule();
-
         tasks.add(new BukkitRunnable() {
             @Override
             public void run() {
                 Config.setEventState(EventState.RUNNING);
+                Config.setStartTime(System.currentTimeMillis());
                 startBorderSchedule(border);
                 startPVPSchedule();
                 Bukkit.getServer().getOnlinePlayers().stream()
@@ -241,10 +283,15 @@ public class EventCommand implements CommandExecutor {
         }.runTaskLater(plugin, 60 * 60 * 20L));
     }
 
-    public void stopEvent(){
-        plugin.getServer().getWorlds().forEach(world -> world.setPVP(false));
+    private void stopEvent(){
+
+        Config.setEventState(EventState.NOT_RUNNING);
+        Config.setStopSince(System.currentTimeMillis());
+
         PortalCreateListener.setNether(false);
         tasks.forEach(BukkitTask::cancel);
+
+        plugin.getServer().getWorlds().forEach(world -> world.setPVP(false));
         plugin.getServer().getOnlinePlayers().forEach(player -> {
             player.showTitle(Title.title(
                     Component.text("PAUSE!", NamedTextColor.RED),
@@ -252,9 +299,9 @@ public class EventCommand implements CommandExecutor {
             player.playSound(notifySound);
 
             if(!player.isOp()){
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, Integer.MAX_VALUE, Integer.MAX_VALUE).withIcon(false).withParticles(false));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, Integer.MAX_VALUE).withIcon(false).withParticles(false));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, Integer.MAX_VALUE, Integer.MAX_VALUE).withIcon(false).withParticles(false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, PotionEffect.INFINITE_DURATION, Integer.MAX_VALUE).withIcon(false).withParticles(false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, PotionEffect.INFINITE_DURATION, Integer.MAX_VALUE).withIcon(false).withParticles(false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, PotionEffect.INFINITE_DURATION, Integer.MAX_VALUE).withIcon(false).withParticles(false));
                 Objects.requireNonNull(player.getAttribute(Attribute.JUMP_STRENGTH)).setBaseValue(0);
                 player.setVelocity(new Vector());
                 player.setWalkSpeed(0.0f);
@@ -266,15 +313,14 @@ public class EventCommand implements CommandExecutor {
     }
 
 
-    public void startPVPSchedule(){
-        plugin.getServer().getWorlds().forEach(world -> world.setPVP(false));
+    private void startPVPSchedule(){
         plugin.getServer().getOnlinePlayers().forEach(player -> player.sendActionBar(Component.text("PvP beginnt in 2 Minuten", NamedTextColor.DARK_RED)));
         startPVPTimerSchedule();
     }
 
-    public void startCountdownTimerSchedule() {
+    private void startCountdownTimerSchedule() {
 
-        final int durationInSeconds = 2 * 60; // 2 Minuten = 120 Sekunden
+        final int durationInSeconds = 5 * 60; // 25 Minuten = 300 Sekunden
 
         tasks.add(new BukkitRunnable() {
             int secondsLeft = durationInSeconds;
@@ -313,7 +359,7 @@ public class EventCommand implements CommandExecutor {
         }.runTaskTimer(plugin, 0L, 20L)); // Jede Sekunde (20 Ticks)
     }
 
-    public void startPVPTimerSchedule() {
+    private void startPVPTimerSchedule() {
 
         final int durationInSeconds = 2 * 60; // 2 Minuten = 120 Sekunden
 
@@ -349,7 +395,7 @@ public class EventCommand implements CommandExecutor {
     }
 
 
-    public void startBorderSchedule(WorldBorder border){
+    private void startBorderSchedule(WorldBorder border){
 
         // Nach 40 Minuten (40 * 60 * 20 Ticks)
         tasks.add(new BukkitRunnable() {
@@ -440,5 +486,13 @@ public class EventCommand implements CommandExecutor {
                 border.setSize(5, 5 * 60);
             }
         }.runTaskLater(plugin, 240 * 60 * 20L));
+
+        tasks.add(new BukkitRunnable() {
+            @Override
+            public void run() {
+                plugin.getServer().broadcast(
+                        Component.text("Die Border ist stehen geblieben. Das Gebiet bleibt nun auf 5x5 Blöcke begrenzt!", NamedTextColor.YELLOW));
+            }
+        }.runTaskLater(plugin, 245 * 60 * 20L));
     }
 }

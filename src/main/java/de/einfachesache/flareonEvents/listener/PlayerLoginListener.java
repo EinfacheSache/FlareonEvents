@@ -20,9 +20,8 @@ public class PlayerLoginListener implements Listener {
             return;
         }
 
-        if(Config.getEventState() == EventState.NOT_RUNNING || Config.getEventState() == EventState.PAUSED)
+        if(Config.getEventState() == EventState.NOT_RUNNING)
             return;
-
 
         boolean isParticipant = Config.getParticipantsUUID().contains(uuid);
         boolean isDead = Config.getDeathParticipantsUUID().contains(uuid);

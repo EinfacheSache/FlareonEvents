@@ -1,0 +1,106 @@
+generell:
+  item_flags:
+    - HIDE_ATTRIBUTES
+    - HIDE_ENCHANTS
+
+items:
+  fire_sword:
+    # NamespacedKey in Java: new NamespacedKey(plugin, "fire_sword")
+    key: flareonevents:fire_sword
+
+    # Material & Anzeige-Name
+    material: GOLDEN_SWORD
+    display_name: "§c§lFire Sword"
+
+    # Attribute-Modifikatoren
+    attributes:
+      - attribute: attack_damage
+        amount: 7.5
+        operation: ADD_NUMBER
+        slot: HAND
+      - attribute: attack_speed
+        amount: -2.4
+        operation: ADD_NUMBER
+        slot: HAND
+
+    # Effekte & Cooldown
+    fire_ticks_chance: 0.5    # Wahrscheinlichkeit, Ziel in Brand zu setzen
+    fire_ticks_time: 3        # Dauer in Sekunden
+    cooldown: 7
+
+  nyx_bow:
+    # NamespacedKey in Java: new NamespacedKey(plugin, "nyx_bow")
+    key: flareonevents:nyx_bow
+
+    # Material & Anzeige-Name
+    material: BOW
+    display_name: "§4§lNyx Bow"
+
+    # Verzauberungen
+    enchantments:
+      power: 2
+
+    # Effekte & cooldown
+    wither_effect_chance: 0.5     # Chance, Wither-Effekt zu vergeben
+    wither_effect_time: 3         # Dauer in Sekunden
+    slow_blind_effect_chance: 0.2 # Chance, Slowness+Blindness zu vergeben
+    slow_blind_effect_time: 2     # Dauer in Sekunden
+    cooldown: 7500                # Cooldown in Millisekunden  # Cooldown in Sekunden
+
+  poseidons_trident:
+    # NamespacedKey in Java: new NamespacedKey(plugin, "poseidons_trident")
+    key: flareonevents:poseidons_trident
+
+    # Material & Anzeige-Name
+    material: TRIDENT
+    display_name: "§6§lPoseidon's Trident"
+
+    # Verzauberungen
+    enchantments:
+      loyalty: 3
+
+    # Attribute-Modifikatoren
+    attributes:
+      - attribute: attack_damage
+        amount: 9.5
+        operation: ADD_NUMBER
+        slot: HAND
+      - attribute: attack_speed
+        amount: -2.4
+        operation: ADD_NUMBER
+        slot: HAND
+
+    # Effekte & Cooldown
+    throw_lightning_chance: 1.0    # Chance für Blitz beim Wurf (100%)
+    melee_lightning_chance: 0.33   # Chance für Blitz bei Nahkampftreffer
+    cooldown: 10                   # Cooldown in Sekunden
+
+  reinforced_pickaxe:
+    # NamespacedKey in Java: new NamespacedKey(plugin, "reinforced_pickaxe")
+    key: flareonevents:reinforced_pickaxe
+
+    # Item-Grundlagen
+    material: DIAMOND_PICKAXE
+    display_name: "§8§lReinforced Pickaxe"
+    # Attributes
+    attributes:
+      - attribute: attack_speed
+        amount: -2.8
+        operation: ADD_NUMBER
+        slot: HAND
+    # Verzauberungen
+    enchantments:
+      efficiency: 3
+
+  better_reinforced_pickaxe:
+    # NamespacedKey in Java: new NamespacedKey(plugin, "reinforced_pickaxe")
+    key: flareonevents:better_reinforced_pickaxe
+
+    # Item-Grundlagen
+    material: NETHERITE_PICKAXE
+    display_name: "§6§kkk §8§lBetter Reinforced Pickaxe §6§kkk"
+    # X-Ray-Konfiguration
+    xray:
+      enabled_time: 5    # Dauer in Sekunden
+      radius: 25         # Radius in Blöcken
+      cooldown: 45       # Cooldown in Sekunden
