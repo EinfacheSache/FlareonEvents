@@ -43,9 +43,9 @@ items:
     # Effekte & cooldown
     wither_effect_chance: 0.5     # Chance, Wither-Effekt zu vergeben
     wither_effect_time: 3         # Dauer in Sekunden
-    slow_blind_effect_chance: 0.2 # Chance, Slowness+Blindness zu vergeben
+    slow_blind_effect_chance: 0.3 # Chance, Slowness + Blindness zu vergeben
     slow_blind_effect_time: 2     # Dauer in Sekunden
-    cooldown: 7500                # Cooldown in Millisekunden  # Cooldown in Sekunden
+    cooldown: 500                 # Cooldown in Millisekunden
 
   poseidons_trident:
     # NamespacedKey in Java: new NamespacedKey(plugin, "poseidons_trident")
