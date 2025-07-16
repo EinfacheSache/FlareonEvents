@@ -9,12 +9,12 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public class PlayerMoveListener implements Listener {
 
     @EventHandler
-    public void onPlayerMoveEvent(PlayerMoveEvent event) {
-        if(event.getPlayer().isOp())
+    public void onPlayerMove(PlayerMoveEvent event) {
+        if (event.getPlayer().isOp())
             return;
 
-        if(Config.getEventState() == EventState.STARTING && event.hasChangedPosition()){
-            event.setCancelled(true);
+        if (Config.getEventState() == EventState.STARTING && event.hasChangedPosition()) {
+            event.setTo(event.getFrom().setRotation(event.getTo().getYaw(), event.getTo().getPitch()));
         }
     }
 }

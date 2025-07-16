@@ -62,13 +62,13 @@ public class ItemUtils {
         return LegacyComponentSerializer.legacySection().serialize(display);
     }
 
-    public static List<Component> getEnchantments(Map<Enchantment,Integer> enchantments) {
+    public static List<Component> getEnchantments(Map<Enchantment, Integer> enchantments) {
         List<Component> lore = new ArrayList<>();
 
         for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
             String key = entry.getKey().getKey().getKey();
             String name = Arrays.stream(key.split("_"))
-                    .map(s -> s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase())
+                    .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase())
                     .collect(Collectors.joining(" "));
             String roman = ItemUtils.toRoman(entry.getValue());
             lore.add(deserialize("§7➤ §4" + name + " " + roman));

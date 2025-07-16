@@ -15,7 +15,7 @@ public class ReinforcedStick {
     private static final NamespacedKey namespacedKey = new NamespacedKey(FlareonEvents.getPlugin(), "reinforced_stick");
     private static final ItemStack item = ItemUtils.createCustomItem(Material.BREEZE_ROD, ITEM_NAME, namespacedKey);
 
-    public static ShapedRecipe getReinforcedStickRecipe(){
+    public static ShapedRecipe getReinforcedStickRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(namespacedKey, getItem());
         recipe.shape(" C ", " I ", " C ");
         recipe.setIngredient('C', Material.CHAIN);

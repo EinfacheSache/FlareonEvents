@@ -15,6 +15,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Trident;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -41,12 +42,12 @@ public class PoseidonsTrident implements Listener {
     public static double ON_MELEE_LIGHTNING_CHANCE;
     public static int COOLDOWN;
     public static ItemFlag[] ITEM_FLAGS;
-    public static Map<Enchantment,Integer> ENCHANTMENTS;
+    public static Map<Enchantment, Integer> ENCHANTMENTS;
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS;
 
     private static final Map<UUID, Long> cooldownMap = new HashMap<>();
 
-    public static ShapedRecipe getPoseidonsTridentRecipe(){
+    public static ShapedRecipe getPoseidonsTridentRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createPoseidonsTrident());
         recipe.shape(" AB", " CA", "C  ");
         recipe.setIngredient('A', Material.DIAMOND_BLOCK);
@@ -68,7 +69,7 @@ public class PoseidonsTrident implements Listener {
         ItemStack trident = ItemUtils.createCustomItem(Material.TRIDENT, DISPLAY_NAME, NAMESPACED_KEY);
         ItemMeta meta = trident.getItemMeta();
 
-        for(var entry : ATTRIBUTE_MODIFIERS.entrySet()) {
+        for (var entry : ATTRIBUTE_MODIFIERS.entrySet()) {
             meta.addAttributeModifier(entry.getKey(), entry.getValue());
         }
 
@@ -87,15 +88,15 @@ public class PoseidonsTrident implements Listener {
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§7"));
-        lore.add(serializer.deserialize("§7§e" + (int)(THROW_LIGHTNING_CHANCE * 100) + "%§7 Chance: §cBlitz §7beim Wurf"));
-        lore.add(serializer.deserialize("§7§e" + (int)(ON_MELEE_LIGHTNING_CHANCE * 100) + "%§7 Chance: §cBlitz §7bei Nahkampftreffer"));
+        lore.add(serializer.deserialize("§7§e" + (int) (THROW_LIGHTNING_CHANCE * 100) + "%§7 Chance: §cBlitz §7beim Wurf"));
+        lore.add(serializer.deserialize("§7§e" + (int) (ON_MELEE_LIGHTNING_CHANCE * 100) + "%§7 Chance: §cBlitz §7bei Nahkampftreffer"));
         lore.add(serializer.deserialize("§7"));
         lore.add(serializer.deserialize("§7§oBesonderheit: §bDolphin's Grace §7& §bWater Breathing §7in Hand"));
         lore.add(serializer.deserialize("§7"));
         lore.add(serializer.deserialize("§7Angriff: §4+" + attackDamage + " Schaden"));
         lore.add(serializer.deserialize("§7"));
 
-        if(!ENCHANTMENTS.isEmpty()) {
+        if (!ENCHANTMENTS.isEmpty()) {
             lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
             lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
         }
@@ -104,6 +105,7 @@ public class PoseidonsTrident implements Listener {
         lore.add(serializer.deserialize("§7"));
 
         meta.lore(lore);
+        meta.setCustomModelData(1);
 
         trident.setItemMeta(meta);
         trident.addItemFlags(ITEM_FLAGS);
@@ -126,17 +128,18 @@ public class PoseidonsTrident implements Listener {
     @EventHandler
     public void onTridentThrow(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        ItemStack item = player.getInventory().getItemInMainHand();
+        ItemStack item = event.getItem();
 
         if (!isPoseidonsTridentItem(item)) return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (event.useItemInHand() == Event.Result.DENY) return;
 
         long now = System.currentTimeMillis();
         long lastUse = cooldownMap.getOrDefault(player.getUniqueId(), 0L);
         if (now - lastUse < COOLDOWN * 1000L) {
             long remaining = (COOLDOWN - ((now - lastUse)) / 1000);
             player.sendMessage("§cBitte warte noch " + remaining + "s, bevor du erneut wirfst!");
-            event.setCancelled(true);
+            event.setUseItemInHand(Event.Result.DENY);
         }
     }
 
@@ -148,7 +151,7 @@ public class PoseidonsTrident implements Listener {
 
         trident.setVisualFire(true);
 
-        if(shooter.getGameMode() == GameMode.CREATIVE) {
+        if (shooter.getGameMode() == GameMode.CREATIVE) {
             return;
         }
 
@@ -161,8 +164,7 @@ public class PoseidonsTrident implements Listener {
     public void onProjectileHit(ProjectileHitEvent event) {
         if (!(event.getEntity() instanceof Trident trident)) return;
         if (!(trident.getShooter() instanceof Player player)) return;
-        ItemStack item = trident.getItemStack();
-        if (!isPoseidonsTridentItem(item)) return;
+        if (!isPoseidonsTridentItem(trident.getItemStack())) return;
 
         if (Math.random() < THROW_LIGHTNING_CHANCE) {
             LightningStrike lightningStrike = trident.getWorld().strikeLightning(trident.getLocation());

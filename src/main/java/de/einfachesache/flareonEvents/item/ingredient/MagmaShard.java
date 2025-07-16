@@ -14,7 +14,7 @@ public class MagmaShard {
     private static final NamespacedKey namespacedKey = new NamespacedKey(FlareonEvents.getPlugin(), "magma_shard");
     private static final ItemStack item = ItemUtils.createCustomItem(Material.MAGMA_CREAM, ITEM_NAME, namespacedKey);
 
-    public static ShapedRecipe getMagmaShardRecipe(){
+    public static ShapedRecipe getMagmaShardRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(namespacedKey, item);
         recipe.shape("AAA", "ABA", "AAA");
         recipe.setIngredient('A', Material.MAGMA_BLOCK);

@@ -11,6 +11,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -41,12 +42,12 @@ public class NyxBow implements Listener {
     public static int WITHER_EFFECT_TIME;
     public static int COOLDOWN;
     public static ItemFlag[] ITEM_FLAGS;
-    public static Map<Enchantment,Integer> ENCHANTMENTS;
+    public static Map<Enchantment, Integer> ENCHANTMENTS;
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS;
 
     private static final Map<UUID, Long> cooldownMap = new HashMap<>();
 
-    public static ShapedRecipe getNyxBowRecipe(){
+    public static ShapedRecipe getNyxBowRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createNyxBow());
         recipe.shape("SWS", "EBE", "OIO");
         recipe.setIngredient('S', Material.SUGAR);
@@ -71,7 +72,7 @@ public class NyxBow implements Listener {
         ItemStack item = ItemUtils.createCustomItem(MATERIAL, DISPLAY_NAME, NAMESPACED_KEY);
         ItemMeta meta = item.getItemMeta();
 
-        for(var entry : ATTRIBUTE_MODIFIERS.entrySet()) {
+        for (var entry : ATTRIBUTE_MODIFIERS.entrySet()) {
             meta.addAttributeModifier(entry.getKey(), entry.getValue());
         }
 
@@ -82,13 +83,13 @@ public class NyxBow implements Listener {
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§e" + (int)(WITHER_EFFECT_CHANCE * 100) + "%§7 Chance: §8Wither§7 für §e" + WITHER_EFFECT_TIME + "s"));
-        lore.add(serializer.deserialize("§e" + (int)(SLOW_BLIND_EFFECT_CHANCE * 100) + "%§7 Chance: §8Slowness§7 & §8Blindness§7 für §e" + SLOW_BLIND_EFFECT_TIME + "s"));
+        lore.add(serializer.deserialize("§e" + (int) (WITHER_EFFECT_CHANCE * 100) + "%§7 Chance: §8Wither§7 für §e" + WITHER_EFFECT_TIME + "s"));
+        lore.add(serializer.deserialize("§e" + (int) (SLOW_BLIND_EFFECT_CHANCE * 100) + "%§7 Chance: §8Slowness§7 & §8Blindness§7 für §e" + SLOW_BLIND_EFFECT_TIME + "s"));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7§oBesonderheit: §bSpeed I§7 in Hand"));
         lore.add(serializer.deserialize("§f"));
 
-        if(!ENCHANTMENTS.isEmpty()) {
+        if (!ENCHANTMENTS.isEmpty()) {
             lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
             lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
         }
@@ -97,6 +98,7 @@ public class NyxBow implements Listener {
         lore.add(serializer.deserialize("§f"));
 
         meta.lore(lore);
+        meta.setCustomModelData(1);
 
         item.setItemMeta(meta);
         item.addItemFlags(ITEM_FLAGS);
@@ -107,13 +109,13 @@ public class NyxBow implements Listener {
     @EventHandler
     public void onShoot(EntityShootBowEvent event) {
         if (!(event.getBow() != null && event.getBow().hasItemMeta())) return;
-        if(!isNyxBowItem(event.getBow())) return;
+        if (!isNyxBowItem(event.getBow())) return;
 
         Arrow arrow = (Arrow) event.getProjectile();
 
         arrow.getPersistentDataContainer().set(NAMESPACED_KEY, PersistentDataType.BYTE, (byte) 1);
 
-        if(arrow.getShooter() instanceof Player player){
+        if (arrow.getShooter() instanceof Player player) {
             player.playSound(
                     event.getEntity().getLocation(),
                     Sound.ENTITY_WITHER_SHOOT,
@@ -126,18 +128,18 @@ public class NyxBow implements Listener {
 
     @EventHandler
     public void onBowShoot(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        ItemStack item = player.getInventory().getItemInMainHand();
+        Player shooter = event.getPlayer();
 
-        if (!isNyxBowItem(item)) return;
+        if (!isNyxBowItem(event.getItem())) return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (event.useItemInHand() == Event.Result.DENY) return;
 
         long now = System.currentTimeMillis();
-        long lastUse = cooldownMap.getOrDefault(player.getUniqueId(), 0L);
+        long lastUse = cooldownMap.getOrDefault(shooter.getUniqueId(), 0L);
         if (now - lastUse < COOLDOWN) {
             long remaining = (COOLDOWN - (now - lastUse));
-            player.sendMessage("§cBitte warte noch " + remaining + "ms, bevor du erneut schießt!");
-            event.setCancelled(true);
+            shooter.sendMessage("§cBitte warte noch " + remaining + "ms, bevor du erneut schießt!");
+            event.setUseItemInHand(Event.Result.DENY);
         }
     }
 

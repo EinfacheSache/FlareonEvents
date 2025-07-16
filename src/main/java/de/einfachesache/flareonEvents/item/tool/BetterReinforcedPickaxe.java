@@ -5,10 +5,7 @@ import de.einfachesache.flareonEvents.item.ItemUtils;
 import de.einfachesache.flareonEvents.item.WorldUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
@@ -37,8 +34,8 @@ public class BetterReinforcedPickaxe implements Listener {
 
     public static ShapedRecipe getBetterReinforcedPickaxeRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createBetterReinforcedPickaxe());
-        recipe.shape("EEE", "EPE", "EEE");
-        recipe.setIngredient('E', Material.EMERALD);
+        recipe.shape("AAA", "APA", "AAA");
+        recipe.setIngredient('A', Material.AMETHYST_SHARD);
         recipe.setIngredient('P', new RecipeChoice.ExactChoice(ReinforcedPickaxe.createReinforcedPickaxe()));
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
@@ -83,15 +80,16 @@ public class BetterReinforcedPickaxe implements Listener {
         lore.add(serializer.deserialize("§f"));
 
         // Dynamisch aus ENCHANTMENTS-Map
-        if(!ReinforcedPickaxe.ENCHANTMENTS.isEmpty()) {
+        if (!ReinforcedPickaxe.ENCHANTMENTS.isEmpty()) {
             lore.add(serializer.deserialize(("§7Enchantment" + (ReinforcedPickaxe.ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
             lore.addAll(ItemUtils.getEnchantments(ReinforcedPickaxe.ENCHANTMENTS));
         }
 
         meta.lore(lore);
-        meta.addItemFlags(ITEM_FLAGS);
+        meta.setCustomModelData(1);
 
         item.setItemMeta(meta);
+        item.addItemFlags(ITEM_FLAGS);
 
         // Material anpassen und zurückgeben
         return item.withType(MATERIAL);
@@ -106,19 +104,20 @@ public class BetterReinforcedPickaxe implements Listener {
 
         Material blockType = event.getBlock().getType();
 
-        if (WorldUtils.isNonOre(blockType)) return;
+        if (!WorldUtils.isOre(blockType)) return;
+        if (player.getGameMode() == GameMode.CREATIVE) return;
 
         Material drop = null;
         int roll = FlareonEvents.getRandom().nextInt(100) + 1;
-        if(roll <= 10){
+        if (roll <= 10) {
             drop = Material.DIAMOND;
-        }else if(roll <= 30){
+        } else if (roll <= 30) {
             drop = Material.GOLD_INGOT;
-        }else if(roll <= 55){
+        } else if (roll <= 55) {
             drop = Material.IRON_INGOT;
-        }else if(roll <= 70){
+        } else if (roll <= 70) {
             drop = Material.COAL;
-        }else if(roll <= 73) {
+        } else if (roll <= 73) {
             drop = Material.NETHERITE_SCRAP;
         }
 
@@ -134,23 +133,24 @@ public class BetterReinforcedPickaxe implements Listener {
 
         if (!isBetterReinforcedPickaxeItem(item)) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
-        if(event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) return;
 
-        long remaining = (XRAY_COOLDOWN - ((System.currentTimeMillis() - cooldownMap.getOrDefault(player.getUniqueId(), 0L))) / 1000);
+        int playerXRayCooldown = player.getGameMode() == GameMode.CREATIVE ? XRAY_ENABLED_TIME : XRAY_COOLDOWN;
+        long remaining = (playerXRayCooldown - ((System.currentTimeMillis() - cooldownMap.getOrDefault(player.getUniqueId(), 0L))) / 1000);
         if (remaining > 0) {
             player.sendMessage("§cBitte warte noch " + remaining + "s, bevor du §4X-Ray §cerneut benutzt!");
             return;
         }
 
-        if(player.hasCooldown(item)) return;
+        if (player.hasCooldown(item)) return;
 
         xRay(player);
 
-        player.setCooldown(item, XRAY_COOLDOWN * 20);
+        player.setCooldown(item, playerXRayCooldown * 20);
     }
 
 
-    private final Map<UUID,Set<Location>> xrayBlocks = new HashMap<>();
+    private final Map<UUID, Set<Location>> xrayBlocks = new HashMap<>();
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
@@ -209,8 +209,8 @@ public class BetterReinforcedPickaxe implements Listener {
                             Material type = b.getType();
 
                             // Luft, Wasser, Lava und Erze überspringen
-                            if (type == Material.AIR || type == Material.WATER  || type == Material.LAVA  ||
-                                    !WorldUtils.isNonOre(type) || !WorldUtils.isNaturalCeiling(type)) continue;
+                            if (type.isAir() || type == Material.WATER || type == Material.LAVA || WorldUtils.isOre(type) ||
+                                    type != Material.GRASS_BLOCK && !WorldUtils.isNaturalCeiling(type)) continue;
 
                             fake.add(b.getLocation());
                             locations.add(b.getLocation());

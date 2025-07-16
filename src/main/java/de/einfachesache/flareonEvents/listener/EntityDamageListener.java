@@ -1,5 +1,6 @@
 package de.einfachesache.flareonEvents.listener;
 
+import de.einfachesache.flareonEvents.Config;
 import de.einfachesache.flareonEvents.FlareonEvents;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
@@ -29,14 +30,18 @@ public class EntityDamageListener implements Listener {
 
     @EventHandler
     public void onItemBurn(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Item)) return;
+        Entity entity = event.getEntity();
 
-        EntityDamageEvent.DamageCause cause = event.getCause();
+        if (entity instanceof Player player) {
+            if (!player.getWorld().getPVP() && !Config.isEventIsRunning()) {
+                event.setCancelled(true);
+                return;
+            }
+        }
 
-        if (cause == EntityDamageEvent.DamageCause.FIRE_TICK) {
-
+        if (entity instanceof Item & event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
             event.setCancelled(true);
-            event.getEntity().setFireTicks(0);
+            entity.setFireTicks(1);
         }
     }
 }

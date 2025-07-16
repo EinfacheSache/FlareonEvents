@@ -34,7 +34,7 @@ public class EventInfoBook implements Listener {
                 """
                         §4§lInfos§7
                         
-                        §cSpawn§7 bei §60 I 0§7
+                        §cSpawn§7 bei §60 | 0§7
                         
                         §cPvP §7nach §62m§7
                         
@@ -43,7 +43,7 @@ public class EventInfoBook implements Listener {
                         §cEnd §7ist §6geschlossen §7
                         
                         §cDie Zone §7startet bei §63000x3000§7
-                        → §cBewegt§7 sich schrittweise zu §65 I 5§7
+                        → §cBewegt§7 sich schrittweise zu §65 | 5§7
                         """);
 
         Component page2 = Component.text(
@@ -64,10 +64,10 @@ public class EventInfoBook implements Listener {
 
         Component page3 = Component.text(
                 "§6Custom Items §7Part-1\n\n§7" +
-                        "§7- " + FireSword.getItemName().replace("§l", "")       + "\n" +
-                        "§7- " + PoseidonsTrident.getItemName().replace("§l", "")   + "\n" +
-                        "§7- " + NyxBow.getItemName().replace("§l", "")            + "\n" +
-                        "§7- " + ReinforcedPickaxe.getItemName().replace("§l", "")   + "\n");
+                        "§7- " + FireSword.getItemName().replace("§l", "") + "\n" +
+                        "§7- " + PoseidonsTrident.getItemName().replace("§l", "") + "\n" +
+                        "§7- " + NyxBow.getItemName().replace("§l", "") + "\n" +
+                        "§7- " + ReinforcedPickaxe.getItemName().replace("§l", "") + "\n");
 
         Component page4 = Component.text(
                 """
@@ -104,7 +104,7 @@ public class EventInfoBook implements Listener {
         ItemStack clicked = e.getCurrentItem();
         if (e.getSlot() != 8 || clicked == null || !clicked.hasItemMeta()) return;
 
-        if(clicked.getItemMeta().getPersistentDataContainer().has(EventInfoBook.namespacedKey)) {
+        if (clicked.getItemMeta().getPersistentDataContainer().has(EventInfoBook.namespacedKey)) {
             e.setResult(Event.Result.DENY);
             e.getView().setCursor(null);
         }
@@ -116,7 +116,7 @@ public class EventInfoBook implements Listener {
         ItemStack clicked = e.getItemDrop().getItemStack();
         if (!clicked.hasItemMeta()) return;
 
-        if(clicked.getItemMeta().getPersistentDataContainer().has(EventInfoBook.namespacedKey)){
+        if (clicked.getItemMeta().getPersistentDataContainer().has(EventInfoBook.namespacedKey)) {
             e.setCancelled(true);
         }
     }

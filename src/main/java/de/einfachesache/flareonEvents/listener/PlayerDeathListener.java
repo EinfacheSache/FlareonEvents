@@ -23,15 +23,15 @@ public class PlayerDeathListener implements Listener {
     NamespacedKey namespacedKey = new NamespacedKey(FlareonEvents.getPlugin(), "lightning_player_death");
 
     @EventHandler
-    public void deathListener(PlayerDeathEvent event) {
+    public void onPlayerDeath(PlayerDeathEvent event) {
 
         Player deceased = event.getEntity();
         Player killer = deceased.getKiller();
 
-        if(Config.getEventState() == EventState.RUNNING){
+        if (Config.getEventState() == EventState.RUNNING) {
             Config.addDeathParticipant(event.getPlayer().getUniqueId());
             deceased.kick(Component.text("§4§kAA §4§lAUSLÖSCHUNG! §kAA\n§cDu bist gestorben!"));
-        }else {
+        } else {
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -43,8 +43,8 @@ public class PlayerDeathListener implements Listener {
         }
 
         event.getDrops().clear();
-        event.deathMessage(Component.text( "§k22 §c§lAUSLÖSCHUNG! §fEin Spieler ist gestorben §k22"));
-        deceased.getWorld().strikeLightning(deceased.getLocation().add(0,1.5,0))
+        event.deathMessage(Component.text("§k22 §c§lAUSLÖSCHUNG! §fEin Spieler ist gestorben §k22"));
+        deceased.getWorld().strikeLightning(deceased.getLocation().add(0, 1.5, 0))
                 .getPersistentDataContainer().set(namespacedKey, PersistentDataType.BYTE, (byte) 1);
 
         if (killer != null && !killer.equals(deceased)) {

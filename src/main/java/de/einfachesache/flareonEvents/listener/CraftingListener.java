@@ -48,7 +48,7 @@ public class CraftingListener implements Listener {
         Player player = (Player) event.getView().getPlayer();
 
 
-        if(inv.getResult() != null && inv.getResult().getType() == Material.BARRIER) {
+        if (inv.getResult() != null && inv.getResult().getType() == Material.BARRIER) {
             event.setResult(Event.Result.DENY);
             return;
         }
@@ -59,7 +59,7 @@ public class CraftingListener implements Listener {
                 event.getWhoClicked().sendMessage("§cDu kannst dieses Item nur einmal craften!");
                 return;
             }
-            if(playerCraftedCustomWeapon.contains(player.getUniqueId())) {
+            if (playerCraftedCustomWeapon.contains(player.getUniqueId())) {
                 event.setResult(Event.Result.DENY);
                 event.getWhoClicked().sendMessage("§cJeder Spieler kann nur eine §6§lCustom Weapon §ccraften!");
                 return;
@@ -68,15 +68,15 @@ public class CraftingListener implements Listener {
 
         NamespacedKey key;
 
-        if(FireSword.isFireSwordItem(inv.getResult())) {
+        if (FireSword.isFireSwordItem(inv.getResult())) {
             key = FireSword.getFireSwordRecipe().getKey();
-        }else if(NyxBow.isNyxBowItem(inv.getResult())) {
+        } else if (NyxBow.isNyxBowItem(inv.getResult())) {
             key = NyxBow.getNyxBowRecipe().getKey();
-        }else if(PoseidonsTrident.isPoseidonsTridentItem(inv.getResult())) {
+        } else if (PoseidonsTrident.isPoseidonsTridentItem(inv.getResult())) {
             key = PoseidonsTrident.getPoseidonsTridentRecipe().getKey();
-        } else if(BetterReinforcedPickaxe.isBetterReinforcedPickaxeItem(inv.getResult())) {
+        } else if (BetterReinforcedPickaxe.isBetterReinforcedPickaxeItem(inv.getResult())) {
             key = BetterReinforcedPickaxe.getBetterReinforcedPickaxeRecipe().getKey();
-        }else {
+        } else {
             key = null;
         }
 
@@ -84,7 +84,7 @@ public class CraftingListener implements Listener {
             return;
         }
 
-        if(key != BetterReinforcedPickaxe.getBetterReinforcedPickaxeRecipe().getKey()){
+        if (key != BetterReinforcedPickaxe.getBetterReinforcedPickaxeRecipe().getKey()) {
             if (craftedOnce.contains(key)) {
                 event.setResult(Event.Result.DENY);
                 player.sendMessage("§cDieses Item wurde bereits gecraftet und kann nur einmal hergestellt werden.");
@@ -112,11 +112,11 @@ public class CraftingListener implements Listener {
                 || BetterReinforcedPickaxe.isBetterReinforcedPickaxeItem(item);
     }
 
-    private void craftedItem(Player player, NamespacedKey itemKey , String itemName){
+    private void craftedItem(Player player, NamespacedKey itemKey, String itemName) {
         playerCraftedCustomWeapon.add(player.getUniqueId());
         Bukkit.getOnlinePlayers().forEach(p -> p.undiscoverRecipe(itemKey)); //überprüfen!!!
         Bukkit.removeRecipe(itemKey, true);
-        Bukkit.broadcast(Component.text( itemName + "§c wurde von dem Spieler §b" + player.getName() + "§c gecrafted! §7(Dieses Item kann nur einmal gecraftet werden)"));
+        Bukkit.broadcast(Component.text(itemName + "§c wurde von dem Spieler §b" + player.getName() + "§c gecrafted! §7(Dieses Item kann nur einmal gecraftet werden)"));
         Bukkit.getOnlinePlayers().forEach(p -> p.playSound(
                 player.getLocation(),
                 Sound.ENTITY_WITHER_SPAWN,

@@ -13,7 +13,7 @@ public class PortalCreateListener implements Listener {
 
     @EventHandler
     public void onPortalCreate(PortalCreateEvent event) {
-        if(event.getEntity() instanceof Player && event.getEntity().isOp())
+        if (event.getEntity() instanceof Player && event.getEntity().isOp())
             return;
 
         if (!nether && event.getReason() == PortalCreateEvent.CreateReason.FIRE) {
@@ -22,7 +22,7 @@ public class PortalCreateListener implements Listener {
     }
 
     public static void setNether(boolean nether) {
-        if(nether)
+        if (nether)
             Bukkit.broadcast(Component.text("§aDer Nether ist ab jetzt geöffnet. Der Zugang ist freigegeben. Viel Erfolg."));
         PortalCreateListener.nether = nether;
     }

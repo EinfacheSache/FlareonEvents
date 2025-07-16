@@ -35,12 +35,12 @@ public class FireSword implements Listener {
     public static double FIRE_TICKS_CHANCE;
     public static int FIRE_TICKS_TIME, COOLDOWN;
     public static ItemFlag[] ITEM_FLAGS;
-    public static Map<Enchantment,Integer> ENCHANTMENTS;
+    public static Map<Enchantment, Integer> ENCHANTMENTS;
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS;
 
     public static final Map<UUID, Long> COOLDOWN_MAP = new HashMap<>();
 
-    public static ShapedRecipe getFireSwordRecipe(){
+    public static ShapedRecipe getFireSwordRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createFireSword());
         recipe.shape(" Z ", "APA", "DBD");
         recipe.setIngredient('Z', MagmaShard.getItem());
@@ -65,7 +65,7 @@ public class FireSword implements Listener {
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         ItemMeta meta = item.getItemMeta();
 
-        for(var entry : ATTRIBUTE_MODIFIERS.entrySet()) {
+        for (var entry : ATTRIBUTE_MODIFIERS.entrySet()) {
             meta.addAttributeModifier(entry.getKey(), entry.getValue());
         }
 
@@ -85,7 +85,7 @@ public class FireSword implements Listener {
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Right-click: Wirf einen §cFeuerball"));
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§e" + (int)(FIRE_TICKS_CHANCE * 100) + "%§7 Chance, das Ziel §e" + FIRE_TICKS_TIME + "s§7 zu entzünden"));
+        lore.add(serializer.deserialize("§e" + (int) (FIRE_TICKS_CHANCE * 100) + "%§7 Chance, das Ziel §e" + FIRE_TICKS_TIME + "s§7 zu entzünden"));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Besonderheit: §bStrength §7& §bFire Resistance §7in Hand"));
         lore.add(serializer.deserialize("§f"));
@@ -95,12 +95,13 @@ public class FireSword implements Listener {
         lore.add(serializer.deserialize("§f"));
 
         // Dynamisch aus ENCHANTMENTS-Map
-        if(!ENCHANTMENTS.isEmpty()) {
+        if (!ENCHANTMENTS.isEmpty()) {
             lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
             lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
         }
 
         meta.lore(lore);
+        meta.setCustomModelData(1);
 
         item.setItemMeta(meta);
         item.addItemFlags(ITEM_FLAGS);
@@ -112,22 +113,24 @@ public class FireSword implements Listener {
     public void onRightClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
-        if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK || event.getItem() == null) {
-           return;
-        }
-
-        if (!isFireSwordItem(player.getInventory().getItemInMainHand())) return;
-
-        long lastUse = COOLDOWN_MAP.getOrDefault(player.getUniqueId(), 0L);
-        if (System.currentTimeMillis() - lastUse < COOLDOWN * 1000L) {
-            player.sendMessage(ChatColor.RED + "Du kannst diese Fähigkeit in " + (COOLDOWN - ((System.currentTimeMillis() - lastUse)/1000) + "s erneut verwenden!"));
+        if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
             return;
         }
 
-        event.getPlayer().setCooldown(event.getItem(), COOLDOWN * 20);
+        if (!isFireSwordItem(event.getItem())) return;
+
+        long lastUse = COOLDOWN_MAP.getOrDefault(player.getUniqueId(), 0L);
+        if (System.currentTimeMillis() - lastUse < COOLDOWN * 1000L) {
+            player.sendMessage(ChatColor.RED + "Du kannst diese Fähigkeit in " + (COOLDOWN - ((System.currentTimeMillis() - lastUse) / 1000) + "s erneut verwenden!"));
+            return;
+        }
+
+        if (player.getGameMode() != GameMode.CREATIVE) {
+            event.getPlayer().setCooldown(event.getItem(), COOLDOWN * 20);
+            COOLDOWN_MAP.put(player.getUniqueId(), System.currentTimeMillis());
+        }
 
         player.launchProjectile(Fireball.class).setShooter(player);
-        COOLDOWN_MAP.put(player.getUniqueId(), System.currentTimeMillis());
         player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1f, 1f);
     }
 

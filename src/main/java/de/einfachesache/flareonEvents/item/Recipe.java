@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 public class Recipe {
 
-    public static void loadRecipes(){
+    public static void loadRecipes() {
 
         Bukkit.addRecipe(FireSword.getFireSwordRecipe(), true);
         Bukkit.addRecipe(NyxBow.getNyxBowRecipe(), true);
@@ -23,7 +23,7 @@ public class Recipe {
         Bukkit.addRecipe(TridentStick.getTridentStickRecipe(), true);
     }
 
-    public static void discoverRecipe(Player player){
+    public static void discoverRecipe(Player player) {
 
         player.discoverRecipe(FireSword.getFireSwordRecipe().getKey());
         player.discoverRecipe(NyxBow.getNyxBowRecipe().getKey());

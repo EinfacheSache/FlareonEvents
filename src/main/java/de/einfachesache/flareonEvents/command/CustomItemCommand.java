@@ -1,25 +1,30 @@
 package de.einfachesache.flareonEvents.command;
 
-import de.einfachesache.flareonEvents.item.tool.*;
 import de.einfachesache.flareonEvents.item.ingredient.*;
+import de.einfachesache.flareonEvents.item.tool.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class CustomItemCommand implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class CustomItemCommand implements CommandExecutor, TabCompleter {
+
+    private static final List<String> SUB_COMMANDS = Arrays.asList("FIRE_SWORD", "POSEIDONS_TRIDENT", "NYX_BOW", "REINFORCED_PICKAXE", "BETTER_REINFORCED_PICKAXE", "INGREDIENT", "ALL");
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String @NotNull [] args) {
-        if(!(sender instanceof Player player)){
-            sender.sendMessage(Color.RED + "You must be a player to use this command!");
-            return false;
+
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("Nur Spieler können diesen Command benutzen.");
+            return true;
         }
 
         if (args.length != 1) {
@@ -31,12 +36,13 @@ public class CustomItemCommand implements CommandExecutor {
         }
 
 
-         switch (args[0].toLowerCase()) {
-            case "firesword" -> giveFireSword(player);
-            case "thundertrident", "poseidonstrident" -> givePoseidonsTrident(player);
-            case "nyxbow" -> giveNyxBow(player);
-            case "miningpickaxe" -> giveReinforcedPickaxe(player);
-             case "ingredient" -> giveIngredient(player);
+        switch (args[0].toLowerCase()) {
+            case "fire_sword", "firesword" -> giveFireSword(player);
+            case "poseidons_trident", "poseidonstrident" -> givePoseidonsTrident(player);
+            case "nyx_bow", "nyxbow" -> giveNyxBow(player);
+            case "reinforced_pickaxe", "reinforcedpickaxe" -> giveReinforcedPickaxe(player);
+            case "better_reinforced_pickaxe", "betterreinforcedpickaxe" -> giveBetterReinforcedPickaxe(player);
+            case "ingredient" -> giveIngredient(player);
             case "all" -> giveAllItems(player);
             default -> player.sendMessage(Component.text(
                     "Unbekannter Item-Key. Bitte nutze FireSword, ThunderTrident, NyxBow, MiningPickaxe, Ingredient oder all.",
@@ -47,18 +53,34 @@ public class CustomItemCommand implements CommandExecutor {
         return true;
     }
 
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
+        if (args.length == 1) {
+            String input = args[0].toLowerCase();
+            List<String> completions = new ArrayList<>();
+            for (String sub : SUB_COMMANDS) {
+                if (sub.toLowerCase().startsWith(input)) {
+                    completions.add(sub);
+                }
+            }
+            return completions;
+        }
+        return new ArrayList<>();
+    }
+
     private void giveFireSword(Player player) {
-        ItemStack fireSword = FireSword.createFireSword();
-        player.getInventory().addItem(fireSword);
+        player.getInventory().addItem(FireSword.createFireSword());
         player.sendMessage(Component.text(
-                "Item FireSword created! with ModelData: null",
+                "Item FireSword created! with ModelData: ", // fireSword.getItemMeta().getCustomModelData(),
                 NamedTextColor.GREEN
         ));
+        //NamespacedKey key = NamespacedKey.minecraft("item_model");
+        //PersistentDataContainer pdc = fireSword.getItemMeta().getPersistentDataContainer();
+        //pdc.set(key, PersistentDataType.STRING, "minecraft:diamond");
     }
 
     private void givePoseidonsTrident(Player player) {
-        ItemStack trident = PoseidonsTrident.createPoseidonsTrident();
-        player.getInventory().addItem(trident);
+        player.getInventory().addItem(PoseidonsTrident.createPoseidonsTrident());
         player.sendMessage(Component.text(
                 "Item Poseidon's Trident created! with ModelData: null",
                 NamedTextColor.GREEN
@@ -66,8 +88,7 @@ public class CustomItemCommand implements CommandExecutor {
     }
 
     private void giveNyxBow(Player player) {
-        ItemStack nyxBow = NyxBow.createNyxBow();
-        player.getInventory().addItem(nyxBow);
+        player.getInventory().addItem(NyxBow.createNyxBow());
         player.sendMessage(Component.text(
                 "Item Nyx Bow created! with ModelData: null",
                 NamedTextColor.GREEN
@@ -75,8 +96,7 @@ public class CustomItemCommand implements CommandExecutor {
     }
 
     private void giveReinforcedPickaxe(Player player) {
-        ItemStack pickaxe = ReinforcedPickaxe.createReinforcedPickaxe();
-        player.getInventory().addItem(pickaxe);
+        player.getInventory().addItem(ReinforcedPickaxe.createReinforcedPickaxe());
         player.sendMessage(Component.text(
                 "Item Reinforced Pickaxe created! with ModelData: null",
                 NamedTextColor.GREEN
@@ -84,8 +104,7 @@ public class CustomItemCommand implements CommandExecutor {
     }
 
     private void giveBetterReinforcedPickaxe(Player player) {
-        ItemStack pickaxe = BetterReinforcedPickaxe.createBetterReinforcedPickaxe();
-        player.getInventory().addItem(pickaxe);
+        player.getInventory().addItem(BetterReinforcedPickaxe.createBetterReinforcedPickaxe());
         player.sendMessage(Component.text(
                 "Item Better Reinforced Pickaxe created! with ModelData: null",
                 NamedTextColor.GREEN

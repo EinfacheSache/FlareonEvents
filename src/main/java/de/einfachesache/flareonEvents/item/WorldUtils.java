@@ -39,8 +39,8 @@ public class WorldUtils {
         return isNaturalCeiling(ceilingBlock.getType());
     }
 
-    public static boolean isNonOre(Material material) {
-        return !switch (material) {
+    public static boolean isOre(Material material) {
+        return switch (material) {
             case COAL_ORE,
                  IRON_ORE,
                  GOLD_ORE,
@@ -67,6 +67,7 @@ public class WorldUtils {
             // Stone, dirt and variants
             case STONE,
                  DIRT,
+                 COARSE_DIRT,
                  ANDESITE,
                  POLISHED_ANDESITE,
                  DIORITE,

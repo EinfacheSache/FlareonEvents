@@ -14,7 +14,7 @@ public class TridentSpikes {
     private static final NamespacedKey namespacedKey = new NamespacedKey(FlareonEvents.getPlugin(), "trident_spikes");
     private static final ItemStack item = ItemUtils.createCustomItem(Material.PRISMARINE_SHARD, ITEM_NAME, namespacedKey);
 
-    public static ShapedRecipe getTridentSpikesRecipe(){
+    public static ShapedRecipe getTridentSpikesRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(namespacedKey, item);
         recipe.shape("AAA", "   ", "   ");
         recipe.setIngredient('A', Material.IRON_BLOCK);

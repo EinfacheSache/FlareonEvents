@@ -11,16 +11,16 @@ import org.bukkit.event.player.PlayerLoginEvent;
 public class PlayerLoginListener implements Listener {
 
     @EventHandler
-    public void loginListener(PlayerLoginEvent event) {
+    public void onPlayerLogin(PlayerLoginEvent event) {
 
         Player player = event.getPlayer();
         String uuid = player.getUniqueId().toString();
 
-        if(player.isOp()) {
+        if (player.isOp()) {
             return;
         }
 
-        if(Config.getEventState() == EventState.NOT_RUNNING)
+        if (Config.getEventState() == EventState.NOT_RUNNING)
             return;
 
         boolean isParticipant = Config.getParticipantsUUID().contains(uuid);

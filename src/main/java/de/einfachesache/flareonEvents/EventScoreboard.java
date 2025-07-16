@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -24,25 +25,16 @@ public class EventScoreboard implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                updateAllSidebars();
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    updatePlayerSideboard(player);
+                }
             }
         }.runTaskTimer(FlareonEvents.getPlugin(), 0L, 20L);
     }
 
-    public static void addScorboardToPlayer(Player player) {
-
-        Scoreboard board = scoreboardManager.getNewScoreboard();
-        Objective sidebar = board.registerNewObjective("FlareonEvents", Criteria.DUMMY, Component.text("§6§lFlareonEvents"));
-
-        sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
-
-        playerBoards.put(player.getUniqueId(), board);
-        player.setScoreboard(board);
-    }
-
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent e) {
-        addScorboardToPlayer(e.getPlayer());
+        addScoreboardToPlayer(e.getPlayer());
     }
 
     @EventHandler
@@ -50,57 +42,67 @@ public class EventScoreboard implements Listener {
         playerBoards.remove(e.getPlayer().getUniqueId());
     }
 
-    private void updateAllSidebars() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            Scoreboard board = playerBoards.get(p.getUniqueId());
+    public static void addScoreboardToPlayer(Player player) {
+        Scoreboard board = scoreboardManager.getNewScoreboard();
+        Objective sidebar = board.registerNewObjective("FlareonEvents", Criteria.DUMMY, Component.text("§6§lFlareon Events"));
 
-            if (board == null) continue;
+        sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
+        playerBoards.put(player.getUniqueId(), board);
+        player.setScoreboard(board);
 
-            Objective sidebar = board.getObjective(DisplaySlot.SIDEBAR);
-
-            if (sidebar == null) continue;
-
-            //Clear Entries
-            board.getEntries().forEach(entry -> sidebar.getScore(entry).resetScore());
-
-            setEmptyLines(sidebar, 11);
-
-            // --- Zeit ---
-            sidebar.getScore("§eZeit§7:").setScore(10);
-
-            long startTime = Config.getStartTime() == 0 ? System.currentTimeMillis() : Config.getStartTime();
-            long runningPause = (Config.getStopSince() != 0 ? System.currentTimeMillis() - Config.getStopSince() : 0);
-            long secondsSinceStart = (System.currentTimeMillis() - startTime - runningPause) / 1000;
-            long minutes = secondsSinceStart / 60;
-            long seconds = secondsSinceStart % 60;
-
-            String timeText = Config.getEventState() == EventState.RUNNING ? String.format("§f%d:%02d", minutes, seconds) : "0:00";
-            sidebar.getScore(timeText).setScore(9);
-
-            setEmptyLines(sidebar, 8);
-
-            // --- Alive ---
-            sidebar.getScore("§aPlayer Alive§7:").setScore(7);
-            int aliveCount = (int) Bukkit.getOnlinePlayers().stream().filter(pp -> !pp.isDead() && !pp.isOp()).count();
-            int total = Config.isEventStarted() ? Config.getParticipantsUUID().size() : aliveCount;
-            sidebar.getScore("§f" + aliveCount + "§7/§f" + total).setScore(6);
-
-            setEmptyLines(sidebar, 5);
-
-            sidebar.getScore("§cKills§7:").setScore(4);
-            int killCount = PlayerDeathListener.getPvpKillCounts().getOrDefault(p.getUniqueId(), 0);
-            sidebar.getScore("§f" + killCount).setScore(3);
-
-            setEmptyLines(sidebar, 2);
-
-            // --- Border ---
-            sidebar.getScore("§cBorder§7:").setScore(1);
-            int size = (int) Math.round(Bukkit.getWorlds().getFirst().getWorldBorder().getSize());
-            sidebar.getScore("§f" + size + "x" + size).setScore(0);
-        }
+        updatePlayerSideboard(player);
     }
 
-    private void setEmptyLines(Objective sidebar, int score) {
+    private static void updatePlayerSideboard(Player player) {
+        Scoreboard board = playerBoards.get(player.getUniqueId());
+
+        if (board == null) return;
+
+        Objective sidebar = board.getObjective(DisplaySlot.SIDEBAR);
+
+        if (sidebar == null) return;
+
+        //Clear Entries
+        board.getEntries().forEach(entry -> sidebar.getScore(entry).resetScore());
+
+        setEmptyLines(sidebar, 11);
+
+        // --- Zeit ---
+        sidebar.getScore("§eZeit§7:").setScore(10);
+
+        long startTime = Config.getStartTime() == 0 ? System.currentTimeMillis() : Config.getStartTime();
+        long runningPause = (Config.getStopSince() != 0 ? System.currentTimeMillis() - Config.getStopSince() : 0);
+        long secondsSinceStart = (System.currentTimeMillis() - startTime - runningPause) / 1000;
+        long minutes = secondsSinceStart / 60;
+        long seconds = secondsSinceStart % 60;
+
+        String timeText = Config.getEventState() == EventState.RUNNING ? String.format("§f%d:%02d", minutes, seconds) : "0:00";
+        sidebar.getScore(timeText).setScore(9);
+
+        setEmptyLines(sidebar, 8);
+
+        // --- Alive ---
+        sidebar.getScore("§aPlayer Alive§7:").setScore(7);
+        int aliveCount = (int) Bukkit.getOnlinePlayers().stream().filter(pp -> !pp.isDead() && !pp.isOp()).count();
+        int total = Config.isEventStarted() ? Config.getParticipantsUUID().size() : aliveCount;
+        sidebar.getScore("§f" + aliveCount + "§7/§f" + total).setScore(6);
+
+        setEmptyLines(sidebar, 5);
+
+        sidebar.getScore("§cKills§7:").setScore(4);
+        int killCount = PlayerDeathListener.getPvpKillCounts().getOrDefault(player.getUniqueId(), 0);
+        sidebar.getScore("§f" + killCount).setScore(3);
+
+        setEmptyLines(sidebar, 2);
+
+        // --- Border ---
+        sidebar.getScore("§cBorder§7:").setScore(1);
+        int size = (int) Math.round(Bukkit.getWorlds().getFirst().getWorldBorder().getSize());
+        sidebar.getScore("§f" + size + "x" + size).setScore(0);
+
+    }
+
+    private static void setEmptyLines(Objective sidebar, int score) {
         sidebar.getScore(" ".repeat(score)).setScore(score);
     }
 }

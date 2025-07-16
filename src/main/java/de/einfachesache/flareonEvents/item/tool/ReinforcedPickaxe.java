@@ -6,6 +6,7 @@ import de.einfachesache.flareonEvents.item.WorldUtils;
 import de.einfachesache.flareonEvents.item.ingredient.ReinforcedStick;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -21,7 +22,9 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings({"deprecation"})
 public class ReinforcedPickaxe implements Listener {
@@ -30,7 +33,7 @@ public class ReinforcedPickaxe implements Listener {
     public static Material MATERIAL;
     public static String DISPLAY_NAME;
     public static ItemFlag[] ITEM_FLAGS;
-    public static Map<Enchantment,Integer> ENCHANTMENTS;
+    public static Map<Enchantment, Integer> ENCHANTMENTS;
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS;
 
     public static ShapedRecipe getReinforcedPickaxeRecipe() {
@@ -57,7 +60,7 @@ public class ReinforcedPickaxe implements Listener {
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         ItemMeta meta = item.getItemMeta();
 
-        for(var entry : ATTRIBUTE_MODIFIERS.entrySet()) {
+        for (var entry : ATTRIBUTE_MODIFIERS.entrySet()) {
             meta.addAttributeModifier(entry.getKey(), entry.getValue());
         }
 
@@ -79,12 +82,13 @@ public class ReinforcedPickaxe implements Listener {
         lore.add(serializer.deserialize("§f"));
 
         // Dynamisch aus der geladenen ENCHANTMENTS-Map
-        if(!ReinforcedPickaxe.ENCHANTMENTS.isEmpty()) {
+        if (!ReinforcedPickaxe.ENCHANTMENTS.isEmpty()) {
             lore.add(serializer.deserialize(("§7Enchantment" + (ReinforcedPickaxe.ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
             lore.addAll(ItemUtils.getEnchantments(ReinforcedPickaxe.ENCHANTMENTS));
         }
 
         meta.lore(lore);
+        meta.setCustomModelData(1);
 
         item.setItemMeta(meta);
         item.addItemFlags(ITEM_FLAGS);
@@ -101,17 +105,18 @@ public class ReinforcedPickaxe implements Listener {
 
         Material blockType = event.getBlock().getType();
 
-        if (WorldUtils.isNonOre(blockType)) return;
+        if (!WorldUtils.isOre(blockType)) return;
+        if (player.getGameMode() == GameMode.CREATIVE) return;
 
         Material drop = null;
         int roll = FlareonEvents.getRandom().nextInt(100) + 1;
-        if(roll <= 5){
+        if (roll <= 5) {
             drop = Material.DIAMOND;
-        }else if(roll <= 20){
+        } else if (roll <= 20) {
             drop = Material.RAW_GOLD;
-        }else if(roll <= 40){
+        } else if (roll <= 40) {
             drop = Material.RAW_IRON;
-        }else if(roll <= 50){
+        } else if (roll <= 50) {
             drop = Material.COAL;
         }
 

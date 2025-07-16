@@ -1,7 +1,7 @@
 package de.einfachesache.flareonEvents.command;
 
 import de.einfachesache.flareonEvents.FlareonEvents;
-import de.einfachesache.flareonEvents.item.*;
+import de.einfachesache.flareonEvents.item.ItemUtils;
 import de.einfachesache.flareonEvents.item.tool.FireSword;
 import de.einfachesache.flareonEvents.item.tool.NyxBow;
 import de.einfachesache.flareonEvents.item.tool.PoseidonsTrident;
@@ -42,7 +42,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         return true;
     }
 
-    private void openGUI(Player player){
+    private void openGUI(Player player) {
         Inventory gui = Bukkit.createInventory(null, 27, guiTitle);
 
         gui.setItem(1 + 9, ItemUtils.createGuiItem(FireSword.createFireSword()));
@@ -55,7 +55,8 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (!e.getView().title().equals(guiTitle) && ! ItemUtils.legacyString(e.getView().title()).startsWith("Rezept: ")) return;
+        if (!e.getView().title().equals(guiTitle) && !ItemUtils.legacyString(e.getView().title()).startsWith("Rezept: "))
+            return;
 
         e.setCancelled(true);
 
@@ -70,15 +71,15 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
             return;
         }
 
-        if(namespaceKey.equalsIgnoreCase(FireSword.getItemName())){
+        if (namespaceKey.equalsIgnoreCase(FireSword.getItemName())) {
             showRecipeGUI(player, FireSword.getFireSwordRecipe(), FireSword.getItemName());
-        }else if(namespaceKey.equalsIgnoreCase(NyxBow.getItemName())){
+        } else if (namespaceKey.equalsIgnoreCase(NyxBow.getItemName())) {
             showRecipeGUI(player, NyxBow.getNyxBowRecipe(), NyxBow.getItemName());
-        }else if(namespaceKey.equalsIgnoreCase(PoseidonsTrident.getItemName())){
+        } else if (namespaceKey.equalsIgnoreCase(PoseidonsTrident.getItemName())) {
             showRecipeGUI(player, PoseidonsTrident.getPoseidonsTridentRecipe(), PoseidonsTrident.getItemName());
-        }else if(namespaceKey.equalsIgnoreCase(ReinforcedPickaxe.getItemName())){
-            showRecipeGUI(player, ReinforcedPickaxe.getReinforcedPickaxeRecipe(),  ReinforcedPickaxe.getItemName());
-        }else if (namespaceKey.equalsIgnoreCase("§cZurück")){
+        } else if (namespaceKey.equalsIgnoreCase(ReinforcedPickaxe.getItemName())) {
+            showRecipeGUI(player, ReinforcedPickaxe.getReinforcedPickaxeRecipe(), ReinforcedPickaxe.getItemName());
+        } else if (namespaceKey.equalsIgnoreCase("§cZurück")) {
             openGUI(player);
         }
     }

@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemFlag;
 
 import java.util.*;
 
-@SuppressWarnings({"removal","deprecation"})
+@SuppressWarnings({"removal", "deprecation"})
 public class Config {
 
     private static long startTime = 0;
@@ -83,7 +83,7 @@ public class Config {
             return;
         }
 
-        mainSpawnLocation = world.getHighestBlockAt(new Location(world, x, y, z, yaw, pitch)).getLocation().add(0,1,0);
+        mainSpawnLocation = world.getHighestBlockAt(new Location(world, x, y, z, yaw, pitch)).getLocation().add(0, 1, 0);
     }
 
     public static void loadPlayerSpawnLocations() {
@@ -139,14 +139,14 @@ public class Config {
 
     private static void loadFireSword() {
         String fsKeyString = itemsFile.get("items.fire_sword.key");
-        FireSword.NAMESPACED_KEY    = NamespacedKey.fromString(fsKeyString, FlareonEvents.getPlugin());
-        FireSword.MATERIAL          = Material.valueOf(itemsFile.get("items.fire_sword.material"));
-        FireSword.DISPLAY_NAME        = itemsFile.get("items.fire_sword.display_name");
+        FireSword.NAMESPACED_KEY = NamespacedKey.fromString(fsKeyString, FlareonEvents.getPlugin());
+        FireSword.MATERIAL = Material.valueOf(itemsFile.get("items.fire_sword.material"));
+        FireSword.DISPLAY_NAME = itemsFile.get("items.fire_sword.display_name");
 
         // Effekte & Cooldown
         FireSword.FIRE_TICKS_CHANCE = itemsFile.getDouble("items.fire_sword.fire_ticks_chance");
-        FireSword.FIRE_TICKS_TIME   = itemsFile.getInt   ("items.fire_sword.fire_ticks_time");
-        FireSword.COOLDOWN          = itemsFile.getInt   ("items.fire_sword.cooldown");
+        FireSword.FIRE_TICKS_TIME = itemsFile.getInt("items.fire_sword.fire_ticks_time");
+        FireSword.COOLDOWN = itemsFile.getInt("items.fire_sword.cooldown");
 
         // Enchantments einlesen
         FireSword.ENCHANTMENTS = loadEnchantments("fire_sword");
@@ -159,16 +159,16 @@ public class Config {
     private static void loadNyxBow() {
         // NamespacedKey, Material & Display-Name
         String nbKeyString = itemsFile.get("items.nyx_bow.key");
-        NyxBow.NAMESPACED_KEY   = NamespacedKey.fromString(nbKeyString, FlareonEvents.getPlugin());
-        NyxBow.MATERIAL         = Material.valueOf(itemsFile.get("items.nyx_bow.material"));
-        NyxBow.DISPLAY_NAME     = itemsFile.get("items.nyx_bow.display_name");
+        NyxBow.NAMESPACED_KEY = NamespacedKey.fromString(nbKeyString, FlareonEvents.getPlugin());
+        NyxBow.MATERIAL = Material.valueOf(itemsFile.get("items.nyx_bow.material"));
+        NyxBow.DISPLAY_NAME = itemsFile.get("items.nyx_bow.display_name");
 
         // Effekte & Cooldown
-        NyxBow.WITHER_EFFECT_CHANCE     = itemsFile.getDouble("items.nyx_bow.wither_effect_chance");
-        NyxBow.WITHER_EFFECT_TIME       = itemsFile.getInt   ("items.nyx_bow.wither_effect_time");
+        NyxBow.WITHER_EFFECT_CHANCE = itemsFile.getDouble("items.nyx_bow.wither_effect_chance");
+        NyxBow.WITHER_EFFECT_TIME = itemsFile.getInt("items.nyx_bow.wither_effect_time");
         NyxBow.SLOW_BLIND_EFFECT_CHANCE = itemsFile.getDouble("items.nyx_bow.slow_blind_effect_chance");
-        NyxBow.SLOW_BLIND_EFFECT_TIME   = itemsFile.getInt   ("items.nyx_bow.slow_blind_effect_time");
-        NyxBow.COOLDOWN                 = itemsFile.getInt   ("items.nyx_bow.cooldown");
+        NyxBow.SLOW_BLIND_EFFECT_TIME = itemsFile.getInt("items.nyx_bow.slow_blind_effect_time");
+        NyxBow.COOLDOWN = itemsFile.getInt("items.nyx_bow.cooldown");
 
         // Verzauberungen einlesen
         NyxBow.ENCHANTMENTS = loadEnchantments("nyx_bow");
@@ -198,26 +198,26 @@ public class Config {
         PoseidonsTrident.ITEM_FLAGS = itemFlags;
     }
 
-    private static void loadBetterReinforcedPickaxe(){
+    private static void loadBetterReinforcedPickaxe() {
         // BetterReinforcedPickaxe
         String brpKeyString = itemsFile.get("items.better_reinforced_pickaxe.key");
-        BetterReinforcedPickaxe.NAMESPACED_KEY    = NamespacedKey.fromString(brpKeyString, FlareonEvents.getPlugin());
-        BetterReinforcedPickaxe.MATERIAL          = Material.valueOf(itemsFile.get("items.better_reinforced_pickaxe.material"));
-        BetterReinforcedPickaxe.DISPLAY_NAME      = itemsFile.get("items.better_reinforced_pickaxe.display_name");
+        BetterReinforcedPickaxe.NAMESPACED_KEY = NamespacedKey.fromString(brpKeyString, FlareonEvents.getPlugin());
+        BetterReinforcedPickaxe.MATERIAL = Material.valueOf(itemsFile.get("items.better_reinforced_pickaxe.material"));
+        BetterReinforcedPickaxe.DISPLAY_NAME = itemsFile.get("items.better_reinforced_pickaxe.display_name");
 
         // X-Ray-Konfiguration
         BetterReinforcedPickaxe.XRAY_ENABLED_TIME = itemsFile.getInt("items.better_reinforced_pickaxe.xray.enabled_time");
-        BetterReinforcedPickaxe.XRAY_RADIUS       = itemsFile.getInt("items.better_reinforced_pickaxe.xray.radius");
-        BetterReinforcedPickaxe.XRAY_COOLDOWN     = itemsFile.getInt("items.better_reinforced_pickaxe.xray.cooldown");
+        BetterReinforcedPickaxe.XRAY_RADIUS = itemsFile.getInt("items.better_reinforced_pickaxe.xray.radius");
+        BetterReinforcedPickaxe.XRAY_COOLDOWN = itemsFile.getInt("items.better_reinforced_pickaxe.xray.cooldown");
         // Item-Flags einlesen
         BetterReinforcedPickaxe.ITEM_FLAGS = itemFlags;
     }
 
-    private static void loadReinforcedPickaxe(){
+    private static void loadReinforcedPickaxe() {
         // ReinforcedPickaxe
         String rpKeyString = itemsFile.get("items.reinforced_pickaxe.key");
-        ReinforcedPickaxe.NAMESPACED_KEY    = NamespacedKey.fromString(rpKeyString, FlareonEvents.getPlugin());
-        ReinforcedPickaxe.MATERIAL          = Material.valueOf(itemsFile.get("items.reinforced_pickaxe.material"));
+        ReinforcedPickaxe.NAMESPACED_KEY = NamespacedKey.fromString(rpKeyString, FlareonEvents.getPlugin());
+        ReinforcedPickaxe.MATERIAL = Material.valueOf(itemsFile.get("items.reinforced_pickaxe.material"));
         ReinforcedPickaxe.DISPLAY_NAME = itemsFile.get("items.reinforced_pickaxe.display_name");
 
         // Enchantments einlesen
@@ -229,13 +229,13 @@ public class Config {
     }
 
 
-    private static Map<Enchantment,Integer> loadEnchantments(String itemKey) {
+    private static Map<Enchantment, Integer> loadEnchantments(String itemKey) {
 
-        Map<Enchantment,Integer> enchantments = new HashMap<>();
+        Map<Enchantment, Integer> enchantments = new HashMap<>();
 
-        for (Map.Entry<?,?> entry : itemsFile.getMap("items." + itemKey + ".enchantments", true).entrySet()) {
-            String name  = entry.getKey().toString();
-            int level    = Integer.parseInt(entry.getValue().toString());
+        for (Map.Entry<?, ?> entry : itemsFile.getMap("items." + itemKey + ".enchantments", true).entrySet()) {
+            String name = entry.getKey().toString();
+            int level = Integer.parseInt(entry.getValue().toString());
             NamespacedKey key = NamespacedKey.minecraft(name);
             Enchantment enchantment = org.bukkit.Registry.ENCHANTMENT.get(key);
 
@@ -254,7 +254,7 @@ public class Config {
 
         Map<Attribute, AttributeModifier> attributes = new HashMap<>();
 
-        for (Map<?,?> map : itemsFile.getMapList("items." + itemKey + ".attributes")) {
+        for (Map<?, ?> map : itemsFile.getMapList("items." + itemKey + ".attributes")) {
             String attrPath = map.get("attribute").toString();
             NamespacedKey key = NamespacedKey.minecraft(attrPath);
             Attribute attribute = org.bukkit.Registry.ATTRIBUTE.get(key);
@@ -287,6 +287,10 @@ public class Config {
 
     public static boolean isEventStarted() {
         return eventState.getId() > 1;
+    }
+
+    public static boolean isEventIsRunning() {
+        return eventState == EventState.RUNNING;
     }
 
     public static EventState getEventState() {
@@ -345,6 +349,7 @@ public class Config {
         participantsUUID.add(playerUUID.toString());
         save(participantsFile, "participants", participantsUUID.toArray());
     }
+
     public static void clearParticipant() {
         participantsUUID.clear();
         save(participantsFile, "participants", Collections.emptyList());
