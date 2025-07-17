@@ -7,10 +7,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +17,7 @@ import java.util.List;
 
 public class EventCommand implements CommandExecutor, TabCompleter {
 
-    private static final List<String> SUB_COMMANDS = Arrays.asList("start", "stop", "pvp", "reset", "setspawn");
+    private static final List<String> SUB_COMMANDS = Arrays.asList("start", "pause", "cancel", "pvp", "reset", "setspawn");
 
     FlareonEvents plugin = FlareonEvents.getPlugin();
 
@@ -37,7 +34,7 @@ public class EventCommand implements CommandExecutor, TabCompleter {
 
             boolean pvp = Bukkit.getWorlds().getFirst().getPVP();
             plugin.getServer().getWorlds().forEach(world -> world.setPVP(!pvp));
-            sender.sendMessage("§cPVP wurde " + (!pvp ? "§aaktiviert!" : "§cdeaktiviert!"));
+            sender.sendMessage("§cPVP wurde erfolgreich " + (!pvp ? "§aaktiviert!" : "§cdeaktiviert!"));
 
             return true;
         }
@@ -46,23 +43,50 @@ public class EventCommand implements CommandExecutor, TabCompleter {
         if (args[0].equalsIgnoreCase("start")) {
 
             if (Config.getEventState().getId() > 0) {
-                sender.sendMessage("§cEvent wurde bereits gestartet!");
+                sender.sendMessage("§cDas Event wurde bereits gestartet!");
                 return false;
             }
 
             EventHandler.prepareEvent();
 
+            sender.sendMessage("§aDu hast das Event erfolgreich gestartet!");
+
             return true;
         }
 
 
-        if (args[0].equalsIgnoreCase("stop")) {
-            if (Config.getEventState().getId() == 0) {
+        if (args[0].equalsIgnoreCase("pause")) {
+
+            /* if (Config.getEventState().getId() == 0) {
                 sender.sendMessage("§cEvent wurde noch nicht gestartet!");
                 return false;
             }
+            EventHandler.pauseEvent();
 
-            EventHandler.stopEvent();
+            sender.sendMessage("§cDu hast das Event erfolgreich pausiert!");
+            */
+
+            sender.sendMessage("§cDieser Command ist §4NOCH NICHT§c verfügbar!");
+
+            return true;
+        }
+
+
+        if (args[0].equalsIgnoreCase("cancel")) {
+
+            if (Config.getEventState().getId() == 0) {
+                sender.sendMessage("§cDas Event wurde noch nicht gestartet!");
+                return false;
+            }
+
+            if (!(sender instanceof ConsoleCommandSender) && !(sender instanceof Player player && player.getUniqueId().equals(FlareonEvents.ROOT_UUID))) {
+                sender.sendMessage("§cDu darfst diesen Command nicht verwenden.");
+                return false;
+            }
+
+            EventHandler.cancelEvent();
+
+            sender.sendMessage("§4Du hast das Event erfolgreich gecancelt!");
 
             return true;
         }
@@ -96,36 +120,31 @@ public class EventCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
 
-            if (Config.isEventStarted()) {
-                sender.sendMessage("§cEvent wurde bereits gestartet!");
-                return false;
-            }
-
             if (args.length == 2) {
 
                 int value;
                 try {
                     value = Integer.parseInt(args[1]);
-                    if (value < 1 || value > 100) throw new NumberFormatException();
+                    if (value < 1 || (value > 100 && !FlareonEvents.ROOT_UUID.equals(player.getUniqueId())))
+                        throw new NumberFormatException();
                 } catch (NumberFormatException e) {
-                    sender.sendMessage("§cDas zweite Argument muss eine Zahl zwischen 1 und 100 sein");
+                    sender.sendMessage("§cDas zweite Argument muss eine Zahl zwischen §e1§c und §e100§c sein");
                     return false;
                 }
 
                 Location location = player.getLocation();
                 Config.setPlayerSpawnLocation(value, location);
-                sender.sendMessage("§aSpawn " + value + " wurde gesetzt!");
+                sender.sendMessage("§aDer Spawn Nr. " + (value <= 100 ? "§e" : "§4") + value + "§a wurde gesetzt!");
 
                 return true;
             }
 
             Location location = player.getLocation();
             Config.setMainSpawnLocation(location);
-            sender.sendMessage("§aMainSpawn wurde gesetzt!");
+            sender.sendMessage("§aDer §eMain-Spawn§a wurde gesetzt!");
             return true;
 
         }
-
 
         sendUsage(sender, label);
 
@@ -154,7 +173,8 @@ public class EventCommand implements CommandExecutor, TabCompleter {
     private void sendUsage(CommandSender sender, String label) {
         sender.sendMessage(Component.text("--- Verwendung ---", NamedTextColor.RED));
         sender.sendMessage(Component.text("/" + label + " start", NamedTextColor.RED));
-        sender.sendMessage(Component.text("/" + label + " stop", NamedTextColor.RED));
+        sender.sendMessage(Component.text("/" + label + " pause", NamedTextColor.RED));
+        sender.sendMessage(Component.text("/" + label + " cancel", NamedTextColor.RED));
         sender.sendMessage(Component.text("/" + label + " pvp", NamedTextColor.RED));
         sender.sendMessage(Component.text("/" + label + " reset (player) [true/false]", NamedTextColor.RED));
         sender.sendMessage(Component.text("/" + label + " setspawn [number]", NamedTextColor.RED));

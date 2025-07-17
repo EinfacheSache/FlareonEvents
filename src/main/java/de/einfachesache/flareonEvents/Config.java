@@ -3,6 +3,7 @@ package de.einfachesache.flareonEvents;
 import de.cubeattack.api.util.FileUtils;
 import de.einfachesache.flareonEvents.item.ItemUtils;
 import de.einfachesache.flareonEvents.item.tool.*;
+import net.kyori.adventure.text.Component;
 import org.bspfsystems.yamlconfiguration.configuration.ConfigurationSection;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -24,10 +25,17 @@ public class Config {
     private static final List<String> participantsUUID = new ArrayList<>();
     private static final List<String> deathParticipantsUUID = new ArrayList<>();
     private static final List<Location> playerSpawnLocations = new ArrayList<>();
+    private static final Map<Integer, Component> infoBookSorted = new TreeMap<>();
+
+    public static void reloadBook() {
+        FlareonEvents.getInfoBookFile().reloadConfiguration();
+        loadInfoBook();
+    }
 
     public static void reloadFiles() {
         FlareonEvents.getItemsFile().reloadConfiguration();
         FlareonEvents.getFileConfig().reloadConfiguration();
+        FlareonEvents.getInfoBookFile().reloadConfiguration();
         FlareonEvents.getLocationsFile().reloadConfiguration();
         FlareonEvents.getParticipantsFile().reloadConfiguration();
         FlareonEvents.getDeathParticipantsFile().reloadConfiguration();
@@ -35,8 +43,9 @@ public class Config {
     }
 
     public static void loadFiles() {
+        loadItems();
         loadConfig();
-        loadItemsFile();
+        loadInfoBook();
         loadParticipants();
         loadDeathParticipants();
         loadMainSpawnLocations();
@@ -67,6 +76,21 @@ public class Config {
     }
 
 
+    private static final FileUtils infoBookFile = FlareonEvents.getInfoBookFile();
+
+    private static void loadInfoBook() {
+        infoBookSorted.clear();
+        infoBookFile.getConfigurationSection("pages").getKeys(false).forEach(page -> {
+            try {
+                int pageNumber = Integer.parseInt(page);
+                String text = infoBookFile.get("pages." + pageNumber);
+                infoBookSorted.put(pageNumber, Component.text(text));
+            } catch (NumberFormatException e) {
+                FlareonEvents.getLogManager().warn("Ungültiger Seiten-Key: " + page);
+            }
+        });
+    }
+
     private static final FileUtils locationsFile = FlareonEvents.getLocationsFile();
 
     private static void loadMainSpawnLocations() {
@@ -92,7 +116,7 @@ public class Config {
 
         ConfigurationSection section = locationsFile.getConfigurationSection("player-spawns");
         if (section == null) {
-            FlareonEvents.getLogManager().warn("⚠️ Keine 'player-spawns' Sektion in der Config gefunden.");
+            FlareonEvents.getLogManager().warn("Keine 'player-spawns' Sektion in der Config gefunden.");
             return;
         }
 
@@ -126,7 +150,7 @@ public class Config {
 
     private static ItemFlag[] itemFlags;
 
-    private static void loadItemsFile() {
+    private static void loadItems() {
 
         itemFlags = itemsFile.getStringList("generell.item_flags").stream().map(ItemFlag::valueOf).toArray(ItemFlag[]::new);
 
@@ -383,5 +407,9 @@ public class Config {
 
     public static List<String> getParticipantsUUID() {
         return participantsUUID;
+    }
+
+    public static Map<Integer, Component> getInfoBookSorted() {
+        return infoBookSorted;
     }
 }

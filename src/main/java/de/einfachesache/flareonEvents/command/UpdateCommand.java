@@ -1,64 +1,77 @@
 package de.einfachesache.flareonEvents.command;
 
 import de.einfachesache.flareonEvents.Config;
+import de.einfachesache.flareonEvents.FlareonEvents;
 import de.einfachesache.flareonEvents.item.CustomItems;
 import de.einfachesache.flareonEvents.item.EventInfoBook;
 import de.einfachesache.flareonEvents.item.ingredient.*;
 import de.einfachesache.flareonEvents.item.tool.*;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
-public class UpdateCommand implements CommandExecutor {
-
-    private static final UUID ALLOWED_UUID = UUID.fromString("201e5046-24df-4830-8b4a-82b635eb7cc7");
+public class UpdateCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String @NotNull [] args) {
 
-        if (!(sender instanceof ConsoleCommandSender) && !(sender instanceof Player player && player.getUniqueId().equals(ALLOWED_UUID))) {
+        if (args.length == 1 && args[0].equalsIgnoreCase("book")) {
+
+            Config.reloadBook();
+
+            updateInventorys(CustomItems.EVENT_INFO_BOOK);
+
+            sender.sendMessage("§aDas Event-Buch wurden aktualisiert!");
+
+            return true;
+        }
+
+
+        if (!(sender instanceof ConsoleCommandSender) && !(sender instanceof Player player && player.getUniqueId().equals(FlareonEvents.ROOT_UUID))) {
             sender.sendMessage("§cDu darfst diesen Command nicht verwenden.");
             return false;
         }
 
         Config.reloadFiles();
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            updateInventory(player.getInventory());
-        }
+        updateInventorys(CustomItems.values());
 
         sender.sendMessage("§aAlle Configs & Custom-Items wurden aktualisiert!");
 
         return true;
     }
 
-    private void updateInventory(PlayerInventory inv) {
-        for (int i = 0; i < inv.getSize(); i++) {
-            inv.setItem(i, replaceInSlot(inv.getItem(i)));
+    private void updateInventorys(CustomItems... customItems) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+
+            PlayerInventory inventory = player.getInventory();
+
+            for (int i = 0; i < inventory.getSize(); i++) {
+                inventory.setItem(i, replaceInSlot(inventory.getItem(i), customItems));
+            }
+
+            ItemStack[] armor = inventory.getArmorContents();
+            for (int i = 0; i < armor.length; i++) {
+                armor[i] = replaceInSlot(armor[i], customItems);
+            }
+
+            inventory.setArmorContents(armor);
+            inventory.setItemInOffHand(replaceInSlot(inventory.getItemInOffHand(), customItems));
         }
-        // Rüstung
-        ItemStack[] armor = inv.getArmorContents();
-        for (int i = 0; i < armor.length; i++) {
-            armor[i] = replaceInSlot(armor[i]);
-        }
-        inv.setArmorContents(armor);
-        inv.setItemInOffHand(replaceInSlot(inv.getItemInOffHand()));
     }
 
-    private ItemStack replaceInSlot(ItemStack item) {
+    private ItemStack replaceInSlot(ItemStack item, CustomItems... customItems) {
         if (item == null || !item.hasItemMeta()) return item;
-        for (CustomItems ci : CustomItems.values()) {
-            if (ci.matches(item)) {
+        for (CustomItems customItem : customItems) {
+            if (customItem.matches(item)) {
                 ItemStack newItem;
-                switch (ci) {
+                switch (customItem) {
                     case FIRE_SWORD:
                         newItem = FireSword.createFireSword();
                         break;
@@ -95,10 +108,26 @@ public class UpdateCommand implements CommandExecutor {
                     default:
                         return item;
                 }
+
                 newItem.setAmount(item.getAmount());
                 return newItem;
             }
         }
         return item;
+    }
+
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
+        if (args.length == 1) {
+            String input = args[0].toLowerCase();
+            List<String> completions = new ArrayList<>();
+
+            if ("book".startsWith(input)) {
+                completions.add("book");
+            }
+
+            return completions;
+        }
+        return new ArrayList<>();
     }
 }

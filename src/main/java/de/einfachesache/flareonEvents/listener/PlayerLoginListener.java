@@ -16,25 +16,18 @@ public class PlayerLoginListener implements Listener {
         Player player = event.getPlayer();
         String uuid = player.getUniqueId().toString();
 
-        if (player.isOp()) {
-            return;
-        }
-
-        if (Config.getEventState() == EventState.NOT_RUNNING)
-            return;
+        if (player.isOp()) return;
+        if (Config.getEventState() == EventState.NOT_RUNNING) return;
 
         boolean isParticipant = Config.getParticipantsUUID().contains(uuid);
         boolean isDead = Config.getDeathParticipantsUUID().contains(uuid);
 
-        if (isParticipant && !isDead) {
-            return;
-        }
+        if (isParticipant && !isDead) return;
 
-        if (isDead) {
-            player.kick(Component.text("§4§kAA §4§lAUSLÖSCHUNG! §kAA\n§cDu bist gestorben!"));
-            return;
-        }
-
-        player.kick(Component.text("§cDu bist dieses Mal leider nicht dabei!\nSpiele nächstes Mal mit :)"));
+        event.disallow(PlayerLoginEvent.Result.KICK_OTHER, Component.text(
+                " \n" +
+                        (isDead ?
+                                "§4§kAA §4§lAUSLÖSCHUNG! §kAA\n§cDu bist gestorben!" :
+                                "§cDu bist dieses Mal leider nicht dabei!\nSpiele nächstes Mal mit :)")));
     }
 }

@@ -1,5 +1,6 @@
 package de.einfachesache.flareonEvents;
 
+import de.einfachesache.flareonEvents.item.EventInfoBook;
 import de.einfachesache.flareonEvents.listener.PlayerDeathListener;
 import de.einfachesache.flareonEvents.listener.PortalCreateListener;
 import net.kyori.adventure.sound.Sound;
@@ -143,7 +144,7 @@ public class EventHandler {
         }.runTaskLater(plugin, preparingTime * 20L));
     }
 
-    public static void stopEvent() {
+    public static void cancelEvent() {
 
         tasks.forEach(BukkitTask::cancel);
 
@@ -157,11 +158,12 @@ public class EventHandler {
 
             player.showTitle(Title.title(
                     Component.text("STOP!", NamedTextColor.RED),
-                    Component.text("Das Event wurde Pausiert!", NamedTextColor.YELLOW), times));
+                    Component.text("Das Event wurde gestoppt!", NamedTextColor.YELLOW), times));
             player.playSound(notifySound);
 
             player.teleport(Config.getMainSpawnLocation());
             resetPlayer(player, true, true);
+            player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
 
             /* if (!player.isOp()) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, PotionEffect.INFINITE_DURATION, Integer.MAX_VALUE).withIcon(false).withParticles(false));
@@ -174,7 +176,31 @@ public class EventHandler {
                 player.setFlying(false);
             }  */
         });
-        plugin.getServer().broadcast(Component.text("Das Event wurde kurzzeitig Pausiert. Das Event startet in Kürze erneut!", NamedTextColor.YELLOW));
+        plugin.getServer().broadcast(Component.text("Das Event wurde kurzzeitig gestoppt. Das Event startet in Kürze erneut!", NamedTextColor.RED));
+    }
+
+    public static void pauseEvent() {
+
+        Config.setEventState(EventState.NOT_RUNNING);
+        Config.setStopSince(System.currentTimeMillis());
+
+        plugin.getServer().getWorlds().forEach(world -> world.setPVP(false));
+        plugin.getServer().getOnlinePlayers().forEach(player -> {
+
+            player.showTitle(Title.title(
+                    Component.text("Pause!", NamedTextColor.YELLOW),
+                    Component.text("Das Event wurde pausiert!", NamedTextColor.YELLOW), times));
+            player.playSound(notifySound);
+
+            if (!player.isOp()) {
+                Objects.requireNonNull(player.getAttribute(Attribute.JUMP_STRENGTH)).setBaseValue(0);
+                player.setVelocity(new Vector());
+                player.setWalkSpeed(0.0f);
+                player.setFlySpeed(0.0f);
+                player.setFlying(false);
+            }
+        });
+        plugin.getServer().broadcast(Component.text("Das Event wurde kurzzeitig pausiert. Das Event startet in Kürze erneut!", NamedTextColor.YELLOW));
     }
 
 
@@ -412,6 +438,7 @@ public class EventHandler {
             player.setFoodLevel(20);
             player.setSaturation(10);
             player.getInventory().clear();
+            player.setExperienceLevelAndProgress(0);
         }
     }
 

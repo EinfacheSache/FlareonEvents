@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 import java.util.Random;
+import java.util.UUID;
 
 public final class FlareonEvents extends JavaPlugin {
 
@@ -25,13 +26,15 @@ public final class FlareonEvents extends JavaPlugin {
 
     private static FileUtils itemsFile;
     private static FileUtils configFile;
+    private static FileUtils infoBookFile;
     private static FileUtils locationsFile;
     private static FileUtils participantsFile;
     private static FileUtils deathParticipantsFile;
 
     private static final Random random = new Random();
-
     private static final LogManager logger = LogManager.getLogger();
+
+    public static final UUID ROOT_UUID = UUID.fromString("201e5046-24df-4830-8b4a-82b635eb7cc7");
 
     @Override
     public void onLoad() {
@@ -46,12 +49,13 @@ public final class FlareonEvents extends JavaPlugin {
 
         registerListener();
 
-        prepareEvent();
+        setupEvent();
     }
 
     private void loadFiles() {
         itemsFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/items.yml"), "plugins/FlareonEvents", "items.yml");
         configFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/config.yml"), "plugins/FlareonEvents", "config.yml");
+        infoBookFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/infoBook.yml"), "plugins/FlareonEvents", "infoBook.yml");
         locationsFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/locations.yml"), "plugins/FlareonEvents", "locations.yml");
         participantsFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/participants.yml"), "plugins/FlareonEvents", "participants.yml");
         deathParticipantsFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/deathParticipants.yml"), "plugins/FlareonEvents", "deathParticipants.yml");
@@ -62,7 +66,10 @@ public final class FlareonEvents extends JavaPlugin {
     private void registerCommands() {
         Objects.requireNonNull(this.getCommand("event")).setExecutor(new EventCommand());
         Objects.requireNonNull(this.getCommand("event")).setTabCompleter(new EventCommand());
+
         Objects.requireNonNull(this.getCommand("update")).setExecutor(new UpdateCommand());
+        Objects.requireNonNull(this.getCommand("update")).setTabCompleter(new UpdateCommand());
+
         Objects.requireNonNull(this.getCommand("customitem")).setExecutor(new CustomItemCommand());
         Objects.requireNonNull(this.getCommand("recipegui")).setExecutor(new RecipeGuiCommand());
     }
@@ -95,7 +102,7 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EventInfoBook(), this);
     }
 
-    private void prepareEvent() {
+    private void setupEvent() {
         Recipe.loadRecipes();
         Bukkit.getScheduler().runTaskTimer(this, PassiveEffects::applyPassiveEffects, 20L, 20L);
         Bukkit.getOnlinePlayers().forEach(player -> {
@@ -130,6 +137,10 @@ public final class FlareonEvents extends JavaPlugin {
 
     public static FileUtils getLocationsFile() {
         return locationsFile;
+    }
+
+    public static FileUtils getInfoBookFile() {
+        return infoBookFile;
     }
 
     public static FileUtils getFileConfig() {
