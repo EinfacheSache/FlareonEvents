@@ -1,7 +1,7 @@
 package de.einfachesache.flareonEvents.command;
 
 import de.einfachesache.flareonEvents.Config;
-import de.einfachesache.flareonEvents.EventHandler;
+import de.einfachesache.flareonEvents.GameHandler;
 import de.einfachesache.flareonEvents.FlareonEvents;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -47,7 +47,7 @@ public class EventCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
 
-            EventHandler.prepareEvent();
+            GameHandler.prepareEvent();
 
             sender.sendMessage("§aDu hast das Event erfolgreich gestartet!");
 
@@ -84,7 +84,7 @@ public class EventCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
 
-            EventHandler.cancelEvent();
+            GameHandler.cancelEvent();
 
             sender.sendMessage("§4Du hast das Event erfolgreich gecancelt!");
 
@@ -98,14 +98,14 @@ public class EventCommand implements CommandExecutor, TabCompleter {
 
             if (target != null) {
                 boolean completeReset = args.length == 3 && safeParseBoolean(args[2]);
-                EventHandler.resetPlayer(target, true, completeReset);
+                GameHandler.resetPlayer(target, true, completeReset);
                 sender.sendMessage("§cDer Spieler §6" + target.getName() + "§c wurde resetet! §7(completeReset=" + completeReset + ")");
                 return true;
             }
 
             if (args.length == 2) {
                 boolean completeReset = safeParseBoolean(args[1]);
-                Bukkit.getOnlinePlayers().forEach(player -> EventHandler.resetPlayer(player, true, safeParseBoolean(args[1])));
+                Bukkit.getOnlinePlayers().forEach(player -> GameHandler.resetPlayer(player, true, safeParseBoolean(args[1])));
                 sender.sendMessage("§cAlle Spieler wurden resetet! §7(completeReset=" + completeReset + ")");
 
                 return true;

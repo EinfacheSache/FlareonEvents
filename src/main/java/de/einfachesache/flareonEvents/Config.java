@@ -2,6 +2,7 @@ package de.einfachesache.flareonEvents;
 
 import de.cubeattack.api.util.FileUtils;
 import de.einfachesache.flareonEvents.item.ItemUtils;
+import de.einfachesache.flareonEvents.item.WorldUtils;
 import de.einfachesache.flareonEvents.item.tool.*;
 import net.kyori.adventure.text.Component;
 import org.bspfsystems.yamlconfiguration.configuration.ConfigurationSection;
@@ -50,6 +51,9 @@ public class Config {
         loadDeathParticipants();
         loadMainSpawnLocations();
         loadPlayerSpawnLocations();
+
+        if (WorldUtils.isWorldGeneratedFresh())
+            resetGameOnNewWorldGeneration();
     }
 
     private static final FileUtils config = FlareonEvents.getFileConfig();
@@ -390,6 +394,11 @@ public class Config {
         save(deathParticipantsFile, "death-participants", Collections.emptyList());
     }
 
+    public static void resetGameOnNewWorldGeneration() {
+        setEventState(EventState.NOT_RUNNING);
+        setStartTime(0L);
+        setStopSince(0L);
+    }
 
     public static void save(FileUtils file, String key, Object value) {
         file.set(key, value);

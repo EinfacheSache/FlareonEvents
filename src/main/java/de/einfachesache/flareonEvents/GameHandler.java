@@ -16,8 +16,9 @@ import org.bukkit.util.Vector;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
-public class EventHandler {
+public class GameHandler {
 
     static final FlareonEvents plugin = FlareonEvents.getPlugin();
     static final List<BukkitTask> tasks = new ArrayList<>();
@@ -63,11 +64,9 @@ public class EventHandler {
         plugin.getServer().getWorlds().forEach(world -> world.setPVP(false));
 
         World world = Bukkit.getWorlds().getFirst();
-        WorldBorder border = world.getWorldBorder();
-        border.setCenter(0, 0);
-        border.setSize(3000);
         world.setTime(6000);
         world.setClearWeatherDuration(20 * 60 * 20);
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
 
         Bukkit.getServer().getOnlinePlayers().forEach(player -> {
             player.showTitle(Title.title(
@@ -108,7 +107,6 @@ public class EventHandler {
                                 player.clearActivePotionEffects();
                                 player.setVelocity(new Vector());
                                 player.setWalkSpeed(0.0f);
-                                player.setFlySpeed(0.0f);
                                 player.setFlying(false);
 
                                 player.showTitle(Title.title(
@@ -133,7 +131,7 @@ public class EventHandler {
 
                         startPvPSchedule();
                         startNetherOpenSchedule();
-                        startBorderSchedule(Bukkit.getWorlds().getFirst().getWorldBorder());
+                        startBorderSchedule();
 
                         Bukkit.getServer().getOnlinePlayers().forEach(
                                 player -> resetPlayer(player, true, true));
@@ -165,16 +163,6 @@ public class EventHandler {
             resetPlayer(player, true, true);
             player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
 
-            /* if (!player.isOp()) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, PotionEffect.INFINITE_DURATION, Integer.MAX_VALUE).withIcon(false).withParticles(false));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, PotionEffect.INFINITE_DURATION, Integer.MAX_VALUE).withIcon(false).withParticles(false));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, PotionEffect.INFINITE_DURATION, Integer.MAX_VALUE).withIcon(false).withParticles(false));
-                Objects.requireNonNull(player.getAttribute(Attribute.JUMP_STRENGTH)).setBaseValue(0);
-                player.setVelocity(new Vector());
-                player.setWalkSpeed(0.0f);
-                player.setFlySpeed(0.0f);
-                player.setFlying(false);
-            }  */
         });
         plugin.getServer().broadcast(Component.text("Das Event wurde kurzzeitig gestoppt. Das Event startet in Kürze erneut!", NamedTextColor.RED));
     }
@@ -196,7 +184,6 @@ public class EventHandler {
                 Objects.requireNonNull(player.getAttribute(Attribute.JUMP_STRENGTH)).setBaseValue(0);
                 player.setVelocity(new Vector());
                 player.setWalkSpeed(0.0f);
-                player.setFlySpeed(0.0f);
                 player.setFlying(false);
             }
         });
@@ -211,8 +198,9 @@ public class EventHandler {
 
             @Override
             public void run() {
-                plugin.getServer().getOnlinePlayers().forEach(player -> {
-                    if (secondsLeft <= 0 || !player.isOnline()) {
+
+                if (secondsLeft <= 0) {
+                    plugin.getServer().getOnlinePlayers().forEach(player -> {
                         player.sendActionBar(Component.text("Event ist gestartet", NamedTextColor.DARK_RED));
                         player.showTitle(Title.title(
                                 Component.text("ACHTUNG", NamedTextColor.RED),
@@ -220,21 +208,25 @@ public class EventHandler {
                                 times));
                         player.sendMessage(Component.text(
                                 """
-                                        §6[Event] §fDas Event startet jetzt!
+                                        
+                                        §6[Event] §eDas Event startet jetzt!
                                         §aViel Spaß und viel Erfolg!
+                                        §eMax Teamgrösse ist §c3§e Spieler!
                                         §ePvP beginnt in §c2 Minuten§e!
                                         §5Der Nether öffnet in §c60 Minuten§5!"""
                         ));
                         player.playSound(startSound);
+                    });
 
-                        this.cancel();
-                        return;
-                    }
+                    this.cancel();
+                    return;
+                }
 
-                    int minutes = secondsLeft / 60;
-                    int seconds = secondsLeft % 60;
-                    String timeFormatted = String.format("§eStart in §c%d:%02d §eMinuten", minutes, seconds);
+                int minutes = secondsLeft / 60;
+                int seconds = secondsLeft % 60;
+                String timeFormatted = String.format("§eStart in §c%d:%02d §eMinuten", minutes, seconds);
 
+                plugin.getServer().getOnlinePlayers().forEach(player -> {
                     if (secondsLeft == 120 || secondsLeft == 60 || secondsLeft == 30 || secondsLeft <= 10) {
                         player.showTitle(Title.title(
                                 Component.text(secondsLeft <= 60 ? String.format("§eNoch §a%d §eSekunden", secondsLeft) : String.format("§eNoch §a%d §eMinuten", minutes), NamedTextColor.RED),
@@ -245,6 +237,7 @@ public class EventHandler {
 
                     player.sendActionBar(Component.text(timeFormatted));
                 });
+
                 secondsLeft--;
             }
         }.runTaskTimer(plugin, 0L, 20L));
@@ -252,34 +245,35 @@ public class EventHandler {
 
     private static void startPvPSchedule() {
 
-        plugin.getServer().getOnlinePlayers().forEach(player -> player.sendActionBar(Component.text("PvP beginnt in " + (noPvPTime) + " Minuten", NamedTextColor.DARK_RED)));
-
         tasks.add(new BukkitRunnable() {
             int secondsLeft = noPvPTime;
 
             @Override
             public void run() {
-                plugin.getServer().getOnlinePlayers().forEach(player -> {
 
-                    if (secondsLeft <= 0 || !player.isOnline()) {
-                        player.getWorld().setPVP(true);
+                if (secondsLeft <= 0) {
+
+                    plugin.getServer().getWorlds().forEach(world -> world.setPVP(true));
+
+                    plugin.getServer().getOnlinePlayers().forEach(player -> {
                         player.sendActionBar(Component.text("PVP ist ab jetzt möglich", NamedTextColor.DARK_RED));
                         player.showTitle(Title.title(
                                 Component.text("ACHTUNG", NamedTextColor.RED),
                                 Component.text("PVP ist ab jetzt möglich", NamedTextColor.YELLOW),
                                 times));
                         player.playSound(notifySound);
+                    });
 
-                        this.cancel();
-                        return;
-                    }
+                    this.cancel();
+                    return;
+                }
 
-                    int minutes = secondsLeft / 60;
-                    int seconds = secondsLeft % 60;
-                    String timeFormatted = String.format("§ePVP in §c%d:%02d §eMinuten", minutes, seconds);
+                int minutes = secondsLeft / 60;
+                int seconds = secondsLeft % 60;
+                String timeFormatted = String.format("§ePVP in §c%d:%02d §eMinuten", minutes, seconds);
 
-                    player.sendActionBar(Component.text(timeFormatted));
-                });
+                plugin.getServer().getOnlinePlayers().forEach(player -> player.sendActionBar(Component.text(timeFormatted)));
+
                 secondsLeft--;
             }
         }.runTaskTimer(plugin, 0L, 20L));
@@ -292,47 +286,42 @@ public class EventHandler {
 
             @Override
             public void run() {
-                plugin.getServer().getOnlinePlayers().forEach(player -> {
 
-                    if (secondsLeft <= 0 || !player.isOnline()) {
+                if (secondsLeft <= 0) {
 
-                        PortalCreateListener.setNether(true);
+                    PortalCreateListener.setNether(true);
+
+                    plugin.getServer().getOnlinePlayers().forEach(player -> {
                         player.sendActionBar(Component.text("Nether ist nun geöffnet", NamedTextColor.DARK_RED));
                         player.playSound(notifySound);
+                    });
 
-                        this.cancel();
-                        return;
-                    }
+                    this.cancel();
+                    return;
+                }
 
-                    int minutes = secondsLeft / 60;
-                    int seconds = secondsLeft % 60;
-                    String timeFormatted = String.format("§eNether öffnet in §c%d:%02d §eMinuten", minutes, seconds);
+                int minutes = secondsLeft / 60;
+                int seconds = secondsLeft % 60;
+                String timeFormatted = String.format("§eNether öffnet in §c%d:%02d §eMinuten", minutes, seconds);
 
-                    player.sendActionBar(Component.text(timeFormatted));
-                });
+                plugin.getServer().getOnlinePlayers().forEach(player -> player.sendActionBar(Component.text(timeFormatted)));
+
                 secondsLeft--;
             }
         }.runTaskTimer(plugin, noPvPTime * 20L, 20L));
     }
 
 
-    private static void startBorderSchedule(WorldBorder border) {
+    private static void startBorderSchedule() {
+
+        List<World> worlds = Bukkit.getWorlds();
 
         // Nach 40 Minuten (40 * 60 * 20 Ticks)
         tasks.add(new BukkitRunnable() {
             @Override
             public void run() {
                 // Verkleinere in 20 Minuten (20 * 60 Sekunden) auf 2000
-                plugin.getServer().getOnlinePlayers().forEach(player -> {
-                    player.showTitle(Title.title(
-                            Component.text("ACHTUNG", NamedTextColor.RED),
-                            Component.text("Die Border bewegt sich nun zu 2000x2000", NamedTextColor.YELLOW),
-                            times));
-                    player.playSound(notifySound);
-                });
-                plugin.getServer().broadcast(
-                        Component.text("Pass auf! Die Border hat sich in Bewegung gesetzt. Das Gebiet wird nun auf 2000x2000 Blöcke begrenzt!", NamedTextColor.YELLOW));
-                border.setSize(2000, 20 * 60);
+                moveBorder(worlds, 2000, 20);
             }
         }.runTaskLater(plugin, 40 * 60 * 20L));
 
@@ -341,16 +330,7 @@ public class EventHandler {
             @Override
             public void run() {
                 // Verkleinere in 30 Minuten auf 1500
-                plugin.getServer().getOnlinePlayers().forEach(player -> {
-                    player.showTitle(Title.title(
-                            Component.text("ACHTUNG", NamedTextColor.RED),
-                            Component.text("Die Border bewegt sich nun zu 1500x1500", NamedTextColor.YELLOW),
-                            times));
-                    player.playSound(notifySound);
-                });
-                plugin.getServer().broadcast(
-                        Component.text("Pass auf! Die Border hat sich in Bewegung gesetzt. Das Gebiet wird nun auf 1500x1500 Blöcke begrenzt!", NamedTextColor.YELLOW));
-                border.setSize(1500, 30 * 60);
+                moveBorder(worlds, 1500, 30);
             }
         }.runTaskLater(plugin, 90 * 60 * 20L));
 
@@ -359,16 +339,7 @@ public class EventHandler {
             @Override
             public void run() {
                 // Verkleinere in 40 Minuten auf 200
-                plugin.getServer().getOnlinePlayers().forEach(player -> {
-                    player.showTitle(Title.title(
-                            Component.text("ACHTUNG", NamedTextColor.RED),
-                            Component.text("Die Border bewegt sich nun zu 200x200", NamedTextColor.YELLOW),
-                            times));
-                    player.playSound(notifySound);
-                });
-                plugin.getServer().broadcast(
-                        Component.text("Pass auf! Die Border hat sich in Bewegung gesetzt. Das Gebiet wird nun auf 200x200 Blöcke begrenzt!", NamedTextColor.YELLOW));
-                border.setSize(200, 40 * 60);
+                moveBorder(worlds, 200, 40);
             }
         }.runTaskLater(plugin, 140 * 60 * 20L));
 
@@ -377,16 +348,7 @@ public class EventHandler {
             @Override
             public void run() {
                 // Verkleinere in 10 Minuten auf 50
-                plugin.getServer().getOnlinePlayers().forEach(player -> {
-                    player.showTitle(Title.title(
-                            Component.text("ACHTUNG", NamedTextColor.RED),
-                            Component.text("Die Border bewegt sich nun zu 50x50", NamedTextColor.YELLOW),
-                            times));
-                    player.playSound(notifySound);
-                });
-                plugin.getServer().broadcast(
-                        Component.text("Pass auf! Die Border hat sich in Bewegung gesetzt. Das Gebiet wird nun auf 50x50 Blöcke begrenzt!", NamedTextColor.YELLOW));
-                border.setSize(50, 10 * 60);
+                moveBorder(worlds, 50, 10);
             }
         }.runTaskLater(plugin, 210 * 60 * 20L));
 
@@ -395,26 +357,31 @@ public class EventHandler {
             @Override
             public void run() {
                 // Verkleinere in 5 Minuten auf 5
-                plugin.getServer().getOnlinePlayers().forEach(player -> {
-                    player.showTitle(Title.title(
-                            Component.text("ACHTUNG", NamedTextColor.RED),
-                            Component.text("Die Border bewegt sich nun zu 5x5", NamedTextColor.YELLOW),
-                            times));
-                    player.playSound(notifySound);
-                });
-                plugin.getServer().broadcast(
-                        Component.text("Pass auf! Die Border hat sich in Bewegung gesetzt. Das Gebiet wird nun auf 5x5 Blöcke begrenzt!", NamedTextColor.YELLOW));
-                border.setSize(5, 5 * 60);
+                moveBorder(worlds, 5, 5);
             }
         }.runTaskLater(plugin, 240 * 60 * 20L));
 
         tasks.add(new BukkitRunnable() {
             @Override
             public void run() {
-                plugin.getServer().broadcast(
-                        Component.text("Die Border ist stehen geblieben. Das Gebiet bleibt nun auf 5x5 Blöcke begrenzt!", NamedTextColor.YELLOW));
+                plugin.getServer().broadcast(Component.text("Die Border ist stehen geblieben. Das Gebiet bleibt nun auf 5x5 Blöcke begrenzt!", NamedTextColor.YELLOW));
             }
         }.runTaskLater(plugin, 245 * 60 * 20L));
+    }
+
+    private static void moveBorder(List<World> worlds, int size, int delayInMinutes) {
+        Title title = Title.title(
+                Component.text("ACHTUNG", NamedTextColor.RED),
+                Component.text("Die Border bewegt sich nun zu " + size + "x" + size, NamedTextColor.YELLOW),
+                times);
+
+        plugin.getServer().getOnlinePlayers().forEach(player -> {
+            player.showTitle(title);
+            player.playSound(notifySound);
+            player.sendMessage(Component.text("Pass auf! Die Border hat sich in Bewegung gesetzt. Das Gebiet wird nun auf " + size + "x" + size + " Blöcke begrenzt!", NamedTextColor.YELLOW));
+        });
+
+        worlds.forEach(world -> world.getWorldBorder().setSize(size, TimeUnit.MINUTES, delayInMinutes));
     }
 
     public static void resetPlayer(Player player, boolean potionReset, boolean completeReset) {
@@ -426,7 +393,6 @@ public class EventHandler {
         if (Config.getEventState() != EventState.STARTING || completeReset) {
             Objects.requireNonNull(player.getAttribute(Attribute.JUMP_STRENGTH)).setBaseValue(0.42);
             player.setWalkSpeed(0.2f);
-            player.setFlySpeed(0.05f);
         }
 
         if (player.isOp()) return;

@@ -46,6 +46,7 @@ public class NyxBow implements Listener {
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS;
 
     private static final Map<UUID, Long> cooldownMap = new HashMap<>();
+    private static final Map<UUID, Long> preparedCooldownMap = new HashMap<>();
 
     public static ShapedRecipe getNyxBowRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createNyxBow());
@@ -140,7 +141,10 @@ public class NyxBow implements Listener {
             long remaining = (COOLDOWN - (now - lastUse));
             shooter.sendMessage("§cBitte warte noch " + remaining + "ms, bevor du erneut schießt!");
             event.setUseItemInHand(Event.Result.DENY);
+            return;
         }
+
+        preparedCooldownMap.put(shooter.getUniqueId(), System.currentTimeMillis());
     }
 
     @EventHandler
@@ -152,9 +156,10 @@ public class NyxBow implements Listener {
         arrow.setColor(Color.BLACK);
         arrow.setGlowing(true);
 
-        long now = System.currentTimeMillis();
-        cooldownMap.put(shooter.getUniqueId(), now);
-        shooter.setCooldown(shooter.getInventory().getItemInMainHand(), COOLDOWN / 50);
+        long preparedCooldown = preparedCooldownMap.get(shooter.getUniqueId());
+        int cooldownInMilliSec = Math.max(0,  (int) (COOLDOWN - (System.currentTimeMillis() - preparedCooldown)));
+        cooldownMap.put(shooter.getUniqueId(), preparedCooldown);
+        shooter.setCooldown(shooter.getInventory().getItemInMainHand(), cooldownInMilliSec / 50);
     }
 
     @EventHandler
@@ -164,15 +169,21 @@ public class NyxBow implements Listener {
         if (!arrow.getPersistentDataContainer().has(NAMESPACED_KEY, PersistentDataType.BYTE)) return;
         if (!(event.getEntity() instanceof LivingEntity livingEntity)) return;
 
+        String message = null;
         double random = Math.random();
         if (random < WITHER_EFFECT_CHANCE) {
             livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 20 * WITHER_EFFECT_TIME, 0));
-            shooter.sendMessage(Component.text("§5" + livingEntity.getName() + " hat §4Nyx Bow §5Effekt erhalten!"));
+            message = "§5" + livingEntity.getName() + " hat §4§lNyx Bow §5Effekt erhalten!";
         }
 
         if (random < SLOW_BLIND_EFFECT_CHANCE) {
             livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20 * SLOW_BLIND_EFFECT_TIME, 0));
             livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * SLOW_BLIND_EFFECT_TIME, 0));
+            message = "§5" + livingEntity.getName() + " hat §4§lNyx Bow§6 §kkk§5 Effekt §6§kkk §5erhalten!";
+        }
+
+        if(message != null){
+            shooter.sendMessage(Component.text(message));
         }
     }
 

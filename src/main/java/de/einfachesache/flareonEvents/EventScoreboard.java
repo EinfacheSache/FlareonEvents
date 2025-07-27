@@ -97,7 +97,7 @@ public class EventScoreboard implements Listener {
 
         // --- Border ---
         sidebar.getScore("§cBorder§7:").setScore(1);
-        int size = (int) Math.round(Bukkit.getWorlds().getFirst().getWorldBorder().getSize());
+        int size = (int) Math.round(player.getWorld().getWorldBorder().getSize());
         sidebar.getScore("§f" + size + "x" + size).setScore(0);
 
     }

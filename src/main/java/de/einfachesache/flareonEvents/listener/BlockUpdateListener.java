@@ -11,15 +11,20 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 public class BlockUpdateListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
-    public void onBlockBreak(BlockBreakEvent e) {
-        if (isProtected(e.getBlock().getLocation())) {
-            e.setCancelled(true);
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (isProtected(event.getBlock().getLocation())) {
+            event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onEntityExplode(EntityExplodeEvent e) {
-        e.blockList().removeIf(b -> isProtected(b.getLocation()));
+    public void onEntityExplode(EntityExplodeEvent event) {
+
+        if(!Config.isEventIsRunning()){
+            event.setCancelled(true);
+        }
+
+        event.blockList().removeIf(b -> isProtected(b.getLocation()));
     }
 
     private boolean isProtected(Location loc) {

@@ -2,17 +2,14 @@ package de.einfachesache.flareonEvents;
 
 import de.cubeattack.api.logger.LogManager;
 import de.cubeattack.api.util.FileUtils;
-import de.einfachesache.flareonEvents.command.CustomItemCommand;
-import de.einfachesache.flareonEvents.command.EventCommand;
-import de.einfachesache.flareonEvents.command.RecipeGuiCommand;
-import de.einfachesache.flareonEvents.command.UpdateCommand;
+import de.einfachesache.flareonEvents.command.*;
 import de.einfachesache.flareonEvents.item.EventInfoBook;
 import de.einfachesache.flareonEvents.item.PassiveEffects;
 import de.einfachesache.flareonEvents.item.Recipe;
 import de.einfachesache.flareonEvents.item.tool.*;
 import de.einfachesache.flareonEvents.listener.*;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
+import org.bukkit.GameRule;
 import org.bukkit.WorldBorder;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -43,16 +40,15 @@ public final class FlareonEvents extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        loadFiles();
-
-        registerCommands();
-
-        registerListener();
+        initializeFiles();
 
         setupEvent();
+
+        registerCommands();
+        registerListener();
     }
 
-    private void loadFiles() {
+    private void initializeFiles() {
         itemsFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/items.yml"), "plugins/FlareonEvents", "items.yml");
         configFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/config.yml"), "plugins/FlareonEvents", "config.yml");
         infoBookFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/infoBook.yml"), "plugins/FlareonEvents", "infoBook.yml");
@@ -64,6 +60,9 @@ public final class FlareonEvents extends JavaPlugin {
     }
 
     private void registerCommands() {
+        Objects.requireNonNull(this.getCommand("team")).setExecutor(new TeamCommand());
+        Objects.requireNonNull(this.getCommand("team")).setTabCompleter(new TeamCommand());
+
         Objects.requireNonNull(this.getCommand("event")).setExecutor(new EventCommand());
         Objects.requireNonNull(this.getCommand("event")).setTabCompleter(new EventCommand());
 
@@ -75,8 +74,6 @@ public final class FlareonEvents extends JavaPlugin {
     }
 
     private void registerListener() {
-        Bukkit.getPluginManager().registerEvents(new RecipeGuiCommand(), this);
-
         Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(), this);
         Bukkit.getPluginManager().registerEvents(new EntityDamageListener(), this);
         Bukkit.getPluginManager().registerEvents(new PortalCreateListener(), this);
@@ -91,15 +88,17 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new CraftingListener(), this);
         Bukkit.getPluginManager().registerEvents(new AnvilListener(), this);
 
-        Bukkit.getPluginManager().registerEvents(new BetterReinforcedPickaxe(), this);
-        Bukkit.getPluginManager().registerEvents(new ReinforcedPickaxe(), this);
-
         Bukkit.getPluginManager().registerEvents(new PoseidonsTrident(), this);
         Bukkit.getPluginManager().registerEvents(new FireSword(), this);
         Bukkit.getPluginManager().registerEvents(new NyxBow(), this);
 
+        Bukkit.getPluginManager().registerEvents(new BetterReinforcedPickaxe(), this);
+        Bukkit.getPluginManager().registerEvents(new ReinforcedPickaxe(), this);
+
         Bukkit.getPluginManager().registerEvents(new EventScoreboard(), this);
         Bukkit.getPluginManager().registerEvents(new EventInfoBook(), this);
+
+        Bukkit.getPluginManager().registerEvents(new RecipeGuiCommand(), this);
     }
 
     private void setupEvent() {
@@ -107,19 +106,22 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, PassiveEffects::applyPassiveEffects, 20L, 20L);
         Bukkit.getOnlinePlayers().forEach(player -> {
             EventScoreboard.addScoreboardToPlayer(player);
-            if (Config.getEventState().getId() < 3) {
+            if (!Config.isEventIsRunning()) {
                 Recipe.discoverRecipe(player);
                 player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
             }
         });
 
-        if (Config.getEventState().getId() < 3) {
-            World world = Bukkit.getWorlds().getFirst();
-            WorldBorder border = world.getWorldBorder();
-            border.setCenter(0, 0);
-            border.setSize(3000);
-            world.setTime(6000);
-            world.setClearWeatherDuration(20 * 60 * 20);
+        if (!Config.isEventIsRunning()) {
+            Bukkit.getWorlds().forEach(world -> {
+                WorldBorder border = world.getWorldBorder();
+                border.setCenter(0, 0);
+                border.setSize(3000);
+                world.setPVP(false);
+                world.setTime(6000);
+                world.setClearWeatherDuration(20 * 60 * 20);
+                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+            });
         }
     }
 

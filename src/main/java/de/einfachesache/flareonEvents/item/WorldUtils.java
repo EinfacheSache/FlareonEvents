@@ -1,13 +1,12 @@
 package de.einfachesache.flareonEvents.item;
 
-import org.bukkit.FluidCollisionMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+
+import java.io.File;
 
 public class WorldUtils {
 
@@ -133,5 +132,10 @@ public class WorldUtils {
                  CHISELED_RED_SANDSTONE -> true;
             default -> false;
         };
+    }
+
+    public static boolean isWorldGeneratedFresh() {
+        File levelDat = new File(Bukkit.getWorldContainer() + "/world", "level.dat");
+        return !levelDat.exists();
     }
 }

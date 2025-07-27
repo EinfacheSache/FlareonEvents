@@ -6,6 +6,9 @@ version: '1.0-SNAPSHOT'
 main: de.einfachesache.flareonEvents.FlareonEvents
 api-version: '1.21'
 commands:
+  team:
+    description: 'Team command'
+    aliases: [ tm, teams ]
   event:
     description: 'Event Manage Command'
     permission: 'event.op'

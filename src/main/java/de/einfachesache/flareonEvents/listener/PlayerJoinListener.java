@@ -2,6 +2,7 @@ package de.einfachesache.flareonEvents.listener;
 
 import de.einfachesache.flareonEvents.Config;
 import de.einfachesache.flareonEvents.EventState;
+import de.einfachesache.flareonEvents.GameHandler;
 import de.einfachesache.flareonEvents.item.EventInfoBook;
 import de.einfachesache.flareonEvents.item.Recipe;
 import net.kyori.adventure.text.Component;
@@ -19,7 +20,7 @@ public class PlayerJoinListener implements Listener {
         event.joinMessage(Component.text("§7" + player.getName() + " ist dem server beigetreten"));
 
         Recipe.discoverRecipe(player);
-        de.einfachesache.flareonEvents.EventHandler.resetPlayer(player, Config.getEventState().getId() <= 2, Config.getEventState().getId() <= 1);
+        GameHandler.resetPlayer(player, Config.getEventState().getId() <= 2, Config.getEventState().getId() <= 1);
 
         if (Config.isEventIsRunning()) {
             return;
@@ -27,6 +28,6 @@ public class PlayerJoinListener implements Listener {
 
         player.setGameMode(GameMode.ADVENTURE);
         player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
-        player.teleport(Config.getEventState() == EventState.STARTING ? de.einfachesache.flareonEvents.EventHandler.getPlayerAssignedSpawn(player) : Config.getMainSpawnLocation());
+        player.teleport(Config.getEventState() == EventState.STARTING ? GameHandler.getPlayerAssignedSpawn(player) : Config.getMainSpawnLocation());
     }
 }
