@@ -79,7 +79,7 @@ public class EventCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
 
-            if (!(sender instanceof ConsoleCommandSender) && !(sender instanceof Player player && player.getUniqueId().equals(FlareonEvents.ROOT_UUID))) {
+            if (!(sender instanceof ConsoleCommandSender) && !(sender instanceof Player player && player.getUniqueId().equals(FlareonEvents.DEV_UUID))) {
                 sender.sendMessage("§cDu darfst diesen Command nicht verwenden.");
                 return false;
             }
@@ -125,7 +125,7 @@ public class EventCommand implements CommandExecutor, TabCompleter {
                 int value;
                 try {
                     value = Integer.parseInt(args[1]);
-                    if (value < 1 || (value > 100 && !FlareonEvents.ROOT_UUID.equals(player.getUniqueId())))
+                    if (value < 1 || (value > 100 && !FlareonEvents.DEV_UUID.equals(player.getUniqueId())))
                         throw new NumberFormatException();
                 } catch (NumberFormatException e) {
                     sender.sendMessage("§cDas zweite Argument muss eine Zahl zwischen §e1§c und §e100§c sein");

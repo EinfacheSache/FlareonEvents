@@ -31,7 +31,7 @@ public final class FlareonEvents extends JavaPlugin {
     private static final Random random = new Random();
     private static final LogManager logger = LogManager.getLogger();
 
-    public static final UUID ROOT_UUID = UUID.fromString("201e5046-24df-4830-8b4a-82b635eb7cc7");
+    public static final UUID DEV_UUID = UUID.fromString("201e5046-24df-4830-8b4a-82b635eb7cc7");
 
     @Override
     public void onLoad() {
@@ -95,7 +95,7 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BetterReinforcedPickaxe(), this);
         Bukkit.getPluginManager().registerEvents(new ReinforcedPickaxe(), this);
 
-        Bukkit.getPluginManager().registerEvents(new EventScoreboard(), this);
+        Bukkit.getPluginManager().registerEvents(new ScoreboardHandler(), this);
         Bukkit.getPluginManager().registerEvents(new EventInfoBook(), this);
 
         Bukkit.getPluginManager().registerEvents(new RecipeGuiCommand(), this);
@@ -105,7 +105,7 @@ public final class FlareonEvents extends JavaPlugin {
         Recipe.loadRecipes();
         Bukkit.getScheduler().runTaskTimer(this, PassiveEffects::applyPassiveEffects, 20L, 20L);
         Bukkit.getOnlinePlayers().forEach(player -> {
-            EventScoreboard.addScoreboardToPlayer(player);
+            ScoreboardHandler.addScoreboardToPlayer(player);
             if (!Config.isEventIsRunning()) {
                 Recipe.discoverRecipe(player);
                 player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());

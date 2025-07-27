@@ -33,7 +33,7 @@ public class UpdateCommand implements CommandExecutor, TabCompleter {
         }
 
 
-        if (!(sender instanceof ConsoleCommandSender) && !(sender instanceof Player player && player.getUniqueId().equals(FlareonEvents.ROOT_UUID))) {
+        if (!(sender instanceof ConsoleCommandSender) && !(sender instanceof Player player && player.getUniqueId().equals(FlareonEvents.DEV_UUID))) {
             sender.sendMessage("§cDu darfst diesen Command nicht verwenden.");
             return false;
         }

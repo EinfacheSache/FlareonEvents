@@ -16,12 +16,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class EventScoreboard implements Listener {
+public class ScoreboardHandler implements Listener {
 
     private static final ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
     private static final Map<UUID, Scoreboard> playerBoards = new HashMap<>();
 
-    public EventScoreboard() {
+    public ScoreboardHandler() {
         new BukkitRunnable() {
             @Override
             public void run() {
