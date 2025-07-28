@@ -29,9 +29,9 @@ public class SoulHeartCrystal implements Listener {
     public static final NamespacedKey DROPPED_BY_PLAYER = new NamespacedKey(FlareonEvents.getPlugin(), "dropped_by_player");
 
     public static ItemStack createSoulHeartCrystal() {
-        return createSoulHeartCrystal(Component.text("ITEM CUSTOM CREATED"));
+        return createSoulHeartCrystal("ITEM CUSTOM CREATED");
     }
-    public static ItemStack createSoulHeartCrystal(Component droppedByPlayer) {
+    public static ItemStack createSoulHeartCrystal(String droppedByPlayer) {
 
         ItemStack soulHeartCrystal = ItemUtils.createCustomItem(Material.NETHER_STAR, DISPLAY_NAME, NAMESPACED_KEY);
         ItemMeta meta = soulHeartCrystal.getItemMeta();
@@ -45,11 +45,11 @@ public class SoulHeartCrystal implements Listener {
         lore.add(serializer.deserialize("§7➤ §aEinmalig benutzbar"));
         lore.add(serializer.deserialize("§7➤ §cMaximal " + (int) MAX_ALLOWED_HEALTH / 2 + " Herzen möglich"));
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§8Geborgen von: §7").append(droppedByPlayer));
+        lore.add(serializer.deserialize("§8Geborgen von: " + droppedByPlayer));
         lore.add(serializer.deserialize("§f"));
 
         meta.lore(lore);
-        meta.getPersistentDataContainer().set(DROPPED_BY_PLAYER, PersistentDataType.STRING, droppedByPlayer.toString());
+        meta.getPersistentDataContainer().set(DROPPED_BY_PLAYER, PersistentDataType.STRING, droppedByPlayer);
 
         soulHeartCrystal.setItemMeta(meta);
 
@@ -88,17 +88,17 @@ public class SoulHeartCrystal implements Listener {
         event.setCancelled(true);
     }
 
-    public static Component getDroppedByPlayer(ItemStack soulHeartCrystal) {
+    public static String getDroppedByPlayer(ItemStack soulHeartCrystal) {
         if (soulHeartCrystal == null || !soulHeartCrystal.hasItemMeta()) {
-            return Component.text("ITEM CUSTOM CREATED");
+            return "ITEM CUSTOM CREATED";
         }
 
         ItemMeta meta = soulHeartCrystal.getItemMeta();
         if (meta == null) {
-            return Component.text("ITEM CUSTOM CREATED");
+            return "ITEM CUSTOM CREATED";
         }
 
         String droppedBy = meta.getPersistentDataContainer().get(DROPPED_BY_PLAYER, PersistentDataType.STRING);
-        return Component.text(droppedBy != null ? droppedBy : "ITEM CUSTOM CREATED");
+        return droppedBy != null ? droppedBy : "ITEM CUSTOM CREATED";
     }
 }
