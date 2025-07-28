@@ -3,9 +3,12 @@ package de.einfachesache.flareonEvents.listener;
 import de.einfachesache.flareonEvents.Config;
 import de.einfachesache.flareonEvents.EventState;
 import de.einfachesache.flareonEvents.FlareonEvents;
+import de.einfachesache.flareonEvents.item.misc.SoulHeartCrystal;
 import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,8 +33,11 @@ public class PlayerDeathListener implements Listener {
 
         if (Config.getEventState() == EventState.RUNNING) {
             Config.addDeathParticipant(event.getPlayer().getUniqueId());
+            event.getDrops().add(SoulHeartCrystal.createSoulHeartCrystal(deceased.displayName()));
             deceased.kick(Component.text("§4§kAA §4§lAUSLÖSCHUNG! §kAA\n§cDu bist gestorben!"));
         } else {
+            event.getDrops().clear();
+            event.getDrops().add(SoulHeartCrystal.createSoulHeartCrystal(deceased.displayName()));
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -42,9 +48,13 @@ public class PlayerDeathListener implements Listener {
             }.runTaskLater(FlareonEvents.getPlugin(), 2L);
         }
 
-        event.getDrops().clear();
+        AttributeInstance attr = deceased.getAttribute(Attribute.MAX_HEALTH);
+        if (attr != null) {
+            attr.setBaseValue(20);
+        }
+
         event.deathMessage(Component.text("§k22 §c§lAUSLÖSCHUNG! §fEin Spieler ist gestorben §k22"));
-        deceased.getWorld().strikeLightning(deceased.getLocation().add(0, 1.5, 0))
+        deceased.getWorld().strikeLightning(deceased.getLocation().add(0, 2.5, 0))
                 .getPersistentDataContainer().set(namespacedKey, PersistentDataType.BYTE, (byte) 1);
 
         if (killer != null && !killer.equals(deceased)) {

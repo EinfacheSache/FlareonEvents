@@ -3,9 +3,11 @@ package de.einfachesache.flareonEvents;
 import de.cubeattack.api.logger.LogManager;
 import de.cubeattack.api.util.FileUtils;
 import de.einfachesache.flareonEvents.command.*;
-import de.einfachesache.flareonEvents.item.EventInfoBook;
-import de.einfachesache.flareonEvents.item.PassiveEffects;
-import de.einfachesache.flareonEvents.item.Recipe;
+import de.einfachesache.flareonEvents.handler.ScoreboardHandler;
+import de.einfachesache.flareonEvents.item.misc.EventInfoBook;
+import de.einfachesache.flareonEvents.item.PassiveItemEffects;
+import de.einfachesache.flareonEvents.item.ItemRecipe;
+import de.einfachesache.flareonEvents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonEvents.item.tool.*;
 import de.einfachesache.flareonEvents.listener.*;
 import org.bukkit.Bukkit;
@@ -22,6 +24,7 @@ public final class FlareonEvents extends JavaPlugin {
     private static FlareonEvents plugin;
 
     private static FileUtils itemsFile;
+    private static FileUtils teamsFile;
     private static FileUtils configFile;
     private static FileUtils infoBookFile;
     private static FileUtils locationsFile;
@@ -50,6 +53,7 @@ public final class FlareonEvents extends JavaPlugin {
 
     private void initializeFiles() {
         itemsFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/items.yml"), "plugins/FlareonEvents", "items.yml");
+        teamsFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/teams.yml"), "plugins/FlareonEvents", "teams.yml");
         configFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/config.yml"), "plugins/FlareonEvents", "config.yml");
         infoBookFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/infoBook.yml"), "plugins/FlareonEvents", "infoBook.yml");
         locationsFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/locations.yml"), "plugins/FlareonEvents", "locations.yml");
@@ -83,6 +87,7 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerQuitListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerChatListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerFoodListener(), this);
         Bukkit.getPluginManager().registerEvents(new CustomItemHandler(), this);
         Bukkit.getPluginManager().registerEvents(new CraftingListener(), this);
@@ -96,18 +101,19 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ReinforcedPickaxe(), this);
 
         Bukkit.getPluginManager().registerEvents(new ScoreboardHandler(), this);
+        Bukkit.getPluginManager().registerEvents(new SoulHeartCrystal(), this);
         Bukkit.getPluginManager().registerEvents(new EventInfoBook(), this);
 
         Bukkit.getPluginManager().registerEvents(new RecipeGuiCommand(), this);
     }
 
     private void setupEvent() {
-        Recipe.loadRecipes();
-        Bukkit.getScheduler().runTaskTimer(this, PassiveEffects::applyPassiveEffects, 20L, 20L);
+        ItemRecipe.loadRecipes();
+        Bukkit.getScheduler().runTaskTimer(this, PassiveItemEffects::applyPassiveEffects, 20L, 20L);
         Bukkit.getOnlinePlayers().forEach(player -> {
             ScoreboardHandler.addScoreboardToPlayer(player);
             if (!Config.isEventIsRunning()) {
-                Recipe.discoverRecipe(player);
+                ItemRecipe.discoverRecipe(player);
                 player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
             }
         });
@@ -147,6 +153,10 @@ public final class FlareonEvents extends JavaPlugin {
 
     public static FileUtils getFileConfig() {
         return configFile;
+    }
+
+    public static FileUtils getTeamsFile() {
+        return teamsFile;
     }
 
     public static FileUtils getItemsFile() {

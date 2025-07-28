@@ -1,7 +1,8 @@
-package de.einfachesache.flareonEvents.item;
+package de.einfachesache.flareonEvents.item.misc;
 
 import de.einfachesache.flareonEvents.Config;
 import de.einfachesache.flareonEvents.FlareonEvents;
+import de.einfachesache.flareonEvents.item.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.Event;

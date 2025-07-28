@@ -2,7 +2,6 @@ package de.einfachesache.flareonEvents;
 
 import de.cubeattack.api.util.FileUtils;
 import de.einfachesache.flareonEvents.item.ItemUtils;
-import de.einfachesache.flareonEvents.item.WorldUtils;
 import de.einfachesache.flareonEvents.item.tool.*;
 import net.kyori.adventure.text.Component;
 import org.bspfsystems.yamlconfiguration.configuration.ConfigurationSection;
@@ -14,6 +13,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"removal", "deprecation"})
 public class Config {
@@ -28,6 +29,13 @@ public class Config {
     private static final List<Location> playerSpawnLocations = new ArrayList<>();
     private static final Map<Integer, Component> infoBookSorted = new TreeMap<>();
 
+    private static int nextTeamId;
+    private static int maxTeamSize;
+    private static int maxInviteDistanz;
+    private static final Map<Integer, Set<UUID>> TEAMS = new ConcurrentHashMap<>();
+    private static final Map<UUID, Integer> PLAYER_TEAMS = new ConcurrentHashMap<>();
+    private static final Map<Integer, UUID> TEAM_LEADERS = new ConcurrentHashMap<>();
+
     public static void reloadBook() {
         FlareonEvents.getInfoBookFile().reloadConfiguration();
         loadInfoBook();
@@ -35,6 +43,7 @@ public class Config {
 
     public static void reloadFiles() {
         FlareonEvents.getItemsFile().reloadConfiguration();
+        FlareonEvents.getTeamsFile().reloadConfiguration();
         FlareonEvents.getFileConfig().reloadConfiguration();
         FlareonEvents.getInfoBookFile().reloadConfiguration();
         FlareonEvents.getLocationsFile().reloadConfiguration();
@@ -45,6 +54,7 @@ public class Config {
 
     public static void loadFiles() {
         loadItems();
+        loadTeams();
         loadConfig();
         loadInfoBook();
         loadParticipants();
@@ -94,6 +104,31 @@ public class Config {
             }
         });
     }
+
+
+    private static final FileUtils teamsFile = FlareonEvents.getTeamsFile();
+
+    private static void loadTeams() {
+        nextTeamId = teamsFile.getInt("next-team-id", 1);
+        maxTeamSize = teamsFile.getInt("max-team-size", 3);
+        maxInviteDistanz = teamsFile.getInt("max-invite-distanz", 30);
+        ConfigurationSection teamSection = teamsFile.getConfigurationSection("teams");
+        if (teamSection != null) {
+            for (String key : teamSection.getKeys(false)) {
+                int teamId = Integer.parseInt(key);
+                UUID leader = UUID.fromString(Objects.requireNonNull(teamSection.getString(key + ".leader")));
+                List<String> memberList = teamSection.getStringList(key + ".members");
+
+                TEAM_LEADERS.put(teamId, leader);
+                Set<UUID> members = memberList.stream().map(UUID::fromString).collect(Collectors.toSet());
+                TEAMS.put(teamId, members);
+                for (UUID uuid : members) {
+                    PLAYER_TEAMS.put(uuid, teamId);
+                }
+            }
+        }
+    }
+
 
     private static final FileUtils locationsFile = FlareonEvents.getLocationsFile();
 
@@ -400,6 +435,49 @@ public class Config {
         setStopSince(0L);
     }
 
+
+    public static void setTeamLeader(int teamId, UUID leader) {
+        TEAM_LEADERS.put(teamId, leader);
+        Config.save(teamsFile, "teams." + teamId + ".leader", leader.toString());
+    }
+
+    public static void addTeam(int teamId, UUID player) {
+        TEAMS.put(teamId, new HashSet<>(Collections.singleton(player)));
+        addPlayerToTeam(player, teamId);
+    }
+
+    public static void addPlayerToTeam(UUID player, int teamId) {
+        TEAMS.computeIfAbsent(teamId, k -> new HashSet<>()).add(player);
+        PLAYER_TEAMS.put(player, teamId);
+
+        List<String> updated = TEAMS.get(teamId).stream().map(UUID::toString).toList();
+        Config.save(teamsFile, "teams." + teamId + ".members", updated);
+    }
+
+    public static void removePlayerFromTeam(UUID player) {
+        Integer teamId = PLAYER_TEAMS.remove(player);
+        if (teamId == null) return;
+
+        Set<UUID> team = TEAMS.get(teamId);
+        if (team != null) {
+            team.remove(player);
+            if (team.isEmpty()) {
+                TEAMS.remove(teamId);
+                TEAM_LEADERS.remove(teamId);
+                Config.save(teamsFile, "teams." + teamId, null);
+            } else {
+                List<String> updated = team.stream().map(UUID::toString).toList();
+                Config.save(teamsFile, "teams." + teamId + ".members", updated);
+            }
+        }
+    }
+
+    public static void deleteAllTeams() {
+        Config.save(teamsFile, "teams", null);
+        Config.save(teamsFile, "next-team-id", 1);
+    }
+
+
     public static void save(FileUtils file, String key, Object value) {
         file.set(key, value);
         file.save();
@@ -420,5 +498,32 @@ public class Config {
 
     public static Map<Integer, Component> getInfoBookSorted() {
         return infoBookSorted;
+    }
+
+
+    public static int getMaxInviteDistanz() {
+        return maxInviteDistanz;
+    }
+
+    public static int getMaxTeamSize() {
+        return maxTeamSize;
+    }
+
+    public static int getNextTeamId() {
+        nextTeamId++;
+        save(teamsFile, "next-team-id", nextTeamId);
+        return nextTeamId-1;
+    }
+
+    public static Map<Integer, Set<UUID>> getTeams() {
+        return TEAMS;
+    }
+
+    public static Map<Integer, UUID> getTeamLeaders() {
+        return TEAM_LEADERS;
+    }
+
+    public static Map<UUID, Integer> getPlayerTeams() {
+        return PLAYER_TEAMS;
     }
 }

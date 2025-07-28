@@ -5,7 +5,7 @@ import de.einfachesache.flareonEvents.item.tool.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class Recipe {
+public class ItemRecipe {
 
     public static void loadRecipes() {
 

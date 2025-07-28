@@ -3,8 +3,9 @@ package de.einfachesache.flareonEvents.command;
 import de.einfachesache.flareonEvents.Config;
 import de.einfachesache.flareonEvents.FlareonEvents;
 import de.einfachesache.flareonEvents.item.CustomItems;
-import de.einfachesache.flareonEvents.item.EventInfoBook;
+import de.einfachesache.flareonEvents.item.misc.EventInfoBook;
 import de.einfachesache.flareonEvents.item.ingredient.*;
+import de.einfachesache.flareonEvents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonEvents.item.tool.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
@@ -101,6 +102,9 @@ public class UpdateCommand implements CommandExecutor, TabCompleter {
                         break;
                     case TRIDENT_STICK:
                         newItem = TridentStick.getItem();
+                        break;
+                    case SOUL_HEART_CRYSTAL:
+                        newItem = SoulHeartCrystal.createSoulHeartCrystal();
                         break;
                     case EVENT_INFO_BOOK:
                         newItem = EventInfoBook.createEventInfoBook();

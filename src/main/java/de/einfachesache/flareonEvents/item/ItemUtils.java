@@ -19,7 +19,6 @@ public class ItemUtils {
 
     static NamespacedKey invulnerable = new NamespacedKey(FlareonEvents.getPlugin(), "invulnerable");
 
-
     public static ItemStack createCustomItem(Material mat, String name, NamespacedKey itemKey) {
         ItemStack item = new ItemStack(mat);
         ItemMeta meta = item.getItemMeta();

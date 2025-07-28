@@ -1,6 +1,7 @@
 package de.einfachesache.flareonEvents.command;
 
 import de.einfachesache.flareonEvents.item.ingredient.*;
+import de.einfachesache.flareonEvents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonEvents.item.tool.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class CustomItemCommand implements CommandExecutor, TabCompleter {
 
-    private static final List<String> SUB_COMMANDS = Arrays.asList("FIRE_SWORD", "POSEIDONS_TRIDENT", "NYX_BOW", "REINFORCED_PICKAXE", "BETTER_REINFORCED_PICKAXE", "INGREDIENT", "ALL");
+    private static final List<String> SUB_COMMANDS = Arrays.asList("FIRE_SWORD", "POSEIDONS_TRIDENT", "NYX_BOW", "REINFORCED_PICKAXE", "BETTER_REINFORCED_PICKAXE", "INGREDIENT", "MISC", "ALL");
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String @NotNull [] args) {
@@ -29,7 +30,7 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
 
         if (args.length != 1) {
             player.sendMessage(Component.text(
-                    "Usage: /" + label + " <PoseidonsTrident §7|§c NyxBow §7|§c MiningPickaxe §7|§c Ingredient §7|§c all>",
+                    "Usage: /" + label + " <PoseidonsTrident §7|§c NyxBow §7|§c MiningPickaxe §7|§c Ingredient §7|§c Misc §7|§c all>",
                     NamedTextColor.RED
             ));
             return true;
@@ -43,9 +44,10 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
             case "reinforced_pickaxe", "reinforcedpickaxe" -> giveReinforcedPickaxe(player);
             case "better_reinforced_pickaxe", "betterreinforcedpickaxe" -> giveBetterReinforcedPickaxe(player);
             case "ingredient" -> giveIngredient(player);
+            case "misc" -> giveMisc(player);
             case "all" -> giveAllItems(player);
-            default -> player.sendMessage(Component.text(
-                    "Unbekannter Item-Key. Bitte nutze FireSword, ThunderTrident, NyxBow, MiningPickaxe, Ingredient oder all.",
+            default -> player.sendMessage(Component.text("Unbekannter Item-Key. " +
+                            "Bitte nutze FireSword, PoseidonsTrident, NyxBow, ReinforcedPickaxe, BetterReinforcedPickaxe, Ingredient, Misc oder all.",
                     NamedTextColor.RED
             ));
         }
@@ -107,6 +109,14 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
         player.getInventory().addItem(BetterReinforcedPickaxe.createBetterReinforcedPickaxe());
         player.sendMessage(Component.text(
                 "Item Better Reinforced Pickaxe created! with ModelData: null",
+                NamedTextColor.GREEN
+        ));
+    }
+
+    private void giveMisc(Player player) {
+        player.getInventory().addItem(SoulHeartCrystal.createSoulHeartCrystal().asQuantity(64));
+        player.sendMessage(Component.text(
+                "Item Soul Heart Crystal created! with ModelData: null",
                 NamedTextColor.GREEN
         ));
     }

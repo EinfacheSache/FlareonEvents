@@ -1,9 +1,11 @@
 package de.einfachesache.flareonEvents.command;
 
-import de.einfachesache.flareonEvents.TeamHandler;
+import de.einfachesache.flareonEvents.Config;
+import de.einfachesache.flareonEvents.handler.TeamHandler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -41,10 +43,10 @@ public class TeamCommand implements CommandExecutor, TabCompleter, Listener {
                 TeamHandler.handleAcceptCommand(player, args);
                 break;
             case "leave":
-                TeamHandler.handleLeaveCommand(player);
+                TeamHandler.handleLeaveCommand(player, false);
                 break;
             case "list":
-                TeamHandler.handleListCommand(player);
+                TeamHandler.handleListCommand(player, args);
                 break;
             case "kick":
                 TeamHandler.handleKickCommand(player, args);
@@ -60,15 +62,15 @@ public class TeamCommand implements CommandExecutor, TabCompleter, Listener {
 
     private void sendHelpMessage(Player player, String alias) {
         player.sendMessage(Component.text("━━━━━━━━━━━━━━━ TEAM COMMANDS ━━━━━━━━━━━━━━━", NamedTextColor.GOLD));
-        player.sendMessage(Component.text("/" + alias + " invite <Spieler>", NamedTextColor.WHITE)
+        player.sendMessage(Component.text("/" + alias + " invite <Spieler>", NamedTextColor.GREEN)
                 .append(Component.text(" - Lade einen Spieler zu deinem Team ein", NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/" + alias + " accept <Spieler>", NamedTextColor.WHITE)
+        player.sendMessage(Component.text("/" + alias + " accept <Spieler>", NamedTextColor.GREEN)
                 .append(Component.text(" - Akzeptiere eine Team-Einladung", NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/" + alias + " leave", NamedTextColor.WHITE)
+        player.sendMessage(Component.text("/" + alias + " leave", NamedTextColor.GREEN)
                 .append(Component.text(" - Verlasse dein aktuelles Team", NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/" + alias + " kick", NamedTextColor.WHITE)
+        player.sendMessage(Component.text("/" + alias + " kick", NamedTextColor.GREEN)
                 .append(Component.text(" - Kicke ein Teammitglied aus deinem Team", NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/" + alias + " list", NamedTextColor.WHITE)
+        player.sendMessage(Component.text("/" + alias + " list", NamedTextColor.GREEN)
                 .append(Component.text(" - Zeige alle Teammitglieder an", NamedTextColor.GRAY)));
     }
 
@@ -114,10 +116,21 @@ public class TeamCommand implements CommandExecutor, TabCompleter, Listener {
 
             if (args[0].equalsIgnoreCase("kick")) {
                 UUID playerUUID = player.getUniqueId();
-                Integer teamId = TeamHandler.getPlayerTeams().get(playerUUID);
-                if (teamId != null && TeamHandler.getTeamLeaders().get(teamId).equals(playerUUID)) {
-                    Set<UUID> teamMembers = TeamHandler.getTeams().get(teamId);
-                    List<String> completions = new ArrayList<>();
+                Integer teamId =  Config.getPlayerTeams().get(playerUUID);
+                List<String> completions = new ArrayList<>();
+
+                if(player.isOp()) {
+                    for (UUID uuid : Config.getPlayerTeams().keySet()) {
+                        OfflinePlayer target = Bukkit.getOfflinePlayer(uuid);
+                        if (target.getName() != null) {
+                            completions.add(target.getName());
+                        }
+                    }
+                    return completions;
+                }
+
+                if (teamId != null && Config.getTeamLeaders().get(teamId).equals(playerUUID)) {
+                    Set<UUID> teamMembers = Config.getTeams().get(teamId);
                     for (UUID memberUUID : teamMembers) {
                         if (!memberUUID.equals(playerUUID)) {
                             Player member = Bukkit.getPlayer(memberUUID);

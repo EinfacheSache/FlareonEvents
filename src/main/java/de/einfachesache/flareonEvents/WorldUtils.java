@@ -1,4 +1,4 @@
-package de.einfachesache.flareonEvents.item;
+package de.einfachesache.flareonEvents;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;

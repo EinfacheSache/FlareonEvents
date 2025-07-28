@@ -1,11 +1,14 @@
-package de.einfachesache.flareonEvents;
+package de.einfachesache.flareonEvents.handler;
 
+import de.einfachesache.flareonEvents.Config;
+import de.einfachesache.flareonEvents.FlareonEvents;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -14,19 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TeamHandler {
 
     static final FlareonEvents PLUGIN = FlareonEvents.getPlugin();
-    static final int MAX_TEAM_SIZE = 3;
-    static int nextTeamId = 1;
-
 
     // Speichert Team-Einladungen: Eingeladener Spieler -> Liste der Einladenden Spieler (Name)
     static final Map<UUID, List<String>> PENDING_INVITES = new ConcurrentHashMap<>();
-    // Speichert Teams: Team-ID -> Liste der Teammitglieder (UUIDs)
-    static final Map<Integer, Set<UUID>> TEAMS = new ConcurrentHashMap<>();
-    // Speichert zu welchem Team ein Spieler gehört: Spieler -> Team-ID
-    static final Map<UUID, Integer> PLAYER_TEAMS = new ConcurrentHashMap<>();
-    // Speichert welcher Spieler welches Team leitet: Team-ID -> Leader-UUID
-    static final Map<Integer, UUID> TEAM_LEADERS = new ConcurrentHashMap<>();
-
 
     public static void handleInviteCommand(Player sender, String[] args) {
         if (args.length != 2) {
@@ -49,18 +42,23 @@ public class TeamHandler {
 
         UUID targetUUID = target.getUniqueId();
 
-        if (PLAYER_TEAMS.containsKey(targetUUID)) {
+        if (Config.getPlayerTeams().containsKey(targetUUID)) {
             sender.sendMessage(Component.text(targetName + " ist bereits in einem Team!", NamedTextColor.RED));
             return;
         }
 
-        Integer inviterTeamId = PLAYER_TEAMS.get(sender.getUniqueId());
+        Integer inviterTeamId = Config.getPlayerTeams().get(sender.getUniqueId());
         if (inviterTeamId != null) {
-            Set<UUID> team = TEAMS.get(inviterTeamId);
-            if (team.size() >= MAX_TEAM_SIZE) {
-                sender.sendMessage(Component.text("Dein Team ist bereits voll! (Max: " + MAX_TEAM_SIZE + ")", NamedTextColor.RED));
+            Set<UUID> team = Config.getTeams().get(inviterTeamId);
+            if (team.size() >= Config.getMaxTeamSize()) {
+                sender.sendMessage(Component.text("Dein Team ist bereits voll! (Max: " + Config.getMaxTeamSize() + ")", NamedTextColor.RED));
                 return;
             }
+        }
+
+        if(sender.getLocation().distance(target.getLocation()) > Config.getMaxInviteDistanz()) {
+            sender.sendMessage(Component.text("Du darfst maximal " + Config.getMaxInviteDistanz() + " Blöcke vom Spieler entfernt stehen, um ihm eine Einladung senden zu können!", NamedTextColor.RED));
+            return;
         }
 
         List<String> invites = PENDING_INVITES.getOrDefault(targetUUID, new ArrayList<>());
@@ -73,20 +71,15 @@ public class TeamHandler {
 
         sender.sendMessage(Component.text("Team-Einladung an " + targetName + " gesendet!", NamedTextColor.GREEN));
 
-        target.sendMessage(Component.text("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", NamedTextColor.YELLOW));
-        target.sendMessage(Component.text("TEAM EINLADUNG", NamedTextColor.GOLD));
-        target.sendMessage(Component.text(sender.getName(), NamedTextColor.WHITE)
-                .append(Component.text(" hat dich zu seinem Team eingeladen!", NamedTextColor.YELLOW)));
-
-        Component acceptMessage = Component.text("[ANNEHMEN]", NamedTextColor.GREEN, TextDecoration.BOLD)
-                .clickEvent(ClickEvent.runCommand("/team accept " + sender.getName()))
-                .hoverEvent(HoverEvent.showText(Component.text("Klicke um die Einladung anzunehmen", NamedTextColor.GRAY)));
-
-        target.sendMessage(Component.text("→ ", NamedTextColor.YELLOW).append(acceptMessage)
+        target.sendMessage(Component.text("━━━━━━━━━━━━━━━ TEAM EINLADUNG ━━━━━━━━━━━━━━━ ", NamedTextColor.GOLD));
+        target.sendMessage(sender.displayName().append(Component.text(" hat dich zu seinem Team eingeladen!", NamedTextColor.YELLOW)));
+        target.sendMessage(Component.text("→ ", NamedTextColor.YELLOW)
+                .append(Component.text("[ANNEHMEN]", NamedTextColor.GREEN, TextDecoration.BOLD))
                 .append(Component.text(" oder verwende ", NamedTextColor.YELLOW))
-                .append(Component.text("/team accept " + sender.getName(), NamedTextColor.WHITE)));
-
-        target.sendMessage(Component.text("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", NamedTextColor.YELLOW));
+                .append(Component.text("/team accept " + sender.getName(), NamedTextColor.GREEN))
+                .clickEvent(ClickEvent.runCommand("/team accept " + sender.getName()))
+                .hoverEvent(HoverEvent.showText(Component.text("Klicke um die Einladung anzunehmen", NamedTextColor.GRAY))));
+        target.sendMessage(Component.text("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", NamedTextColor.GOLD));
 
         Bukkit.getScheduler().runTaskLater(PLUGIN, () -> {
             List<String> currentInvites = PENDING_INVITES.get(targetUUID);
@@ -101,7 +94,7 @@ public class TeamHandler {
                     sender.sendMessage(Component.text("Deine Team-Einladung an " + targetName + " ist abgelaufen!", NamedTextColor.RED));
                 }
             }
-        }, 1200L);
+        }, 60 * 20L);
     }
 
     public static void handleAcceptCommand(Player player, String[] args) {
@@ -135,30 +128,27 @@ public class TeamHandler {
         }
 
         UUID inviterUUID = inviter.getUniqueId();
-        PENDING_INVITES.remove(playerUUID);
 
-        Integer teamId = PLAYER_TEAMS.get(inviterUUID);
+        Integer teamId = Config.getPlayerTeams().get(inviterUUID);
         if (teamId == null) {
-            teamId = nextTeamId++;
-            TEAMS.put(teamId, new HashSet<>());
-            TEAMS.get(teamId).add(inviterUUID);
-            PLAYER_TEAMS.put(inviterUUID, teamId);
-            TEAM_LEADERS.put(teamId, inviterUUID);
+            teamId = Config.getNextTeamId();
+            Config.addTeam(teamId, inviterUUID);
+            Config.setTeamLeader(teamId, inviterUUID);
         } else {
-            Set<UUID> team = TEAMS.get(teamId);
-            if (team.size() >= MAX_TEAM_SIZE) {
+            Set<UUID> team = Config.getTeams().get(teamId);
+            if (team.size() >= Config.getMaxTeamSize()) {
                 player.sendMessage(Component.text("Das Team von " + inviter.getName() + " ist bereits voll!", NamedTextColor.RED));
                 return;
             }
         }
 
-        TEAMS.get(teamId).add(playerUUID);
-        PLAYER_TEAMS.put(playerUUID, teamId);
+        PENDING_INVITES.remove(playerUUID);
+        Config.addPlayerToTeam(playerUUID, teamId);
 
         player.sendMessage(Component.text("Du bist dem Team #" + teamId + " von " + inviter.getName() + " beigetreten!", NamedTextColor.GREEN));
         inviter.sendMessage(Component.text(player.getName() + " ist deinem Team #" + teamId + " beigetreten!", NamedTextColor.GREEN));
 
-        Set<UUID> teamMembers = TEAMS.get(teamId);
+        Set<UUID> teamMembers = Config.getTeams().get(teamId);
         for (UUID memberUUID : teamMembers) {
             if (!memberUUID.equals(playerUUID) && !memberUUID.equals(inviterUUID)) {
                 Player member = Bukkit.getPlayer(memberUUID);
@@ -169,22 +159,23 @@ public class TeamHandler {
         }
     }
 
-    public static void handleLeaveCommand(Player player) {
+    public static void handleLeaveCommand(OfflinePlayer player, boolean isKick) {
         UUID playerUUID = player.getUniqueId();
 
-        if (!PLAYER_TEAMS.containsKey(playerUUID)) {
-            player.sendMessage(Component.text("Du bist in keinem Team!", NamedTextColor.RED));
+        if (!isKick && !Config.getPlayerTeams().containsKey(playerUUID)) {
+            Objects.requireNonNull(player.getPlayer()).sendMessage(Component.text("Du bist in keinem Team!", NamedTextColor.RED));
             return;
         }
 
-        Integer teamId = PLAYER_TEAMS.get(playerUUID);
-        Set<UUID> teamMembers = TEAMS.get(teamId);
+        Integer teamId = Config.getPlayerTeams().get(playerUUID);
+        Set<UUID> teamMembers = Config.getTeams().get(teamId);
 
         // Spieler aus dem Team entfernen
-        teamMembers.remove(playerUUID);
-        PLAYER_TEAMS.remove(playerUUID);
+        Config.removePlayerFromTeam(playerUUID);
 
-        player.sendMessage(Component.text("Du hast das Team #" + teamId + " verlassen!", NamedTextColor.YELLOW));
+        if(!isKick) {
+            Objects.requireNonNull(player.getPlayer()).sendMessage(Component.text("Du hast das Team #" + teamId + " verlassen!", NamedTextColor.YELLOW));
+        }
 
         // Alle Teammitglieder benachrichtigen
         for (UUID memberUUID : teamMembers) {
@@ -194,15 +185,10 @@ public class TeamHandler {
             }
         }
 
-        // Wenn das Team leer ist, entfernen
-        if (teamMembers.isEmpty()) {
-            TEAMS.remove(teamId);
-            TEAM_LEADERS.remove(teamId);
-        }
         // Wenn der Leader das Team verlässt, neuen Leader bestimmen
-        else if (TEAM_LEADERS.get(teamId).equals(playerUUID)) {
+        if (Config.getTeamLeaders().containsKey(teamId) && Config.getTeamLeaders().get(teamId).equals(playerUUID)) {
             UUID newLeader = teamMembers.iterator().next();
-            TEAM_LEADERS.put(teamId, newLeader);
+            Config.setTeamLeader(teamId, newLeader);
             Player newLeaderPlayer = Bukkit.getPlayer(newLeader);
             if (newLeaderPlayer != null) {
                 newLeaderPlayer.sendMessage(Component.text("Du bist jetzt der neue Leader von Team #" + teamId + "!", NamedTextColor.GOLD));
@@ -211,64 +197,105 @@ public class TeamHandler {
     }
 
     public static void handleKickCommand(Player player, String[] args) {
+
         if (args.length != 2) {
             player.sendMessage(Component.text("Verwendung: /team kick <Spielername>", NamedTextColor.RED));
             return;
         }
 
-        UUID playerUUID = player.getUniqueId();
-        if (!PLAYER_TEAMS.containsKey(playerUUID)) {
-            player.sendMessage(Component.text("Du bist in keinem Team!", NamedTextColor.RED));
-            return;
-        }
-
-        Integer teamId = PLAYER_TEAMS.get(playerUUID);
-        if (!TEAM_LEADERS.get(teamId).equals(playerUUID)) {
-            player.sendMessage(Component.text("Nur der Team-Leader kann Spieler kicken!", NamedTextColor.RED));
-            return;
-        }
-
         String targetName = args[1];
-        Player target = Bukkit.getPlayerExact(targetName);
-        if (target == null || !PLAYER_TEAMS.containsKey(target.getUniqueId()) || !PLAYER_TEAMS.get(target.getUniqueId()).equals(teamId)) {
-            player.sendMessage(Component.text("Der Spieler ist nicht in deinem Team!", NamedTextColor.RED));
+        OfflinePlayer target = Bukkit.getOfflinePlayerIfCached(targetName);
+        if (target == null) {
+            player.sendMessage(Component.text("Spieler nicht gefunden!", NamedTextColor.RED));
             return;
         }
 
         UUID targetUUID = target.getUniqueId();
-        if (targetUUID.equals(playerUUID)) {
-            player.sendMessage(Component.text("Du kannst dich nicht selbst kicken!", NamedTextColor.RED));
+        Integer targetTeamId = Config.getPlayerTeams().get(targetUUID);
+
+        if (targetTeamId == null) {
+            player.sendMessage(Component.text("Der Spieler ist in keinem Team!", NamedTextColor.RED));
             return;
         }
 
-        TEAMS.get(teamId).remove(targetUUID);
-        PLAYER_TEAMS.remove(targetUUID);
+        if (!player.isOp()) {
+            UUID playerUUID = player.getUniqueId();
 
-        player.sendMessage(Component.text("Du hast " + target.getName() + " aus deinem Team entfernt!", NamedTextColor.YELLOW));
-        target.sendMessage(Component.text("Du wurdest von " + player.getName() + " aus dem Team entfernt!", NamedTextColor.RED));
+            if (!Config.getPlayerTeams().containsKey(playerUUID)) {
+                player.sendMessage(Component.text("Du bist in keinem Team!", NamedTextColor.RED));
+                return;
+            }
+
+            Integer ownTeamId = Config.getPlayerTeams().get(playerUUID);
+            if (!Config.getTeamLeaders().get(ownTeamId).equals(playerUUID)) {
+                player.sendMessage(Component.text("Nur der Team-Leader kann Spieler kicken!", NamedTextColor.RED));
+                return;
+            }
+
+            if (!ownTeamId.equals(targetTeamId)) {
+                player.sendMessage(Component.text("Der Spieler ist nicht in deinem Team!", NamedTextColor.RED));
+                return;
+            }
+
+            if (targetUUID.equals(playerUUID)) {
+                player.sendMessage(Component.text("Du kannst dich nicht selbst kicken!", NamedTextColor.RED));
+                return;
+            }
+        }
+
+        player.sendMessage(Component.text("Du hast " + target.getName() + " aus dem Team entfernt!", NamedTextColor.RED));
+
+        if(target.getPlayer() != null) {
+            target.getPlayer().sendMessage(Component.text("Du wurdest von " + player.getName() + " aus dem Team entfernt!", NamedTextColor.RED));
+        }
+
+        handleLeaveCommand(target, true);
     }
 
 
-    public static void handleListCommand(Player player) {
+    public static void handleListCommand(Player player, String[] args) {
         UUID playerUUID = player.getUniqueId();
+        Integer teamId;
 
-        if (!PLAYER_TEAMS.containsKey(playerUUID)) {
-            player.sendMessage(Component.text("Du bist in keinem Team!", NamedTextColor.RED));
-            return;
+        // Wenn OP und Argument vorhanden: Zugriff auf beliebiges Team
+        if (args.length == 2 && player.isOp()) {
+            try {
+                teamId = Integer.parseInt(args[1]);
+                if (!Config.getTeams().containsKey(teamId)) {
+                    player.sendMessage(Component.text("Dieses Team existiert nicht!", NamedTextColor.RED));
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                player.sendMessage(Component.text("Ungültige Team-ID!", NamedTextColor.RED));
+                return;
+            }
+        } else {
+            // Normaler Aufruf (kein OP oder kein Argument): eigenes Team
+            if (!Config.getPlayerTeams().containsKey(playerUUID)) {
+                player.sendMessage(Component.text("Du bist in keinem Team!", NamedTextColor.RED));
+                return;
+            }
+            teamId = Config.getPlayerTeams().get(playerUUID);
         }
 
-        Integer teamId = PLAYER_TEAMS.get(playerUUID);
-        Set<UUID> teamMembers = TEAMS.get(teamId);
-        UUID leaderUUID = TEAM_LEADERS.get(teamId);
+        Set<UUID> teamMembers = Config.getTeams().get(teamId);
+        UUID leaderUUID = Config.getTeamLeaders().get(teamId);
 
         player.sendMessage(Component.text("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", NamedTextColor.GOLD));
         player.sendMessage(Component.text("TEAM #" + teamId + " (" + teamMembers.size() + " Mitglieder)", NamedTextColor.GOLD));
 
         for (UUID memberUUID : teamMembers) {
-            Player member = Bukkit.getPlayer(memberUUID);
-            String name = member != null ? member.getName() : "Offline";
-            Component status = member != null ? Component.text("Online", NamedTextColor.GREEN) : Component.text("Offline", NamedTextColor.RED);
-            Component role = memberUUID.equals(leaderUUID) ? Component.text(" (Leader)", NamedTextColor.GOLD) : Component.empty();
+            OfflinePlayer member = Bukkit.getOfflinePlayer(memberUUID);
+            String name = member.getName() != null ? member.getName() : "Unbekannt";
+            boolean isOnline = member.isOnline();
+
+            Component status = isOnline
+                    ? Component.text("Online", NamedTextColor.GREEN)
+                    : Component.text("Offline", NamedTextColor.RED);
+
+            Component role = memberUUID.equals(leaderUUID)
+                    ? Component.text(" (Leader)", NamedTextColor.GOLD)
+                    : Component.empty();
 
             player.sendMessage(Component.text("• " + name + " - ", NamedTextColor.WHITE)
                     .append(status)
@@ -278,19 +305,7 @@ public class TeamHandler {
         player.sendMessage(Component.text("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", NamedTextColor.GOLD));
     }
 
-    public static Map<Integer, Set<UUID>> getTeams() {
-        return TEAMS;
-    }
-
-    public static Map<UUID, Integer> getPlayerTeams() {
-        return PLAYER_TEAMS;
-    }
-
     public static Map<UUID, List<String>> getPendingInvites() {
         return PENDING_INVITES;
-    }
-
-    public static Map<Integer, UUID> getTeamLeaders() {
-        return TEAM_LEADERS;
     }
 }

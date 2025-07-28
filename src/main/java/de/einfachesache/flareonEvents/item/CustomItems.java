@@ -1,6 +1,8 @@
 package de.einfachesache.flareonEvents.item;
 
 import de.einfachesache.flareonEvents.item.ingredient.*;
+import de.einfachesache.flareonEvents.item.misc.EventInfoBook;
+import de.einfachesache.flareonEvents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonEvents.item.tool.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
@@ -22,6 +24,8 @@ public enum CustomItems {
     REINFORCED_STICK(ReinforcedStick.getItemName(), ReinforcedStick.getReinforcedStickRecipe().getKey()),
     TRIDENT_SPIKES(TridentSpikes.getItemName(), TridentSpikes.getTridentSpikesRecipe().getKey()),
     TRIDENT_STICK(TridentStick.getItemName(), TridentStick.getTridentStickRecipe().getKey()),
+
+    SOUL_HEART_CRYSTAL(SoulHeartCrystal.getItemName(), SoulHeartCrystal.getNamespacedKey()),
 
     EVENT_INFO_BOOK(EventInfoBook.getItemName(), EventInfoBook.getNamespacedKey());
 

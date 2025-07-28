@@ -2,7 +2,7 @@ package de.einfachesache.flareonEvents.item.tool;
 
 import de.einfachesache.flareonEvents.FlareonEvents;
 import de.einfachesache.flareonEvents.item.ItemUtils;
-import de.einfachesache.flareonEvents.item.WorldUtils;
+import de.einfachesache.flareonEvents.WorldUtils;
 import de.einfachesache.flareonEvents.item.ingredient.ReinforcedStick;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;

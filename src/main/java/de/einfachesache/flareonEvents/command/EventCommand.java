@@ -1,7 +1,7 @@
 package de.einfachesache.flareonEvents.command;
 
 import de.einfachesache.flareonEvents.Config;
-import de.einfachesache.flareonEvents.GameHandler;
+import de.einfachesache.flareonEvents.handler.GameHandler;
 import de.einfachesache.flareonEvents.FlareonEvents;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

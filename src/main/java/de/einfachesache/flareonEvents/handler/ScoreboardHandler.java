@@ -1,5 +1,8 @@
-package de.einfachesache.flareonEvents;
+package de.einfachesache.flareonEvents.handler;
 
+import de.einfachesache.flareonEvents.Config;
+import de.einfachesache.flareonEvents.EventState;
+import de.einfachesache.flareonEvents.FlareonEvents;
 import de.einfachesache.flareonEvents.listener.PlayerDeathListener;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -26,6 +29,7 @@ public class ScoreboardHandler implements Listener {
             @Override
             public void run() {
                 for (Player player : Bukkit.getOnlinePlayers()) {
+                    updateTablist(player);
                     updatePlayerSideboard(player);
                 }
             }
@@ -51,6 +55,52 @@ public class ScoreboardHandler implements Listener {
         player.setScoreboard(board);
 
         updatePlayerSideboard(player);
+        updateTablist(player);
+    }
+
+    private static void updateTablist(Player player) {
+        int teams = Config.getTeams().size();
+
+        String eventPhase = switch (Config.getEventState()) {
+            case NOT_RUNNING -> "§cNICHT GESTARTET";
+            case PREPARING -> "§ePREPARING";
+            case STARTING -> "§eSTARTING";
+            case RUNNING -> "§aLÄUFT";
+        };
+
+        Component header = Component.text(
+                "§6§lFlareon Events\n\n" +
+                        "§7Teams: §f" + teams);
+
+        Component footer = Component.text(
+                "\n" +
+                        "§7Phase: " + eventPhase + "\n" +
+                        "§7Discord: §9discord.gg/flareonevents");
+
+        player.sendPlayerListHeaderAndFooter(header, footer);
+
+        int listOrder = 0;
+        String prefix = "§a";
+        String suffix = "";
+
+        if (FlareonEvents.DEV_UUID.equals(player.getUniqueId())) {
+            listOrder = Integer.MAX_VALUE;
+            prefix = "§4DEV | ";
+        } else if (player.isOp()) {
+            listOrder = Integer.MAX_VALUE-1;
+            prefix = "§cSTAFF | ";
+        } else {
+            int teamID = Config.getPlayerTeams().getOrDefault(player.getUniqueId(), -1);
+            if (teamID != -1) {
+                suffix = "§7 [" + teamID + "]";
+                listOrder = 1000 - teamID;
+            }
+        }
+
+        Component display = Component.text(prefix + player.getName() + suffix);
+        player.setPlayerListOrder(listOrder);
+        player.playerListName(display);
+        player.displayName(display);
     }
 
     private static void updatePlayerSideboard(Player player) {

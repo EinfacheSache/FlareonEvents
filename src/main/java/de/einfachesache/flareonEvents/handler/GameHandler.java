@@ -1,6 +1,9 @@
-package de.einfachesache.flareonEvents;
+package de.einfachesache.flareonEvents.handler;
 
-import de.einfachesache.flareonEvents.item.EventInfoBook;
+import de.einfachesache.flareonEvents.Config;
+import de.einfachesache.flareonEvents.EventState;
+import de.einfachesache.flareonEvents.FlareonEvents;
+import de.einfachesache.flareonEvents.item.misc.EventInfoBook;
 import de.einfachesache.flareonEvents.listener.PlayerDeathListener;
 import de.einfachesache.flareonEvents.listener.PortalCreateListener;
 import net.kyori.adventure.sound.Sound;
@@ -9,6 +12,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -18,6 +22,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("unused")
 public class GameHandler {
 
     static final FlareonEvents plugin = FlareonEvents.getPlugin();
@@ -52,6 +57,7 @@ public class GameHandler {
         tasks.forEach(BukkitTask::cancel);
 
         Config.setEventState(EventState.PREPARING);
+        Config.deleteAllTeams();
         Config.clearParticipant();
         Config.clearDeathParticipant();
         Config.setStopSince(0);
@@ -405,6 +411,11 @@ public class GameHandler {
             player.setSaturation(10);
             player.getInventory().clear();
             player.setExperienceLevelAndProgress(0);
+
+            AttributeInstance attr = player.getAttribute(Attribute.MAX_HEALTH);
+            if (attr != null) {
+                attr.setBaseValue(20);
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package de.einfachesache.flareonEvents.item;
 
+import de.einfachesache.flareonEvents.WorldUtils;
 import de.einfachesache.flareonEvents.item.tool.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -7,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class PassiveEffects {
+public class PassiveItemEffects {
 
     public static void applyPassiveEffects() {
         for (Player player : Bukkit.getOnlinePlayers()) {
