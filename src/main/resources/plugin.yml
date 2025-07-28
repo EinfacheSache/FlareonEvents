@@ -3,7 +3,7 @@ author: EinfacheSache | Tom
 website: https://einfachesache.de/discord
 description: Das offizielle Flareon Events Plugin
 version: '1.0-SNAPSHOT'
-main: de.einfachesache.flareonEvents.FlareonEvents
+main: de.einfachesache.flareonevents.FlareonEvents
 api-version: '1.21'
 commands:
   team:
