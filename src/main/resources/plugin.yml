@@ -7,19 +7,24 @@ main: de.einfachesache.flareonevents.FlareonEvents
 api-version: '1.21'
 commands:
   team:
-    description: 'Team command'
+    description: 'Manage your team: invite, list, leave, and more'
     aliases: [ tm, teams ]
+
+  recipegui:
+    description: 'Open the custom item recipe GUI'
+    aliases: [ rg, items, customs ]
+
   event:
-    description: 'Event Manage Command'
+    description: 'Administrative event management commands'
     permission: 'event.op'
     aliases: [ ev ]
+
+  update:
+    description: 'Update custom items and reload all configuration files'
+    permission: 'event.op'
+    aliases: [ devreload ]
+
   customitem:
-    description: 'Custom Item Command'
+    description: 'Command to give yourself a custom item'
     permission: 'event.op'
     aliases: [ ci ]
-  recipegui:
-    description: 'Open Recipe-Gui'
-    aliases: [ rg, items, customs ]
-  update:
-    description: 'Update Custom-Items'
-    permission: 'event.op'

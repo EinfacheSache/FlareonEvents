@@ -37,7 +37,6 @@ public class PlayerDeathListener implements Listener {
             deceased.kick(Component.text("§4§kAA §4§lAUSLÖSCHUNG! §kAA\n§cDu bist gestorben!"));
         } else {
             event.getDrops().clear();
-            event.getDrops().add(SoulHeartCrystal.createSoulHeartCrystal(deceased.displayName()));
             new BukkitRunnable() {
                 @Override
                 public void run() {
