@@ -2,6 +2,7 @@ package de.einfachesache.flareonevents.listener;
 
 import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.FlareonEvents;
+import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -29,11 +30,16 @@ public class EntityDamageListener implements Listener {
     }
 
     @EventHandler
-    public void onItemBurn(EntityDamageEvent event) {
+    public void onEntityDamage(EntityDamageEvent event) {
+
+        if(event.getCause() == EntityDamageEvent.DamageCause.KILL) {
+            return;
+        }
+
         Entity entity = event.getEntity();
 
         if (entity instanceof Player player) {
-            if (!player.getWorld().getPVP() && !Config.isEventIsRunning()) {
+            if (player.getGameMode() == GameMode.ADVENTURE && !player.getWorld().getPVP() && !Config.isEventIsRunning()) {
                 event.setCancelled(true);
                 return;
             }

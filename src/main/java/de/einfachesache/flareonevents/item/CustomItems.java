@@ -12,22 +12,22 @@ import org.bukkit.persistence.PersistentDataType;
 
 public enum CustomItems {
 
-    FIRE_SWORD(FireSword.getItemName(), FireSword.getFireSwordRecipe().getKey()),
-    NYX_BOW(NyxBow.getItemName(), NyxBow.getNyxBowRecipe().getKey()),
-    POSEIDONS_TRIDENT(PoseidonsTrident.getItemName(), PoseidonsTrident.getPoseidonsTridentRecipe().getKey()),
+    FIRE_SWORD(FireSword.DISPLAY_NAME, FireSword.getFireSwordRecipe().getKey()),
+    NYX_BOW(NyxBow.DISPLAY_NAME, NyxBow.getNyxBowRecipe().getKey()),
+    POSEIDONS_TRIDENT(PoseidonsTrident.DISPLAY_NAME, PoseidonsTrident.getPoseidonsTridentRecipe().getKey()),
 
-    REINFORCED_PICKAXE(ReinforcedPickaxe.getItemName(), ReinforcedPickaxe.getReinforcedPickaxeRecipe().getKey()),
-    BETTER_REINFORCED_PICKAXE(BetterReinforcedPickaxe.getItemName(), BetterReinforcedPickaxe.getBetterReinforcedPickaxeRecipe().getKey()),
+    REINFORCED_PICKAXE(ReinforcedPickaxe.DISPLAY_NAME, ReinforcedPickaxe.getReinforcedPickaxeRecipe().getKey()),
+    BETTER_REINFORCED_PICKAXE(BetterReinforcedPickaxe.DISPLAY_NAME, BetterReinforcedPickaxe.getBetterReinforcedPickaxeRecipe().getKey()),
 
-    GOLD_SHARD(GoldShard.getItemName(), GoldShard.getGoldShardRecipe().getKey()),
-    MAGMA_SHARD(MagmaShard.getItemName(), MagmaShard.getMagmaShardRecipe().getKey()),
-    REINFORCED_STICK(ReinforcedStick.getItemName(), ReinforcedStick.getReinforcedStickRecipe().getKey()),
-    TRIDENT_SPIKES(TridentSpikes.getItemName(), TridentSpikes.getTridentSpikesRecipe().getKey()),
-    TRIDENT_STICK(TridentStick.getItemName(), TridentStick.getTridentStickRecipe().getKey()),
+    GOLD_SHARD(GoldShard.DISPLAY_NAME, GoldShard.getGoldShardRecipe().getKey()),
+    MAGMA_SHARD(MagmaShard.DISPLAY_NAME, MagmaShard.getMagmaShardRecipe().getKey()),
+    REINFORCED_STICK(ReinforcedStick.DISPLAY_NAME, ReinforcedStick.getReinforcedStickRecipe().getKey()),
+    TRIDENT_SPIKES(TridentSpikes.DISPLAY_NAME, TridentSpikes.getTridentSpikesRecipe().getKey()),
+    TRIDENT_STICK(TridentStick.DISPLAY_NAME, TridentStick.getTridentStickRecipe().getKey()),
 
-    SOUL_HEART_CRYSTAL(SoulHeartCrystal.getItemName(), SoulHeartCrystal.getNamespacedKey()),
+    SOUL_HEART_CRYSTAL(SoulHeartCrystal.DISPLAY_NAME, SoulHeartCrystal.NAMESPACED_KEY),
 
-    EVENT_INFO_BOOK(EventInfoBook.getItemName(), EventInfoBook.getNamespacedKey());
+    EVENT_INFO_BOOK(EventInfoBook.DISPLAY_NAME, EventInfoBook.NAMESPACED_KEY);
 
     private final String displayName;
     private final NamespacedKey key;

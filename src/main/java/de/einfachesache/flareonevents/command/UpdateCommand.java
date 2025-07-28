@@ -89,22 +89,22 @@ public class UpdateCommand implements CommandExecutor, TabCompleter {
                         newItem = BetterReinforcedPickaxe.createBetterReinforcedPickaxe();
                         break;
                     case GOLD_SHARD:
-                        newItem = GoldShard.getItem();
+                        newItem = GoldShard.ITEM;
                         break;
                     case MAGMA_SHARD:
-                        newItem = MagmaShard.getItem();
+                        newItem = MagmaShard.ITEM;
                         break;
                     case REINFORCED_STICK:
-                        newItem = ReinforcedStick.getItem();
+                        newItem = ReinforcedStick.ITEM;
                         break;
                     case TRIDENT_SPIKES:
-                        newItem = TridentSpikes.getItem();
+                        newItem = TridentSpikes.ITEM;
                         break;
                     case TRIDENT_STICK:
-                        newItem = TridentStick.getItem();
+                        newItem = TridentStick.ITEM;
                         break;
                     case SOUL_HEART_CRYSTAL:
-                        newItem = SoulHeartCrystal.createSoulHeartCrystal();
+                        newItem = SoulHeartCrystal.createSoulHeartCrystal(SoulHeartCrystal.getDroppedByPlayer(item));
                         break;
                     case EVENT_INFO_BOOK:
                         newItem = EventInfoBook.createEventInfoBook();

@@ -31,9 +31,10 @@ public class PlayerDeathListener implements Listener {
         Player deceased = event.getEntity();
         Player killer = deceased.getKiller();
 
+        event.getDrops().add(SoulHeartCrystal.createSoulHeartCrystal(deceased.displayName()));
+
         if (Config.getEventState() == EventState.RUNNING) {
             Config.addDeathParticipant(event.getPlayer().getUniqueId());
-            event.getDrops().add(SoulHeartCrystal.createSoulHeartCrystal(deceased.displayName()));
             deceased.kick(Component.text("§4§kAA §4§lAUSLÖSCHUNG! §kAA\n§cDu bist gestorben!"));
         } else {
             event.getDrops().clear();
@@ -44,8 +45,10 @@ public class PlayerDeathListener implements Listener {
                     deceased.setGameMode(GameMode.ADVENTURE);
                     deceased.teleport(Config.getMainSpawnLocation());
                 }
-            }.runTaskLater(FlareonEvents.getPlugin(), 2L);
+            }.runTaskLater(FlareonEvents.getPlugin(), 1L);
         }
+
+        event.getDrops().add(SoulHeartCrystal.createSoulHeartCrystal(deceased.displayName()));
 
         AttributeInstance attr = deceased.getAttribute(Attribute.MAX_HEALTH);
         if (attr != null) {

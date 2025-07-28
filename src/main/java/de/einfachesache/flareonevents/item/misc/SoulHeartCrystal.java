@@ -23,16 +23,17 @@ import java.util.List;
 
 public class SoulHeartCrystal implements Listener {
 
-    private static final String ITEM_NAME = "§6Soul Heart Crystal";
-    private static final double maxAllowedHealth = 40;
-    private static final NamespacedKey namespacedKey = new NamespacedKey(FlareonEvents.getPlugin(), "soul_heart_crystal");
+    public static final String DISPLAY_NAME = "§6Soul Heart Crystal";
+    public static final double MAX_ALLOWED_HEALTH = 40;
+    public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "soul_heart_crystal");
+    public static final NamespacedKey DROPPED_BY_PLAYER = new NamespacedKey(FlareonEvents.getPlugin(), "dropped_by_player");
 
     public static ItemStack createSoulHeartCrystal() {
         return createSoulHeartCrystal(Component.text("ITEM CUSTOM CREATED"));
     }
     public static ItemStack createSoulHeartCrystal(Component droppedByPlayer) {
 
-        ItemStack soulHeartCrystal = ItemUtils.createCustomItem(Material.NETHER_STAR, ITEM_NAME, namespacedKey);
+        ItemStack soulHeartCrystal = ItemUtils.createCustomItem(Material.NETHER_STAR, DISPLAY_NAME, NAMESPACED_KEY);
         ItemMeta meta = soulHeartCrystal.getItemMeta();
 
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
@@ -42,12 +43,14 @@ public class SoulHeartCrystal implements Listener {
         lore.add(serializer.deserialize("§7Rechtsklick, um dauerhaft ein zusätzliches §c❤ §7zu erhalten."));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7➤ §aEinmalig benutzbar"));
-        lore.add(serializer.deserialize("§7➤ §cMaximal " + (int) maxAllowedHealth / 2 + " Herzen möglich"));
+        lore.add(serializer.deserialize("§7➤ §cMaximal " + (int) MAX_ALLOWED_HEALTH / 2 + " Herzen möglich"));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§8Geborgen von: §7").append(droppedByPlayer));
         lore.add(serializer.deserialize("§f"));
 
         meta.lore(lore);
+        meta.getPersistentDataContainer().set(DROPPED_BY_PLAYER, PersistentDataType.STRING, droppedByPlayer.toString());
+
         soulHeartCrystal.setItemMeta(meta);
 
         return soulHeartCrystal;
@@ -61,20 +64,20 @@ public class SoulHeartCrystal implements Listener {
         ItemStack item = event.getItem();
         if (item == null || item.getType() != Material.NETHER_STAR) return;
         ItemMeta meta = item.getItemMeta();
-        if (meta == null || !meta.getPersistentDataContainer().has(SoulHeartCrystal.getNamespacedKey(), PersistentDataType.BYTE)) return;
+        if (meta == null || !meta.getPersistentDataContainer().has(SoulHeartCrystal.NAMESPACED_KEY, PersistentDataType.BYTE)) return;
 
 
         AttributeInstance attr = player.getAttribute(Attribute.MAX_HEALTH);
         if (attr == null) return;
 
         double currentMaxHealth = attr.getBaseValue();
-        if (currentMaxHealth >= maxAllowedHealth) {
+        if (currentMaxHealth >= MAX_ALLOWED_HEALTH) {
             player.sendMessage(Component.text("§cDu kannst nicht mehr als 20 Herzen haben!", NamedTextColor.RED));
             event.setCancelled(true);
             return;
         }
 
-        double newHealth = Math.min(currentMaxHealth + 2, maxAllowedHealth);
+        double newHealth = Math.min(currentMaxHealth + 2, MAX_ALLOWED_HEALTH);
         attr.setBaseValue(newHealth);
         player.setHealthScale(newHealth);
         player.sendMessage(Component.text("§aDu spürst neue Lebenskraft durchströmen dich... +1 Herz!", NamedTextColor.GREEN));
@@ -85,12 +88,17 @@ public class SoulHeartCrystal implements Listener {
         event.setCancelled(true);
     }
 
+    public static Component getDroppedByPlayer(ItemStack soulHeartCrystal) {
+        if (soulHeartCrystal == null || !soulHeartCrystal.hasItemMeta()) {
+            return Component.text("ITEM CUSTOM CREATED");
+        }
 
-    public static String getItemName() {
-        return ITEM_NAME;
-    }
+        ItemMeta meta = soulHeartCrystal.getItemMeta();
+        if (meta == null) {
+            return Component.text("ITEM CUSTOM CREATED");
+        }
 
-    public static NamespacedKey getNamespacedKey() {
-        return namespacedKey;
+        String droppedBy = meta.getPersistentDataContainer().get(DROPPED_BY_PLAYER, PersistentDataType.STRING);
+        return Component.text(droppedBy != null ? droppedBy : "ITEM CUSTOM CREATED");
     }
 }

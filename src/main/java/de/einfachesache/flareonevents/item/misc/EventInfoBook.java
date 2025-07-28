@@ -16,12 +16,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class EventInfoBook implements Listener {
 
-    private static final String ITEM_NAME = "§6100-Spieler-Event Info";
-    private static final NamespacedKey namespacedKey = new NamespacedKey(FlareonEvents.getPlugin(), "event_info_book");
+    public static final String DISPLAY_NAME = "§6100-Spieler-Event Info";
+    public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "event_info_book");
 
     public static ItemStack createEventInfoBook() {
 
-        ItemStack book = ItemUtils.createCustomItem(Material.WRITTEN_BOOK, ITEM_NAME, namespacedKey);
+        ItemStack book = ItemUtils.createCustomItem(Material.WRITTEN_BOOK, DISPLAY_NAME, NAMESPACED_KEY);
         BookMeta meta = (BookMeta) book.getItemMeta();
         meta.setAuthor("§eFlareonDev-Team");
 
@@ -36,7 +36,7 @@ public class EventInfoBook implements Listener {
         ItemStack clicked = e.getCurrentItem();
         if (e.getSlot() != 8 || clicked == null || !clicked.hasItemMeta()) return;
 
-        if (clicked.getItemMeta().getPersistentDataContainer().has(EventInfoBook.namespacedKey)) {
+        if (clicked.getItemMeta().getPersistentDataContainer().has(EventInfoBook.NAMESPACED_KEY)) {
             e.setResult(Event.Result.DENY);
             e.getView().setCursor(null);
         }
@@ -48,16 +48,8 @@ public class EventInfoBook implements Listener {
         ItemStack clicked = e.getItemDrop().getItemStack();
         if (!clicked.hasItemMeta()) return;
 
-        if (clicked.getItemMeta().getPersistentDataContainer().has(EventInfoBook.namespacedKey)) {
+        if (clicked.getItemMeta().getPersistentDataContainer().has(EventInfoBook.NAMESPACED_KEY)) {
             e.setCancelled(true);
         }
-    }
-
-    public static String getItemName() {
-        return ITEM_NAME;
-    }
-
-    public static NamespacedKey getNamespacedKey() {
-        return namespacedKey;
     }
 }

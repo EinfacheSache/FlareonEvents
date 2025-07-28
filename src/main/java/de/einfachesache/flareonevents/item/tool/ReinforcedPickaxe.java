@@ -42,7 +42,7 @@ public class ReinforcedPickaxe implements Listener {
         recipe.setIngredient('G', Material.GOLD_INGOT);
         recipe.setIngredient('B', Material.GOLD_BLOCK);
         recipe.setIngredient('D', Material.DIAMOND);
-        recipe.setIngredient('S', ReinforcedStick.getItem());
+        recipe.setIngredient('S', ReinforcedStick.ITEM);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 
@@ -123,9 +123,5 @@ public class ReinforcedPickaxe implements Listener {
         if (drop != null) {
             event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), new ItemStack(drop));
         }
-    }
-
-    public static String getItemName() {
-        return DISPLAY_NAME;
     }
 }

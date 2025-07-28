@@ -10,25 +10,17 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 
 public class TridentSpikes {
 
-    private static final String ITEM_NAME = "§6Trident Shard";
-    private static final NamespacedKey namespacedKey = new NamespacedKey(FlareonEvents.getPlugin(), "trident_spikes");
-    private static final ItemStack item = ItemUtils.createCustomItem(Material.PRISMARINE_SHARD, ITEM_NAME, namespacedKey);
+    public static final String DISPLAY_NAME = "§6Trident Shard";
+    public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "trident_spikes");
+    public static final ItemStack ITEM = ItemUtils.createCustomItem(Material.PRISMARINE_SHARD, DISPLAY_NAME, NAMESPACED_KEY);
 
     public static ShapedRecipe getTridentSpikesRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(namespacedKey, item);
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, ITEM);
         recipe.shape("AAA", "   ", "   ");
         recipe.setIngredient('A', Material.IRON_BLOCK);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 
         return recipe;
-    }
-
-    public static String getItemName() {
-        return ITEM_NAME;
-    }
-
-    public static ItemStack getItem() {
-        return item;
     }
 }

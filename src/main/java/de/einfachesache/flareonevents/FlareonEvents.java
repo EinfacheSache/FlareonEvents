@@ -120,13 +120,16 @@ public final class FlareonEvents extends JavaPlugin {
 
         if (!Config.isEventIsRunning()) {
             Bukkit.getWorlds().forEach(world -> {
+
+                world.setClearWeatherDuration(20 * 60 * 20);
+                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+
+                if(!WorldUtils.isWorldGeneratedFresh())return;
+
+                world.setPVP(false);
                 WorldBorder border = world.getWorldBorder();
                 border.setCenter(0, 0);
                 border.setSize(3000);
-                world.setPVP(false);
-                world.setTime(6000);
-                world.setClearWeatherDuration(20 * 60 * 20);
-                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
             });
         }
     }

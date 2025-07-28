@@ -43,9 +43,9 @@ public class FireSword implements Listener {
     public static ShapedRecipe getFireSwordRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createFireSword());
         recipe.shape(" Z ", "APA", "DBD");
-        recipe.setIngredient('Z', MagmaShard.getItem());
+        recipe.setIngredient('Z', MagmaShard.ITEM);
         recipe.setIngredient('A', Material.NETHERITE_SCRAP);
-        recipe.setIngredient('P', GoldShard.getItem());
+        recipe.setIngredient('P', GoldShard.ITEM);
         recipe.setIngredient('D', Material.DIAMOND_BLOCK);
         recipe.setIngredient('B', Material.BLAZE_ROD);
 
@@ -153,9 +153,5 @@ public class FireSword implements Listener {
         if (Math.random() < FIRE_TICKS_CHANCE) {
             target.setFireTicks(FIRE_TICKS_TIME * 20);
         }
-    }
-
-    public static String getItemName() {
-        return DISPLAY_NAME;
     }
 }

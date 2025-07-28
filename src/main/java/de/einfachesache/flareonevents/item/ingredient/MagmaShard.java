@@ -10,12 +10,12 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 
 public class MagmaShard {
 
-    private static final String ITEM_NAME = "§6Magma Shard";
-    private static final NamespacedKey namespacedKey = new NamespacedKey(FlareonEvents.getPlugin(), "magma_shard");
-    private static final ItemStack item = ItemUtils.createCustomItem(Material.MAGMA_CREAM, ITEM_NAME, namespacedKey);
+    public static final String DISPLAY_NAME = "§6Magma Shard";
+    public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "magma_shard");
+    public static final ItemStack ITEM = ItemUtils.createCustomItem(Material.MAGMA_CREAM, DISPLAY_NAME, NAMESPACED_KEY);
 
     public static ShapedRecipe getMagmaShardRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(namespacedKey, item);
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, ITEM);
         recipe.shape("AAA", "ABA", "AAA");
         recipe.setIngredient('A', Material.MAGMA_BLOCK);
         recipe.setIngredient('B', Material.NETHERITE_SCRAP);
@@ -23,13 +23,5 @@ public class MagmaShard {
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 
         return recipe;
-    }
-
-    public static String getItemName() {
-        return ITEM_NAME;
-    }
-
-    public static ItemStack getItem() {
-        return item;
     }
 }

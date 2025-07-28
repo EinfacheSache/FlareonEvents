@@ -56,7 +56,7 @@ public class NyxBow implements Listener {
         recipe.setIngredient('E', Material.ENDER_EYE);
         recipe.setIngredient('B', Material.BOW);
         recipe.setIngredient('O', Material.OBSIDIAN);
-        recipe.setIngredient('I', MagmaShard.getItem());
+        recipe.setIngredient('I', MagmaShard.ITEM);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 
@@ -185,9 +185,5 @@ public class NyxBow implements Listener {
         if(message != null){
             shooter.sendMessage(Component.text(message));
         }
-    }
-
-    public static String getItemName() {
-        return DISPLAY_NAME;
     }
 }

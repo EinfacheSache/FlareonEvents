@@ -240,8 +240,4 @@ public class BetterReinforcedPickaxe implements Listener {
         }.runTask(FlareonEvents.getPlugin());
 
     }
-
-    public static String getItemName() {
-        return DISPLAY_NAME;
-    }
 }

@@ -71,14 +71,14 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
             return;
         }
 
-        if (namespaceKey.equalsIgnoreCase(FireSword.getItemName())) {
-            showRecipeGUI(player, FireSword.getFireSwordRecipe(), FireSword.getItemName());
-        } else if (namespaceKey.equalsIgnoreCase(NyxBow.getItemName())) {
-            showRecipeGUI(player, NyxBow.getNyxBowRecipe(), NyxBow.getItemName());
-        } else if (namespaceKey.equalsIgnoreCase(PoseidonsTrident.getItemName())) {
-            showRecipeGUI(player, PoseidonsTrident.getPoseidonsTridentRecipe(), PoseidonsTrident.getItemName());
-        } else if (namespaceKey.equalsIgnoreCase(ReinforcedPickaxe.getItemName())) {
-            showRecipeGUI(player, ReinforcedPickaxe.getReinforcedPickaxeRecipe(), ReinforcedPickaxe.getItemName());
+        if (namespaceKey.equalsIgnoreCase(FireSword.DISPLAY_NAME)) {
+            showRecipeGUI(player, FireSword.getFireSwordRecipe(), FireSword.DISPLAY_NAME);
+        } else if (namespaceKey.equalsIgnoreCase(NyxBow.DISPLAY_NAME)) {
+            showRecipeGUI(player, NyxBow.getNyxBowRecipe(), NyxBow.DISPLAY_NAME);
+        } else if (namespaceKey.equalsIgnoreCase(PoseidonsTrident.DISPLAY_NAME)) {
+            showRecipeGUI(player, PoseidonsTrident.getPoseidonsTridentRecipe(), PoseidonsTrident.DISPLAY_NAME);
+        } else if (namespaceKey.equalsIgnoreCase(ReinforcedPickaxe.DISPLAY_NAME)) {
+            showRecipeGUI(player, ReinforcedPickaxe.getReinforcedPickaxeRecipe(), ReinforcedPickaxe.DISPLAY_NAME);
         } else if (namespaceKey.equalsIgnoreCase("§cZurück")) {
             openGUI(player);
         }

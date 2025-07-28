@@ -10,12 +10,12 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 
 public class TridentStick {
 
-    private static final String ITEM_NAME = "§6Trident Stick";
-    private static final NamespacedKey namespacedKey = new NamespacedKey(FlareonEvents.getPlugin(), "trident_stick");
-    private static final ItemStack item = ItemUtils.createCustomItem(Material.LIGHTNING_ROD, ITEM_NAME, namespacedKey);
+    public static final String DISPLAY_NAME = "§6Trident Stick";
+    public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "trident_stick");
+    public static final ItemStack ITEM = ItemUtils.createCustomItem(Material.LIGHTNING_ROD, DISPLAY_NAME, NAMESPACED_KEY);
 
     public static ShapedRecipe getTridentStickRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(namespacedKey, item);
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, ITEM);
         recipe.shape("ABA", "C C", "ABA");
         recipe.setIngredient('A', Material.PRISMARINE_CRYSTALS);
         recipe.setIngredient('B', Material.NETHERITE_SCRAP);
@@ -24,13 +24,5 @@ public class TridentStick {
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 
         return recipe;
-    }
-
-    public static String getItemName() {
-        return ITEM_NAME;
-    }
-
-    public static ItemStack getItem() {
-        return item;
     }
 }

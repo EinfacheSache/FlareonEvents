@@ -51,8 +51,8 @@ public class PoseidonsTrident implements Listener {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createPoseidonsTrident());
         recipe.shape(" AB", " CA", "C  ");
         recipe.setIngredient('A', Material.DIAMOND_BLOCK);
-        recipe.setIngredient('B', TridentSpikes.getItem());
-        recipe.setIngredient('C', TridentStick.getItem());
+        recipe.setIngredient('B', TridentSpikes.ITEM);
+        recipe.setIngredient('C', TridentStick.ITEM);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 
@@ -170,9 +170,5 @@ public class PoseidonsTrident implements Listener {
             LightningStrike lightningStrike = trident.getWorld().strikeLightning(trident.getLocation());
             lightningStrike.getPersistentDataContainer().set(new NamespacedKey(FlareonEvents.getPlugin(), "trident_lightning_" + player.getName().toLowerCase()), PersistentDataType.BYTE, (byte) 1);
         }
-    }
-
-    public static String getItemName() {
-        return DISPLAY_NAME;
     }
 }

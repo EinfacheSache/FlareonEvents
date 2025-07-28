@@ -11,12 +11,12 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 
 public class ReinforcedStick {
 
-    private static final String ITEM_NAME = "§6Reinforced Stick";
-    private static final NamespacedKey namespacedKey = new NamespacedKey(FlareonEvents.getPlugin(), "reinforced_stick");
-    private static final ItemStack item = ItemUtils.createCustomItem(Material.BREEZE_ROD, ITEM_NAME, namespacedKey);
+    public static final String DISPLAY_NAME = "§6Reinforced Stick";
+    public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "reinforced_stick");
+    public static final ItemStack ITEM = ItemUtils.createCustomItem(Material.BREEZE_ROD, DISPLAY_NAME, NAMESPACED_KEY);
 
     public static ShapedRecipe getReinforcedStickRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(namespacedKey, getItem());
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createReinforcedStick());
         recipe.shape(" C ", " I ", " C ");
         recipe.setIngredient('C', Material.CHAIN);
         recipe.setIngredient('I', Material.IRON_INGOT);
@@ -26,12 +26,8 @@ public class ReinforcedStick {
         return recipe;
     }
 
-    public static String getItemName() {
-        return ITEM_NAME;
-    }
-
-    public static ItemStack getItem() {
-        item.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
-        return item;
+    public static ItemStack createReinforcedStick() {
+        ITEM.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
+        return ITEM;
     }
 }

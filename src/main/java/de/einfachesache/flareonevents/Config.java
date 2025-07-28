@@ -473,6 +473,10 @@ public class Config {
     }
 
     public static void deleteAllTeams() {
+        PLAYER_TEAMS.clear();
+        TEAM_LEADERS.clear();
+        TEAMS.clear();
+        nextTeamId = 1;
         Config.save(teamsFile, "teams", null);
         Config.save(teamsFile, "next-team-id", 1);
     }

@@ -83,56 +83,38 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
 
     private void givePoseidonsTrident(Player player) {
         player.getInventory().addItem(PoseidonsTrident.createPoseidonsTrident());
-        player.sendMessage(Component.text(
-                "Item Poseidon's Trident created! with ModelData: null",
-                NamedTextColor.GREEN
-        ));
+        player.sendMessage(Component.text("Item Poseidon's Trident created! with ModelData: null", NamedTextColor.GREEN));
     }
 
     private void giveNyxBow(Player player) {
         player.getInventory().addItem(NyxBow.createNyxBow());
-        player.sendMessage(Component.text(
-                "Item Nyx Bow created! with ModelData: null",
-                NamedTextColor.GREEN
-        ));
+        player.sendMessage(Component.text("Item Nyx Bow created! with ModelData: null", NamedTextColor.GREEN));
     }
 
     private void giveReinforcedPickaxe(Player player) {
         player.getInventory().addItem(ReinforcedPickaxe.createReinforcedPickaxe());
-        player.sendMessage(Component.text(
-                "Item Reinforced Pickaxe created! with ModelData: null",
-                NamedTextColor.GREEN
-        ));
+        player.sendMessage(Component.text("Item Reinforced Pickaxe created! with ModelData: null", NamedTextColor.GREEN));
     }
 
     private void giveBetterReinforcedPickaxe(Player player) {
         player.getInventory().addItem(BetterReinforcedPickaxe.createBetterReinforcedPickaxe());
-        player.sendMessage(Component.text(
-                "Item Better Reinforced Pickaxe created! with ModelData: null",
-                NamedTextColor.GREEN
-        ));
+        player.sendMessage(Component.text("Item Better Reinforced Pickaxe created! with ModelData: null", NamedTextColor.GREEN));
     }
 
     private void giveMisc(Player player) {
         player.getInventory().addItem(SoulHeartCrystal.createSoulHeartCrystal().asQuantity(64));
-        player.sendMessage(Component.text(
-                "Item Soul Heart Crystal created! with ModelData: null",
-                NamedTextColor.GREEN
-        ));
+        player.sendMessage(Component.text("Item Soul Heart Crystal created! with ModelData: null", NamedTextColor.GREEN));
     }
 
     private void giveIngredient(Player player) {
 
-        player.getInventory().addItem(GoldShard.getItem());
-        player.getInventory().addItem(MagmaShard.getItem());
-        player.getInventory().addItem(TridentSpikes.getItem());
-        player.getInventory().addItem(TridentStick.getItem());
-        player.getInventory().addItem(ReinforcedStick.getItem());
+        player.getInventory().addItem(GoldShard.ITEM);
+        player.getInventory().addItem(MagmaShard.ITEM);
+        player.getInventory().addItem(TridentSpikes.ITEM);
+        player.getInventory().addItem(TridentStick.ITEM);
+        player.getInventory().addItem(ReinforcedStick.ITEM);
 
-        player.sendMessage(Component.text(
-                "Ingredient created!",
-                NamedTextColor.GREEN
-        ));
+        player.sendMessage(Component.text("Ingredient created!", NamedTextColor.GREEN));
     }
 
     private void giveAllItems(Player player) {

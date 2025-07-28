@@ -10,12 +10,12 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 
 public class GoldShard {
 
-    private static final String ITEM_NAME = "§6Gold Shard";
-    private static final NamespacedKey namespacedKey = new NamespacedKey(FlareonEvents.getPlugin(), "gold_shard");
-    private static final ItemStack item = ItemUtils.createCustomItem(Material.GOLD_INGOT, ITEM_NAME, namespacedKey);
+    public static final String DISPLAY_NAME = "§6Gold Shard";
+    public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "gold_shard");
+    public static final ItemStack ITEM = ItemUtils.createCustomItem(Material.GOLD_INGOT, DISPLAY_NAME, NAMESPACED_KEY);
 
     public static ShapedRecipe getGoldShardRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(namespacedKey, item);
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, ITEM);
         recipe.shape("AAA", "ABA", "AAA");
         recipe.setIngredient('A', Material.GOLD_INGOT);
         recipe.setIngredient('B', Material.NETHERITE_SCRAP);
@@ -23,14 +23,6 @@ public class GoldShard {
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 
         return recipe;
-    }
-
-    public static String getItemName() {
-        return ITEM_NAME;
-    }
-
-    public static ItemStack getItem() {
-        return item;
     }
 }
 
