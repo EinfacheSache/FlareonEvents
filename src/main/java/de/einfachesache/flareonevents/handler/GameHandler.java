@@ -412,7 +412,6 @@ public class GameHandler {
                 player.setHealthScale(20);
             }
 
-
             if (!player.isOp()) {
                 player.getInventory().clear();
             }

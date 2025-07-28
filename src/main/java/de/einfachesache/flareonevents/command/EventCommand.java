@@ -99,15 +99,14 @@ public class EventCommand implements CommandExecutor, TabCompleter {
             if (target != null) {
                 boolean completeReset = args.length == 3 && safeParseBoolean(args[2]);
                 GameHandler.resetPlayer(target, true, completeReset);
-                sender.sendMessage("§cDer Spieler §6" + target.getName() + "§c wurde resetet! §7(completeReset=" + completeReset + ")");
+                sender.sendMessage("§cDer Spieler §6" + target.getName() + "§c wurde resetet! §7(totalReset=" + completeReset + ")");
                 return true;
             }
 
-            if (args.length == 2) {
-                boolean completeReset = safeParseBoolean(args[1]);
-                Bukkit.getOnlinePlayers().forEach(player -> GameHandler.resetPlayer(player, true, safeParseBoolean(args[1])));
-                sender.sendMessage("§cAlle Spieler wurden resetet! §7(completeReset=" + completeReset + ")");
-
+            if (args.length == 2 || args.length == 3) {
+                boolean completeReset = (args.length == 3 && safeParseBoolean(args[2]));
+                Bukkit.getOnlinePlayers().forEach(player -> GameHandler.resetPlayer(player, true, completeReset));
+                sender.sendMessage("§cAlle Spieler wurden resetet! §7(totalReset=" + completeReset + ")");
                 return true;
             }
         }
