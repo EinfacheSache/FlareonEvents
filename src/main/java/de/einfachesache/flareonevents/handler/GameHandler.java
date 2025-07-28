@@ -391,31 +391,35 @@ public class GameHandler {
     }
 
     public static void resetPlayer(Player player, boolean potionReset, boolean completeReset) {
-
         if (potionReset) {
             player.clearActivePotionEffects();
         }
 
-        if (Config.getEventState() != EventState.STARTING || completeReset) {
+        if (completeReset || Config.getEventState() != EventState.STARTING) {
             Objects.requireNonNull(player.getAttribute(Attribute.JUMP_STRENGTH)).setBaseValue(0.42);
             player.setWalkSpeed(0.2f);
         }
-
-        if (player.isOp()) return;
-
-        player.setGameMode(Config.isEventIsRunning() ? GameMode.SURVIVAL : GameMode.ADVENTURE);
 
         if (completeReset) {
             player.setHealth(20);
             player.setFoodLevel(20);
             player.setSaturation(10);
-            player.getInventory().clear();
             player.setExperienceLevelAndProgress(0);
 
             AttributeInstance attr = player.getAttribute(Attribute.MAX_HEALTH);
             if (attr != null) {
                 attr.setBaseValue(20);
+                player.setHealthScale(20);
             }
+
+
+            if (!player.isOp()) {
+                player.getInventory().clear();
+            }
+        }
+
+        if (!player.isOp()) {
+            player.setGameMode(Config.isEventIsRunning() ? GameMode.SURVIVAL : GameMode.ADVENTURE);
         }
     }
 

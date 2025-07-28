@@ -50,6 +50,7 @@ public class PlayerDeathListener implements Listener {
         AttributeInstance attr = deceased.getAttribute(Attribute.MAX_HEALTH);
         if (attr != null) {
             attr.setBaseValue(20);
+            deceased.setHealthScale(20);
         }
 
         event.deathMessage(Component.text("§k22 §c§lAUSLÖSCHUNG! §fEin Spieler ist gestorben §k22"));
