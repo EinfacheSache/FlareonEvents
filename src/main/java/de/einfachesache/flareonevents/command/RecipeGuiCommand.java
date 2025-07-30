@@ -22,15 +22,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class RecipeGuiCommand implements CommandExecutor, Listener {
 
     private static final Component MAIN_GUI_TITLE = Component.text("Custom Item Rezepte", NamedTextColor.GOLD).decorate(TextDecoration.BOLD, TextDecoration.ITALIC);
     private static final String CATEGORY_GUI_KEY = "category_gui";
+    private static final int[] CATEGORY_GUI_POSITIONS = {10, 12, 14, 16};
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String alias, String @NotNull [] args) {
@@ -45,11 +43,22 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
 
     private void openCategoryGui(Player player) {
         Inventory gui = Bukkit.createInventory(new GUIHolder(null), 27, MAIN_GUI_TITLE);
-        int[] positions = {10, 12, 14, 16}; // Positionen für die Icons
 
         CustomItems.CustomItemType[] types = Arrays.stream(CustomItems.CustomItemType.values())
                 .filter(t -> !t.equals(CustomItems.CustomItemType.OTHER))
                 .toArray(CustomItems.CustomItemType[]::new);
+
+        ItemStack filler = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta fm = filler.getItemMeta();
+        fm.displayName(Component.text(" "));
+        filler.setItemMeta(fm);
+
+        int size = gui.getSize();
+        for (int i = 0; i < size; i++) {
+            if (gui.getItem(i) == null) {
+                gui.setItem(i, filler);
+            }
+        }
 
         for (int i = 0; i < types.length; i++) {
             CustomItems.CustomItemType type = types[i];
@@ -67,7 +76,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
             meta.getPersistentDataContainer().set(new NamespacedKey(FlareonEvents.getPlugin(), CATEGORY_GUI_KEY), PersistentDataType.STRING, type.name());
             icon.setItemMeta(meta);
 
-            gui.setItem(positions[i], icon);
+            gui.setItem(CATEGORY_GUI_POSITIONS[i], icon);
         }
 
         player.openInventory(gui);
@@ -80,27 +89,44 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
 
         int itemCount = items.size();
         int totalSlots = ((itemCount * 2 + 1 + 8) / 9) * 9; // +1 für Zurück, auf nächste 9 aufrunden
-        totalSlots = Math.max(9, Math.min(totalSlots, 54)); // mindestens 2 Reihen, max 6
+        totalSlots = Math.max( 9 * (type.equals(CustomItems.CustomItemType.INGREDIENT) ? 5 : 3), Math.min(totalSlots, 9 * 6)); // mindestens 3 Reihen, max 6
 
         Inventory gui = Bukkit.createInventory(new GUIHolder(previusInventory), totalSlots, Component.text("Rezepte: " + type.getDisplayName(), NamedTextColor.GOLD).decorate(TextDecoration.BOLD, TextDecoration.ITALIC));
 
-        int index = 0;
+        // Glas-Pane als Filler
+        ItemStack filler = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta fm = filler.getItemMeta();
+        fm.displayName(Component.text(" "));
+        filler.setItemMeta(fm);
+
+        int size = gui.getSize();
+        for (int i = 0; i < size; i++) {
+            if (gui.getItem(i) == null) {
+                gui.setItem(i, filler);
+            }
+        }
+
+        int index = 10;
         for (CustomItems item : items) {
             if (index >= totalSlots - 1) break;
             gui.setItem(index, item.getItem().clone());
             index += 2;
         }
 
-        gui.setItem(totalSlots - 1, ItemUtils.createGuiItemFromMaterial(Material.ARROW, "§cZurück"));
+        gui.setItem(totalSlots - 1, ItemUtils.createGuiBackButton());
         player.openInventory(gui);
     }
 
-    private void showRecipeGUI(Player player, ShapedRecipe recipe, String title, Inventory previusInventory) {
-        if (recipe == null) return;
+    private void showRecipeGUI(Player player, ShapedRecipe recipe, Component title, Inventory previusInventory) {
 
-        Inventory inv = Bukkit.createInventory(new GUIHolder(previusInventory), 27, Component.text("Rezept: " + title, NamedTextColor.GOLD).decorate(TextDecoration.BOLD, TextDecoration.ITALIC));
+        Inventory inv = Bukkit.createInventory(new GUIHolder(previusInventory), 27, Component.text("Rezept: ", NamedTextColor.GOLD).decorate(TextDecoration.ITALIC, TextDecoration.BOLD).append(title).decoration(TextDecoration.BOLD, false));
         String[] shape = recipe.getShape();
         Map<Character, RecipeChoice> keyMap = recipe.getChoiceMap();
+        Set<Integer> centerSlots = Set.of(
+                3,4,5,
+                12,13,14,
+                21,22,23
+        );
 
         for (int row = 0; row < shape.length; row++) {
             String line = shape[row];
@@ -123,7 +149,21 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
             }
         }
 
-        inv.setItem(inv.getSize() - 1, ItemUtils.createGuiItemFromMaterial(Material.ARROW, "§cZurück"));
+        // Glas-Pane als Filler
+        ItemStack filler = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta fm = filler.getItemMeta();
+        fm.displayName(Component.text(" "));
+        filler.setItemMeta(fm);
+
+        int size = inv.getSize();
+        for (int i = 0; i < size; i++) {
+            if (centerSlots.contains(i) || i == size - 1) continue;  // Mitte und Back‑Button auslassen
+            if (inv.getItem(i) == null) {
+                inv.setItem(i, filler);
+            }
+        }
+
+        inv.setItem(inv.getSize() - 1, ItemUtils.createGuiBackButton());
         player.openInventory(inv);
     }
 
@@ -136,67 +176,53 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         ItemStack clicked = e.getCurrentItem();
         InventoryHolder holder = e.getClickedInventory().getHolder();
 
-        if(!(holder instanceof GUIHolder(Inventory previusInventory))) {
+        if(!(holder instanceof GUIHolder(Inventory previousInventory))) {
             return;
         }
 
         e.setCancelled(true);
 
+        if(clicked.getType() == Material.BARRIER || clicked.getType() ==  Material.GRAY_STAINED_GLASS_PANE) {
+            return;
+        }
+
+        // 1) Zurück-Button
+        if (ItemUtils.createGuiBackButton().equals(e.getCurrentItem())) {
+            player.openInventory(previousInventory);
+            return;
+        }
+
+        // 2) show Recipe GUI
         if (title.startsWith("Rezept: ")) {
-            e.setCancelled(true);
-            if (clicked.getType() != Material.ARROW) {
+            Optional<CustomItems> opt = Arrays.stream(CustomItems.values())
+                    .filter(ci -> clicked.isSimilar(ci.getItem()))
+                    .findFirst();
 
-                Optional<CustomItems> opt = Arrays.stream(CustomItems.values())
-                        .filter(ci -> clicked.isSimilar(ci.getItem()))
-                        .findFirst();
-
-                if (opt.isPresent()) {
-                    showRecipeGUI(player, getCustomRecipeFor(opt.get()), ItemUtils.getExactDisplayName(clicked), e.getClickedInventory());
-                    return;
-                }
-
-                showRecipeGUI(player, getRecipeFor(clicked), ItemUtils.getExactDisplayName(clicked), e.getClickedInventory());
+            if (opt.isPresent()) {
+                showRecipeGUI(player, getCustomRecipeFor(opt.get()), clicked.effectiveName(), e.getClickedInventory());
                 return;
             }
 
-            openCategoryGui(player);
+            ShapedRecipe recipe = getRecipeFor(clicked);
+            showRecipeGUI(player, recipe, recipe.getResult().effectiveName().color(NamedTextColor.AQUA), e.getClickedInventory());
+            return;
         }
 
-        // 2) Kategorie-Auswahl
+        // 3) Kategorie-Auswahl
         if (e.getView().title().equals(MAIN_GUI_TITLE)) {
-            String cat = clicked.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(FlareonEvents.getPlugin(), CATEGORY_GUI_KEY), PersistentDataType.STRING);
-            if (cat != null) {
-                try {
-                    openItemsOfCategory(player, CustomItems.CustomItemType.valueOf(cat), e.getClickedInventory());
-                } catch (Exception ex) {
-                    e.setCancelled(true);
-                    FlareonEvents.getLogManager().error(ex.getMessage(), ex);
-                }
+            try {
+                String cat = clicked.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(FlareonEvents.getPlugin(), CATEGORY_GUI_KEY), PersistentDataType.STRING);
+                openItemsOfCategory(player, CustomItems.CustomItemType.valueOf(cat), e.getClickedInventory());
+            } catch (IllegalArgumentException | NullPointerException ex) {
+                FlareonEvents.getLogManager().error(ex.getMessage(), ex);
             }
             return;
         }
 
-        // 3) Items einer Kategorie
-        if (clicked != null) {
-            try {
-                Optional<CustomItems> customItems = Arrays.stream(CustomItems.values())
-                        .filter(ci -> clicked.isSimilar(ci.getItem()))
-                        .findFirst();
-                if (customItems.isPresent()) {
-                    showRecipeGUI(player, getCustomRecipeFor(customItems.get()), ItemUtils.getExactDisplayName(customItems.get().getItem()), e.getClickedInventory());
-                    return;
-                }
-
-            } catch (Exception ex) {
-                e.setCancelled(true);
-                FlareonEvents.getLogManager().error(ex.getMessage(), ex);
-            }
-        }
-
-        // 4) Zurück-Button
-        if (e.getCurrentItem().getType() == Material.ARROW && Component.text("§cZurück").equals(e.getCurrentItem().getItemMeta().displayName())) {
-            player.openInventory(previusInventory);
-        }
+        // 4) Items einer Kategorie
+        Arrays.stream(CustomItems.values())
+                .filter(ci -> clicked.isSimilar(ci.getItem())).findFirst().ifPresent(
+                        items -> showRecipeGUI(player, getCustomRecipeFor(items), items.getItem().effectiveName(), e.getClickedInventory()));
     }
 
     private ShapedRecipe getRecipeFor(ItemStack item) {
@@ -212,11 +238,10 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         return (r instanceof ShapedRecipe s) ? s : ItemUtils.getNotFoundRecipe();
     }
 
-    record GUIHolder(Inventory previusInventory) implements InventoryHolder {
-
+    private record GUIHolder(Inventory previousInventory) implements InventoryHolder {
         @Override
         public @NotNull Inventory getInventory() {
-            return previusInventory;
+            return previousInventory;
         }
     }
 }
