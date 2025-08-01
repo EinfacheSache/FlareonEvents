@@ -2,7 +2,12 @@ package de.einfachesache.flareonevents;
 
 import de.cubeattack.api.util.FileUtils;
 import de.einfachesache.flareonevents.item.ItemUtils;
-import de.einfachesache.flareonevents.item.tool.*;
+import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
+import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
+import de.einfachesache.flareonevents.item.weapon.FireSword;
+import de.einfachesache.flareonevents.item.weapon.NyxBow;
+import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
+import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
 import net.kyori.adventure.text.Component;
 import org.bspfsystems.yamlconfiguration.configuration.ConfigurationSection;
 import org.bukkit.*;
@@ -109,9 +114,15 @@ public class Config {
     private static final FileUtils teamsFile = FlareonEvents.getTeamsFile();
 
     private static void loadTeams() {
+
+        TEAMS.clear();
+        TEAM_LEADERS.clear();
+        PLAYER_TEAMS.clear();
+
         nextTeamId = teamsFile.getInt("next-team-id", 1);
         maxTeamSize = teamsFile.getInt("max-team-size", 3);
         maxInviteDistanz = teamsFile.getInt("max-invite-distanz", 30);
+
         ConfigurationSection teamSection = teamsFile.getConfigurationSection("teams");
         if (teamSection != null) {
             for (String key : teamSection.getKeys(false)) {
@@ -197,7 +208,7 @@ public class Config {
         loadNyxBow();
         loadPoseidonsTrident();
         loadReinforcedPickaxe();
-        loadBetterReinforcedPickaxe();
+        loadSuperiorPickaxe();
     }
 
     private static void loadFireSword() {
@@ -261,19 +272,22 @@ public class Config {
         PoseidonsTrident.ITEM_FLAGS = itemFlags;
     }
 
-    private static void loadBetterReinforcedPickaxe() {
-        // BetterReinforcedPickaxe
-        String brpKeyString = itemsFile.get("items.better_reinforced_pickaxe.key");
-        BetterReinforcedPickaxe.NAMESPACED_KEY = NamespacedKey.fromString(brpKeyString, FlareonEvents.getPlugin());
-        BetterReinforcedPickaxe.MATERIAL = Material.valueOf(itemsFile.get("items.better_reinforced_pickaxe.material"));
-        BetterReinforcedPickaxe.DISPLAY_NAME = itemsFile.get("items.better_reinforced_pickaxe.display_name");
+    private static void loadSuperiorPickaxe() {
+        // Superior Pickaxe
+        String brpKeyString = itemsFile.get("items.superior_pickaxe.key");
+        SuperiorPickaxe.NAMESPACED_KEY = NamespacedKey.fromString(brpKeyString, FlareonEvents.getPlugin());
+        SuperiorPickaxe.MATERIAL = Material.valueOf(itemsFile.get("items.superior_pickaxe.material"));
+        SuperiorPickaxe.DISPLAY_NAME = itemsFile.get("items.superior_pickaxe.display_name");
+
+        // Enchantments einlesen
+        SuperiorPickaxe.ENCHANTMENTS = loadEnchantments("superior_pickaxe");
 
         // X-Ray-Konfiguration
-        BetterReinforcedPickaxe.XRAY_ENABLED_TIME = itemsFile.getInt("items.better_reinforced_pickaxe.xray.enabled_time");
-        BetterReinforcedPickaxe.XRAY_RADIUS = itemsFile.getInt("items.better_reinforced_pickaxe.xray.radius");
-        BetterReinforcedPickaxe.XRAY_COOLDOWN = itemsFile.getInt("items.better_reinforced_pickaxe.xray.cooldown");
+        SuperiorPickaxe.XRAY_ENABLED_TIME = itemsFile.getInt("items.superior_pickaxe.xray.enabled_time");
+        SuperiorPickaxe.XRAY_RADIUS = itemsFile.getInt("items.superior_pickaxe.xray.radius");
+        SuperiorPickaxe.XRAY_COOLDOWN = itemsFile.getInt("items.superior_pickaxe.xray.cooldown");
         // Item-Flags einlesen
-        BetterReinforcedPickaxe.ITEM_FLAGS = itemFlags;
+        SuperiorPickaxe.ITEM_FLAGS = itemFlags;
     }
 
     private static void loadReinforcedPickaxe() {
@@ -465,6 +479,7 @@ public class Config {
                 TEAMS.remove(teamId);
                 TEAM_LEADERS.remove(teamId);
                 Config.save(teamsFile, "teams." + teamId, null);
+                VoiceModPlugin.deleteGroup(teamId);
             } else {
                 List<String> updated = team.stream().map(UUID::toString).toList();
                 Config.save(teamsFile, "teams." + teamId + ".members", updated);

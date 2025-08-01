@@ -2,6 +2,7 @@ package de.einfachesache.flareonevents.listener;
 
 import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.FlareonEvents;
+import de.einfachesache.flareonevents.handler.TeamHandler;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
@@ -24,25 +25,30 @@ public class EntityDamageListener implements Listener {
             event.setCancelled(true);
         }
 
-        if (event.getEntity() instanceof Player && damager.getType() == EntityType.END_CRYSTAL || damager.getType() == EntityType.TNT_MINECART) {
+        if (!(event.getEntity() instanceof Player player)) return;
+
+        if (damager.getType() == EntityType.END_CRYSTAL || damager.getType() == EntityType.TNT_MINECART) {
             event.setCancelled(true);
         }
+
+        if (!(damager instanceof Player playerDamager)) return;
+
+        if(TeamHandler.arePlayersOnSameTeam(player, playerDamager))
+            event.setCancelled(true);
     }
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
 
-        if(event.getCause() == EntityDamageEvent.DamageCause.KILL) {
+        if (event.getCause() == EntityDamageEvent.DamageCause.KILL) {
             return;
         }
 
         Entity entity = event.getEntity();
 
-        if (entity instanceof Player player) {
-            if (player.getGameMode() == GameMode.ADVENTURE && !player.getWorld().getPVP() && !Config.isEventIsRunning()) {
-                event.setCancelled(true);
-                return;
-            }
+        if (!Config.isEventIsRunning() && entity instanceof Player player && player.getGameMode() == GameMode.ADVENTURE) {
+            event.setCancelled(true);
+            return;
         }
 
         if (entity instanceof Item & event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {

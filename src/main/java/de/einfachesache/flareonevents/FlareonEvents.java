@@ -4,19 +4,23 @@ import de.cubeattack.api.logger.LogManager;
 import de.cubeattack.api.util.FileUtils;
 import de.einfachesache.flareonevents.command.*;
 import de.einfachesache.flareonevents.handler.ScoreboardHandler;
-import de.einfachesache.flareonevents.item.misc.EventInfoBook;
-import de.einfachesache.flareonevents.item.PassiveItemEffects;
 import de.einfachesache.flareonevents.item.ItemRecipe;
+import de.einfachesache.flareonevents.item.PassiveItemEffects;
+import de.einfachesache.flareonevents.item.misc.EventInfoBook;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
-import de.einfachesache.flareonevents.item.tool.*;
+import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
+import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
+import de.einfachesache.flareonevents.item.weapon.FireSword;
+import de.einfachesache.flareonevents.item.weapon.NyxBow;
+import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import de.einfachesache.flareonevents.listener.*;
+import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.WorldBorder;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
-import java.util.Random;
 import java.util.UUID;
 
 public final class FlareonEvents extends JavaPlugin {
@@ -31,14 +35,15 @@ public final class FlareonEvents extends JavaPlugin {
     private static FileUtils participantsFile;
     private static FileUtils deathParticipantsFile;
 
-    private static final Random random = new Random();
     private static final LogManager logger = LogManager.getLogger();
 
     public static final UUID DEV_UUID = UUID.fromString("201e5046-24df-4830-8b4a-82b635eb7cc7");
+    private static boolean voiceChatEnabled;
 
     @Override
     public void onLoad() {
         plugin = this;
+        voiceChatEnabled = getServer().getPluginManager().getPlugin("voicechat") != null;
     }
 
     @Override
@@ -97,7 +102,7 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new FireSword(), this);
         Bukkit.getPluginManager().registerEvents(new NyxBow(), this);
 
-        Bukkit.getPluginManager().registerEvents(new BetterReinforcedPickaxe(), this);
+        Bukkit.getPluginManager().registerEvents(new SuperiorPickaxe(), this);
         Bukkit.getPluginManager().registerEvents(new ReinforcedPickaxe(), this);
 
         Bukkit.getPluginManager().registerEvents(new ScoreboardHandler(), this);
@@ -105,7 +110,12 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EventInfoBook(), this);
 
         Bukkit.getPluginManager().registerEvents(new RecipeGuiCommand(), this);
+
+        if (isVoiceChatEnabled()){
+            VoiceModPlugin.registerVoiceChatListener(this);
+        }
     }
+
 
     private void setupEvent() {
         ItemRecipe.loadRecipes();
@@ -124,7 +134,7 @@ public final class FlareonEvents extends JavaPlugin {
                 world.setClearWeatherDuration(20 * 60 * 20);
                 world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 
-                if(!WorldUtils.isWorldGeneratedFresh())return;
+                if (!WorldUtils.isWorldGeneratedFresh()) return;
 
                 world.setPVP(false);
                 WorldBorder border = world.getWorldBorder();
@@ -136,6 +146,10 @@ public final class FlareonEvents extends JavaPlugin {
 
     public static LogManager getLogManager() {
         return logger;
+    }
+
+    public static boolean isVoiceChatEnabled() {
+        return voiceChatEnabled;
     }
 
     public static FileUtils getDeathParticipantsFile() {
@@ -168,9 +182,5 @@ public final class FlareonEvents extends JavaPlugin {
 
     public static FlareonEvents getPlugin() {
         return plugin;
-    }
-
-    public static Random getRandom() {
-        return random;
     }
 }

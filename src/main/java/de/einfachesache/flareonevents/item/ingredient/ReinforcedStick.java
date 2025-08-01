@@ -13,7 +13,7 @@ public class ReinforcedStick {
 
     public static final String DISPLAY_NAME = "§6Reinforced Stick";
     public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "reinforced_stick");
-    public static final ItemStack ITEM = ItemUtils.createCustomItem(Material.BREEZE_ROD, DISPLAY_NAME, NAMESPACED_KEY);
+    public static final ItemStack ITEM = createReinforcedStick();
 
     public static ShapedRecipe getReinforcedStickRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createReinforcedStick());
@@ -26,8 +26,9 @@ public class ReinforcedStick {
         return recipe;
     }
 
-    public static ItemStack createReinforcedStick() {
-        ITEM.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
-        return ITEM;
+    private static ItemStack createReinforcedStick() {
+        ItemStack itemStack = ItemUtils.createCustomItem(Material.BREEZE_ROD, DISPLAY_NAME, NAMESPACED_KEY);
+        itemStack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
+        return itemStack;
     }
 }

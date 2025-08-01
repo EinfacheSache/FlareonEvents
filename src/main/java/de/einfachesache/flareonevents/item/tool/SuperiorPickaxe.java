@@ -1,13 +1,14 @@
 package de.einfachesache.flareonevents.item.tool;
 
 import de.einfachesache.flareonevents.FlareonEvents;
-import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.WorldUtils;
+import de.einfachesache.flareonevents.item.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,8 +23,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
-@SuppressWarnings({"deprecation"})
-public class BetterReinforcedPickaxe implements Listener {
+@SuppressWarnings("deprecation")
+public class SuperiorPickaxe implements Listener {
 
     public static NamespacedKey NAMESPACED_KEY;
     public static Material MATERIAL;
@@ -31,9 +32,10 @@ public class BetterReinforcedPickaxe implements Listener {
     public static int XRAY_ENABLED_TIME, XRAY_RADIUS, XRAY_COOLDOWN;
     public static ItemFlag[] ITEM_FLAGS;
     private static final Map<UUID, Long> cooldownMap = new HashMap<>();
+    public static Map<Enchantment, Integer> ENCHANTMENTS;
 
-    public static ShapedRecipe getBetterReinforcedPickaxeRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createBetterReinforcedPickaxe());
+    public static ShapedRecipe getSuperiorPickaxeRecipe() {
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createSuperiorPickaxe());
         recipe.shape("AAA", "APA", "AAA");
         recipe.setIngredient('A', Material.AMETHYST_SHARD);
         recipe.setIngredient('P', new RecipeChoice.ExactChoice(ReinforcedPickaxe.createReinforcedPickaxe()));
@@ -43,13 +45,13 @@ public class BetterReinforcedPickaxe implements Listener {
         return recipe;
     }
 
-    public static boolean isBetterReinforcedPickaxeItem(ItemStack item) {
+    public static boolean isSuperiorPickaxeItem(ItemStack item) {
         if (item == null || item.getType() != Material.NETHERITE_PICKAXE) return false;
         if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return false;
-        return DISPLAY_NAME.equalsIgnoreCase(item.getItemMeta().getDisplayName());
+        return DISPLAY_NAME.equalsIgnoreCase((ItemUtils.legacyString(item.getItemMeta().displayName())));
     }
 
-    public static ItemStack createBetterReinforcedPickaxe() {
+    public static ItemStack createSuperiorPickaxe() {
         ItemStack item = ReinforcedPickaxe.createReinforcedPickaxe();
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         ItemMeta meta = item.getItemMeta();
@@ -80,13 +82,13 @@ public class BetterReinforcedPickaxe implements Listener {
         lore.add(serializer.deserialize("§f"));
 
         // Dynamisch aus ENCHANTMENTS-Map
-        if (!ReinforcedPickaxe.ENCHANTMENTS.isEmpty()) {
-            lore.add(serializer.deserialize(("§7Enchantment" + (ReinforcedPickaxe.ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
-            lore.addAll(ItemUtils.getEnchantments(ReinforcedPickaxe.ENCHANTMENTS));
+        if (!ENCHANTMENTS.isEmpty()) {
+            lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
+            lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
         }
 
         meta.lore(lore);
-        meta.setCustomModelData(1);
+        meta.setCustomModelData(69);
 
         item.setItemMeta(meta);
         item.addItemFlags(ITEM_FLAGS);
@@ -100,38 +102,35 @@ public class BetterReinforcedPickaxe implements Listener {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (!isBetterReinforcedPickaxeItem(item)) return;
+        if (!isSuperiorPickaxeItem(item)) return;
 
         Material blockType = event.getBlock().getType();
 
         if (!WorldUtils.isOre(blockType)) return;
         if (player.getGameMode() == GameMode.CREATIVE) return;
 
-        Material drop = null;
-        int roll = FlareonEvents.getRandom().nextInt(100) + 1;
-        if (roll <= 10) {
-            drop = Material.DIAMOND;
-        } else if (roll <= 30) {
-            drop = Material.GOLD_INGOT;
-        } else if (roll <= 55) {
-            drop = Material.IRON_INGOT;
-        } else if (roll <= 70) {
-            drop = Material.COAL;
-        } else if (roll <= 73) {
-            drop = Material.NETHERITE_SCRAP;
-        }
+        // (Summe = 73, restliche 27% liefern null)
+        Map<Material, Integer> drops = new LinkedHashMap<>();
+        drops.put(Material.NETHERITE_SCRAP,    3);
+        drops.put(Material.DIAMOND,           10);
+        drops.put(Material.GOLD_INGOT,        20);
+        drops.put(Material.IRON_INGOT,        25);
+        drops.put(Material.COAL,              15);
+
+        Material drop = ItemUtils.getRandomDrop(drops);
 
         if (drop != null) {
             event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), new ItemStack(drop));
         }
     }
 
+
     @EventHandler
     public void onPlayerInteraction(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (!isBetterReinforcedPickaxeItem(item)) return;
+        if (!isSuperiorPickaxeItem(item)) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) return;
 

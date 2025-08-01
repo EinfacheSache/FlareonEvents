@@ -45,7 +45,7 @@ items:
     wither_effect_time: 3          # Dauer in Sekunden
     slow_blind_effect_chance: 0.33 # Chance, Slowness + Blindness zu vergeben
     slow_blind_effect_time: 2      # Dauer in Sekunden
-    cooldown: 500                  # Cooldown in Millisekunden
+    cooldown: 1200                 # Cooldown in Millisekunden
 
   poseidons_trident:
     # NamespacedKey in Java
@@ -90,15 +90,18 @@ items:
         slot: HAND
     # Verzauberungen
     enchantments:
-      efficiency: 3
+      efficiency: 2
 
-  better_reinforced_pickaxe:
+  superior_pickaxe:
     # NamespacedKey in Java
-    key: flareonevents:better_reinforced_pickaxe
+    key: flareonevents:superior_pickaxe
 
     # Item-Grundlagen
     material: NETHERITE_PICKAXE
-    display_name: "§6§kkk §8§lBetter Reinforced Pickaxe §6§kkk"
+    display_name: "§6§kkk §8§lSuperior Pickaxe §6§kkk"
+    # Verzauberungen
+    enchantments:
+      efficiency: 3
     # X-Ray-Konfiguration
     xray:
       enabled_time: 5    # Dauer in Sekunden

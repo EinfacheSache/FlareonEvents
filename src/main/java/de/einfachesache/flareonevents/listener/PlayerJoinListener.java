@@ -2,9 +2,10 @@ package de.einfachesache.flareonevents.listener;
 
 import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.EventState;
+import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.handler.GameHandler;
-import de.einfachesache.flareonevents.item.misc.EventInfoBook;
 import de.einfachesache.flareonevents.item.ItemRecipe;
+import de.einfachesache.flareonevents.item.misc.EventInfoBook;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.GameMode;
@@ -18,6 +19,14 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+
+        player.setResourcePack(
+                "http://192.168.178.10:100/flareon/Flareon-Events-V1.zip",
+                null,
+                Component.text("§bBenötigtes Texturepack für FlareonEvents laden?"),
+                !FlareonEvents.DEV_UUID.equals(player.getUniqueId()) && !player.isOp()
+        );
+
         event.joinMessage(player.displayName().append(Component.text(" ist dem server beigetreten", NamedTextColor.GRAY)));
 
         ItemRecipe.discoverRecipe(player);

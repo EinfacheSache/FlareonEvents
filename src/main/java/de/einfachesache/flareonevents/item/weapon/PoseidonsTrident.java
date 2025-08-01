@@ -1,4 +1,4 @@
-package de.einfachesache.flareonevents.item.tool;
+package de.einfachesache.flareonevents.item.weapon;
 
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.item.ItemUtils;
@@ -6,6 +6,7 @@ import de.einfachesache.flareonevents.item.ingredient.TridentSpikes;
 import de.einfachesache.flareonevents.item.ingredient.TridentStick;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.util.TriState;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -32,7 +33,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
-@SuppressWarnings({"deprecation"})
+@SuppressWarnings("deprecation")
 public class PoseidonsTrident implements Listener {
 
     public static NamespacedKey NAMESPACED_KEY;
@@ -62,7 +63,7 @@ public class PoseidonsTrident implements Listener {
     public static boolean isPoseidonsTridentItem(ItemStack item) {
         if (item == null || item.getType() != MATERIAL) return false;
         if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return false;
-        return DISPLAY_NAME.equals(item.getItemMeta().getDisplayName());
+        return DISPLAY_NAME.equalsIgnoreCase((ItemUtils.legacyString(item.getItemMeta().displayName())));
     }
 
     public static ItemStack createPoseidonsTrident() {
@@ -93,7 +94,7 @@ public class PoseidonsTrident implements Listener {
         lore.add(serializer.deserialize("§7"));
         lore.add(serializer.deserialize("§7§oBesonderheit: §bDolphin's Grace §7& §bWater Breathing §7in Hand"));
         lore.add(serializer.deserialize("§7"));
-        lore.add(serializer.deserialize("§7Angriff: §4+" + attackDamage + " Schaden"));
+        lore.add(serializer.deserialize("§7Schaden: §4" + attackDamage));
         lore.add(serializer.deserialize("§7"));
 
         if (!ENCHANTMENTS.isEmpty()) {
@@ -105,7 +106,7 @@ public class PoseidonsTrident implements Listener {
         lore.add(serializer.deserialize("§7"));
 
         meta.lore(lore);
-        meta.setCustomModelData(1);
+        meta.setCustomModelData(69);
 
         trident.setItemMeta(meta);
         trident.addItemFlags(ITEM_FLAGS);
@@ -149,7 +150,7 @@ public class PoseidonsTrident implements Listener {
         if (!isPoseidonsTridentItem(trident.getItemStack())) return;
         if (!(trident.getShooter() instanceof Player shooter)) return;
 
-        trident.setVisualFire(true);
+        trident.setVisualFire(TriState.TRUE);
 
         if (shooter.getGameMode() == GameMode.CREATIVE) {
             return;

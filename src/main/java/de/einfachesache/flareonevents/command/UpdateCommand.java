@@ -3,10 +3,8 @@ package de.einfachesache.flareonevents.command;
 import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.item.CustomItems;
-import de.einfachesache.flareonevents.item.misc.EventInfoBook;
-import de.einfachesache.flareonevents.item.ingredient.*;
+import de.einfachesache.flareonevents.item.ItemRecipe;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
-import de.einfachesache.flareonevents.item.tool.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
@@ -40,6 +38,7 @@ public class UpdateCommand implements CommandExecutor, TabCompleter {
         }
 
         Config.reloadFiles();
+        ItemRecipe.reloadAllPluginRecipes();
 
         updateInventorys(CustomItems.values());
 
@@ -67,57 +66,16 @@ public class UpdateCommand implements CommandExecutor, TabCompleter {
         }
     }
 
-    private ItemStack replaceInSlot(ItemStack item, CustomItems... customItems) {
-        if (item == null || !item.hasItemMeta()) return item;
+    private ItemStack replaceInSlot(ItemStack oldItem, CustomItems... customItems) {
+        if (oldItem == null || !oldItem.hasItemMeta()) return oldItem;
         for (CustomItems customItem : customItems) {
-            if (customItem.matches(item)) {
-                ItemStack newItem;
-                switch (customItem) {
-                    case FIRE_SWORD:
-                        newItem = FireSword.createFireSword();
-                        break;
-                    case NYX_BOW:
-                        newItem = NyxBow.createNyxBow();
-                        break;
-                    case POSEIDONS_TRIDENT:
-                        newItem = PoseidonsTrident.createPoseidonsTrident();
-                        break;
-                    case REINFORCED_PICKAXE:
-                        newItem = ReinforcedPickaxe.createReinforcedPickaxe();
-                        break;
-                    case BETTER_REINFORCED_PICKAXE:
-                        newItem = BetterReinforcedPickaxe.createBetterReinforcedPickaxe();
-                        break;
-                    case GOLD_SHARD:
-                        newItem = GoldShard.ITEM;
-                        break;
-                    case MAGMA_SHARD:
-                        newItem = MagmaShard.ITEM;
-                        break;
-                    case REINFORCED_STICK:
-                        newItem = ReinforcedStick.ITEM;
-                        break;
-                    case TRIDENT_SPIKES:
-                        newItem = TridentSpikes.ITEM;
-                        break;
-                    case TRIDENT_STICK:
-                        newItem = TridentStick.ITEM;
-                        break;
-                    case SOUL_HEART_CRYSTAL:
-                        newItem = SoulHeartCrystal.createSoulHeartCrystal(SoulHeartCrystal.getDroppedByPlayer(item));
-                        break;
-                    case EVENT_INFO_BOOK:
-                        newItem = EventInfoBook.createEventInfoBook();
-                        break;
-                    default:
-                        return item;
-                }
-
-                newItem.setAmount(item.getAmount());
-                return newItem;
+            if (customItem.matches(oldItem)) {
+                ItemStack newItem = customItem.getItem();
+                newItem.setAmount(oldItem.getAmount());
+                return customItem.equals(CustomItems.SOUL_HEART_CRYSTAL) ? SoulHeartCrystal.createSoulHeartCrystal(SoulHeartCrystal.getDroppedByPlayer(oldItem)) : newItem;
             }
         }
-        return item;
+        return oldItem;
     }
 
     @Override

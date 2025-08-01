@@ -2,6 +2,7 @@ package de.einfachesache.flareonevents.handler;
 
 import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.FlareonEvents;
+import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -17,8 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TeamHandler {
 
     static final FlareonEvents PLUGIN = FlareonEvents.getPlugin();
-
-    // Speichert Team-Einladungen: Eingeladener Spieler -> Liste der Einladenden Spieler (Name)
     static final Map<UUID, List<String>> PENDING_INVITES = new ConcurrentHashMap<>();
 
     public static void handleInviteCommand(Player sender, String[] args) {
@@ -134,6 +133,10 @@ public class TeamHandler {
             teamId = Config.getNextTeamId();
             Config.addTeam(teamId, inviterUUID);
             Config.setTeamLeader(teamId, inviterUUID);
+
+            VoiceModPlugin.createGroup(teamId);
+            VoiceModPlugin.addPlayerToTeam(inviterUUID, teamId);
+
         } else {
             Set<UUID> team = Config.getTeams().get(teamId);
             if (team.size() >= Config.getMaxTeamSize()) {
@@ -144,6 +147,8 @@ public class TeamHandler {
 
         PENDING_INVITES.remove(playerUUID);
         Config.addPlayerToTeam(playerUUID, teamId);
+
+        VoiceModPlugin.addPlayerToTeam(playerUUID, teamId);
 
         player.sendMessage(Component.text("Du bist dem Team #" + teamId + " von " + inviter.getName() + " beigetreten!", NamedTextColor.GREEN));
         inviter.sendMessage(Component.text(player.getName() + " ist deinem Team #" + teamId + " beigetreten!", NamedTextColor.GREEN));
@@ -170,14 +175,16 @@ public class TeamHandler {
         Integer teamId = Config.getPlayerTeams().get(playerUUID);
         Set<UUID> teamMembers = Config.getTeams().get(teamId);
 
-        // Spieler aus dem Team entfernen
         Config.removePlayerFromTeam(playerUUID);
 
         if(!isKick) {
             Objects.requireNonNull(player.getPlayer()).sendMessage(Component.text("Du hast das Team #" + teamId + " verlassen!", NamedTextColor.YELLOW));
         }
 
-        // Alle Teammitglieder benachrichtigen
+        if(player.getPlayer() != null) {
+            VoiceModPlugin.removePlayerToTeam(player.getPlayer().getUniqueId(), teamId);
+        }
+
         for (UUID memberUUID : teamMembers) {
             Player member = Bukkit.getPlayer(memberUUID);
             if (member != null) {
@@ -257,7 +264,6 @@ public class TeamHandler {
         UUID playerUUID = player.getUniqueId();
         Integer teamId;
 
-        // Wenn OP und Argument vorhanden: Zugriff auf beliebiges Team
         if (args.length == 2 && player.isOp()) {
             try {
                 teamId = Integer.parseInt(args[1]);
@@ -270,7 +276,6 @@ public class TeamHandler {
                 return;
             }
         } else {
-            // Normaler Aufruf (kein OP oder kein Argument): eigenes Team
             if (!Config.getPlayerTeams().containsKey(playerUUID)) {
                 player.sendMessage(Component.text("Du bist in keinem Team!", NamedTextColor.RED));
                 return;
@@ -303,6 +308,12 @@ public class TeamHandler {
         }
 
         player.sendMessage(Component.text("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", NamedTextColor.GOLD));
+    }
+
+    public static boolean arePlayersOnSameTeam(Player player1, Player player2) {
+        int TeamIDPlayer1 = Config.getPlayerTeams().getOrDefault(player1.getUniqueId(), -1);
+        int TeamIDPlayer2 = Config.getPlayerTeams().getOrDefault(player2.getUniqueId(), -2);
+        return Objects.equals(TeamIDPlayer1, TeamIDPlayer2);
     }
 
     public static Map<UUID, List<String>> getPendingInvites() {

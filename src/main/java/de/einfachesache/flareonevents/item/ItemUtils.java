@@ -2,19 +2,24 @@ package de.einfachesache.flareonevents.item;
 
 import de.einfachesache.flareonevents.FlareonEvents;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("deprecation")
 public class ItemUtils {
 
     static NamespacedKey invulnerable = new NamespacedKey(FlareonEvents.getPlugin(), "invulnerable");
@@ -36,29 +41,24 @@ public class ItemUtils {
         return item;
     }
 
-    public static ItemStack createGuiItem(ItemStack item) {
+    public static ItemStack createGuiBackButton() {
+        ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
-        meta.getPersistentDataContainer().set(new NamespacedKey(FlareonEvents.getPlugin(), "gui_id"), org.bukkit.persistence.PersistentDataType.STRING, getExactDisplayName(item));
+        meta.displayName(Component.text("Zurück", NamedTextColor.RED));
         item.setItemMeta(meta);
         return item;
     }
 
-    public static ItemStack createGuiItemFromMaterial(Material mat, String name) {
-        ItemStack item = new ItemStack(mat);
-        ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text(name));
-        meta.getPersistentDataContainer().set(new NamespacedKey(FlareonEvents.getPlugin(), "gui_id"), org.bukkit.persistence.PersistentDataType.STRING, name);
-        item.setItemMeta(meta);
-        return item;
-    }
+    public static ShapedRecipe getNotFoundRecipe() {
+        ItemStack notFoundItem = ItemStack.of(Material.BARRIER);
+        ItemMeta meta = notFoundItem.getItemMeta();
+        meta.displayName(Component.text("Kein Rezept Verfügbar", NamedTextColor.RED).decorate(TextDecoration.BOLD, TextDecoration.ITALIC));
+        notFoundItem.setItemMeta(meta);
 
-    public static String getExactDisplayName(ItemStack item) {
-        if (item == null || !item.hasItemMeta()) return "";
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) return "";
-        Component display = meta.displayName();
-        if (display == null) return "";
-        return LegacyComponentSerializer.legacySection().serialize(display);
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(FlareonEvents.getPlugin(), "not_found"), notFoundItem);
+        recipe.shape("   ", " B ", "   ");
+        recipe.setIngredient('B', notFoundItem);
+        return recipe;
     }
 
     public static List<Component> getEnchantments(Map<Enchantment, Integer> enchantments) {
@@ -78,6 +78,27 @@ public class ItemUtils {
         return lore;
     }
 
+    public static Material getRandomDrop(Map<Material, Integer> chances) {
+        int sumWeights = chances.values()
+                .stream()
+                .mapToInt(Integer::intValue)
+                .sum();
+        int roll = ThreadLocalRandom.current().nextInt(100) + 1;
+
+        if (roll > sumWeights) {
+            return null;
+        }
+
+        int cum = 0;
+        for (var e : chances.entrySet()) {
+            cum += e.getValue();
+            if (roll <= cum) {
+                return e.getKey();
+            }
+        }
+        return null;
+    }
+
     public static String toRoman(int num) {
         return switch (num) {
             case 1 -> "I";
@@ -87,6 +108,18 @@ public class ItemUtils {
             case 5 -> "V";
             default -> String.valueOf(num);
         };
+    }
+
+    public static Integer getCustomModelDataIfSet(ItemStack item) {
+        if (!item.hasItemMeta()) {
+            return null;
+        }
+
+        if (!item.getItemMeta().hasCustomModelData()) {
+            return null;
+        }
+
+        return item.getItemMeta().getCustomModelData();
     }
 
     public static UUID stringToUUID(String attribut) {

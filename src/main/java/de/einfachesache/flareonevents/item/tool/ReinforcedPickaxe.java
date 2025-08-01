@@ -1,8 +1,7 @@
 package de.einfachesache.flareonevents.item.tool;
 
-import de.einfachesache.flareonevents.FlareonEvents;
-import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.WorldUtils;
+import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.ingredient.ReinforcedStick;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -23,10 +22,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings({"deprecation"})
+@SuppressWarnings("deprecation")
 public class ReinforcedPickaxe implements Listener {
 
     public static NamespacedKey NAMESPACED_KEY;
@@ -52,7 +52,7 @@ public class ReinforcedPickaxe implements Listener {
     public static boolean isReinforcedPickaxeItem(ItemStack item) {
         if (item == null || item.getType() != MATERIAL) return false;
         if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return false;
-        return DISPLAY_NAME.equalsIgnoreCase(item.getItemMeta().getDisplayName());
+        return DISPLAY_NAME.equalsIgnoreCase(ItemUtils.legacyString(item.getItemMeta().displayName()));
     }
 
     public static ItemStack createReinforcedPickaxe() {
@@ -88,7 +88,7 @@ public class ReinforcedPickaxe implements Listener {
         }
 
         meta.lore(lore);
-        meta.setCustomModelData(1);
+        meta.setCustomModelData(69);
 
         item.setItemMeta(meta);
         item.addItemFlags(ITEM_FLAGS);
@@ -108,17 +108,14 @@ public class ReinforcedPickaxe implements Listener {
         if (!WorldUtils.isOre(blockType)) return;
         if (player.getGameMode() == GameMode.CREATIVE) return;
 
-        Material drop = null;
-        int roll = FlareonEvents.getRandom().nextInt(100) + 1;
-        if (roll <= 5) {
-            drop = Material.DIAMOND;
-        } else if (roll <= 20) {
-            drop = Material.RAW_GOLD;
-        } else if (roll <= 40) {
-            drop = Material.RAW_IRON;
-        } else if (roll <= 50) {
-            drop = Material.COAL;
-        }
+        // (Summe = 50, restliche 50% liefern null)
+        Map<Material, Integer> drops = new LinkedHashMap<>();
+        drops.put(Material.DIAMOND,           5);
+        drops.put(Material.RAW_GOLD,          15);
+        drops.put(Material.RAW_IRON,          20);
+        drops.put(Material.COAL,              10);
+
+        Material drop = ItemUtils.getRandomDrop(drops);
 
         if (drop != null) {
             event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), new ItemStack(drop));

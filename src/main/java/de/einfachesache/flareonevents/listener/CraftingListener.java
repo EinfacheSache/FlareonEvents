@@ -1,9 +1,9 @@
 package de.einfachesache.flareonevents.listener;
 
-import de.einfachesache.flareonevents.item.tool.BetterReinforcedPickaxe;
-import de.einfachesache.flareonevents.item.tool.FireSword;
-import de.einfachesache.flareonevents.item.tool.NyxBow;
-import de.einfachesache.flareonevents.item.tool.PoseidonsTrident;
+import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
+import de.einfachesache.flareonevents.item.weapon.FireSword;
+import de.einfachesache.flareonevents.item.weapon.NyxBow;
+import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.HumanEntity;
@@ -74,8 +74,8 @@ public class CraftingListener implements Listener {
             key = NyxBow.getNyxBowRecipe().getKey();
         } else if (PoseidonsTrident.isPoseidonsTridentItem(inv.getResult())) {
             key = PoseidonsTrident.getPoseidonsTridentRecipe().getKey();
-        } else if (BetterReinforcedPickaxe.isBetterReinforcedPickaxeItem(inv.getResult())) {
-            key = BetterReinforcedPickaxe.getBetterReinforcedPickaxeRecipe().getKey();
+        } else if (SuperiorPickaxe.isSuperiorPickaxeItem(inv.getResult())) {
+            key = SuperiorPickaxe.getSuperiorPickaxeRecipe().getKey();
         } else {
             key = null;
         }
@@ -84,7 +84,7 @@ public class CraftingListener implements Listener {
             return;
         }
 
-        if (key != BetterReinforcedPickaxe.getBetterReinforcedPickaxeRecipe().getKey()) {
+        if (key != SuperiorPickaxe.getSuperiorPickaxeRecipe().getKey()) {
             if (craftedOnce.contains(key)) {
                 event.setResult(Event.Result.DENY);
                 player.sendMessage("§cDieses Item wurde bereits gecraftet und kann nur einmal hergestellt werden.");
@@ -109,7 +109,7 @@ public class CraftingListener implements Listener {
         return FireSword.isFireSwordItem(item)
                 || PoseidonsTrident.isPoseidonsTridentItem(item)
                 || NyxBow.isNyxBowItem(item)
-                || BetterReinforcedPickaxe.isBetterReinforcedPickaxeItem(item);
+                || SuperiorPickaxe.isSuperiorPickaxeItem(item);
     }
 
     private void craftedItem(Player player, NamespacedKey itemKey, String itemName) {

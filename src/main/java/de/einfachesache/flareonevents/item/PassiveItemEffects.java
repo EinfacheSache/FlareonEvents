@@ -1,6 +1,9 @@
 package de.einfachesache.flareonevents.item;
 
 import de.einfachesache.flareonevents.WorldUtils;
+import de.einfachesache.flareonevents.item.weapon.FireSword;
+import de.einfachesache.flareonevents.item.weapon.NyxBow;
+import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import de.einfachesache.flareonevents.item.tool.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -34,7 +37,7 @@ public class PassiveItemEffects {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 30, 0, true, false));
         }
 
-        if ((ReinforcedPickaxe.isReinforcedPickaxeItem(item) || BetterReinforcedPickaxe.isBetterReinforcedPickaxeItem(item)) && WorldUtils.isPlayerInCave(player)) {
+        if ((ReinforcedPickaxe.isReinforcedPickaxeItem(item) || SuperiorPickaxe.isSuperiorPickaxeItem(item)) && WorldUtils.isPlayerInCave(player)) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 30, 0, true, false));
         }
     }

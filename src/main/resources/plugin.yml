@@ -5,6 +5,7 @@ description: Das offizielle Flareon Events Plugin
 version: '1.0-SNAPSHOT'
 main: de.einfachesache.flareonevents.FlareonEvents
 api-version: '1.21'
+softdepend: [voicechat]
 commands:
   team:
     description: 'Manage your team: invite, list, leave, and more'

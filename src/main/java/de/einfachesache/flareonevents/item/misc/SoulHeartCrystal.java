@@ -45,7 +45,7 @@ public class SoulHeartCrystal implements Listener {
         lore.add(serializer.deserialize("§7➤ §aEinmalig benutzbar"));
         lore.add(serializer.deserialize("§7➤ §cMaximal " + (int) MAX_ALLOWED_HEALTH / 2 + " Herzen möglich"));
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§8Geborgen von: " + droppedByPlayer));
+        lore.add(serializer.deserialize("§8Geborgen von: §5" + droppedByPlayer));
         lore.add(serializer.deserialize("§f"));
 
         meta.lore(lore);

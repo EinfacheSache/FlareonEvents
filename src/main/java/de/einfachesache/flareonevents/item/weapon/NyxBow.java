@@ -1,4 +1,4 @@
-package de.einfachesache.flareonevents.item.tool;
+package de.einfachesache.flareonevents.item.weapon;
 
 import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.ingredient.MagmaShard;
@@ -30,7 +30,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
-@SuppressWarnings({"deprecation"})
+@SuppressWarnings("deprecation")
 public class NyxBow implements Listener {
 
     public static NamespacedKey NAMESPACED_KEY;
@@ -66,7 +66,7 @@ public class NyxBow implements Listener {
     public static boolean isNyxBowItem(ItemStack item) {
         if (item == null || item.getType() != MATERIAL) return false;
         if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return false;
-        return DISPLAY_NAME.equalsIgnoreCase(item.getItemMeta().getDisplayName());
+        return DISPLAY_NAME.equalsIgnoreCase((ItemUtils.legacyString(item.getItemMeta().displayName())));
     }
 
     public static ItemStack createNyxBow() {
@@ -99,7 +99,7 @@ public class NyxBow implements Listener {
         lore.add(serializer.deserialize("§f"));
 
         meta.lore(lore);
-        meta.setCustomModelData(1);
+        meta.setCustomModelData(69);
 
         item.setItemMeta(meta);
         item.addItemFlags(ITEM_FLAGS);

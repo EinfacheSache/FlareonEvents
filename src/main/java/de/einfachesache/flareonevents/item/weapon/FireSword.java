@@ -1,11 +1,15 @@
-package de.einfachesache.flareonevents.item.tool;
+package de.einfachesache.flareonevents.item.weapon;
 
 import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.ingredient.GoldShard;
 import de.einfachesache.flareonevents.item.ingredient.MagmaShard;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.*;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
@@ -26,7 +30,7 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 
 import java.util.*;
 
-@SuppressWarnings({"deprecation"})
+@SuppressWarnings("deprecation")
 public class FireSword implements Listener {
 
     public static NamespacedKey NAMESPACED_KEY;
@@ -57,7 +61,7 @@ public class FireSword implements Listener {
     public static boolean isFireSwordItem(ItemStack item) {
         if (item == null || item.getType() != MATERIAL) return false;
         if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return false;
-        return DISPLAY_NAME.equalsIgnoreCase(item.getItemMeta().getDisplayName());
+        return DISPLAY_NAME.equalsIgnoreCase((ItemUtils.legacyString(item.getItemMeta().displayName())));
     }
 
     public static ItemStack createFireSword() {
@@ -89,7 +93,7 @@ public class FireSword implements Listener {
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Besonderheit: §bStrength §7& §bFire Resistance §7in Hand"));
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7Angriff: §4+" + attackDamage + " Schaden"));
+        lore.add(serializer.deserialize("§7Schaden: §4" + attackDamage));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7§oCooldown: §e" + COOLDOWN + "s"));
         lore.add(serializer.deserialize("§f"));
@@ -101,7 +105,7 @@ public class FireSword implements Listener {
         }
 
         meta.lore(lore);
-        meta.setCustomModelData(1);
+        meta.setCustomModelData(69);
 
         item.setItemMeta(meta);
         item.addItemFlags(ITEM_FLAGS);
@@ -121,7 +125,7 @@ public class FireSword implements Listener {
 
         long lastUse = COOLDOWN_MAP.getOrDefault(player.getUniqueId(), 0L);
         if (System.currentTimeMillis() - lastUse < COOLDOWN * 1000L) {
-            player.sendMessage(ChatColor.RED + "Du kannst diese Fähigkeit in " + (COOLDOWN - ((System.currentTimeMillis() - lastUse) / 1000) + "s erneut verwenden!"));
+            player.sendMessage(NamedTextColor.RED + "Du kannst diese Fähigkeit in " + (COOLDOWN - ((System.currentTimeMillis() - lastUse) / 1000) + "s erneut verwenden!"));
             return;
         }
 
