@@ -6,6 +6,7 @@ import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.listener.PlayerDeathListener;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,15 +24,24 @@ public class ScoreboardHandler implements Listener {
 
     private static final ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
     private static final Map<UUID, Scoreboard> playerBoards = new HashMap<>();
+    private static final Map<World, Integer> cachedWorldBorders = new HashMap<>();
+    private static final String[] EMPTY_LINES = { "§0", "§1", "§2", "§3", "§4", "§5", "§6", "§7", "§8", "§9" };
+
+    private static volatile ScoreboardContext cachedContext;
+
+    public record ScoreboardContext(
+            long now,
+            int alive,
+            int total,
+            Component tablistHeader,
+            Component tablistFooter
+    ) {}
 
     public ScoreboardHandler() {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    updateTablist(player);
-                    updatePlayerSideboard(player);
-                }
+                update();
             }
         }.runTaskTimer(FlareonEvents.getPlugin(), 0L, 20L);
     }
@@ -54,13 +64,18 @@ public class ScoreboardHandler implements Listener {
         playerBoards.put(player.getUniqueId(), board);
         player.setScoreboard(board);
 
-        updatePlayerSideboard(player);
-        updateTablist(player);
+        updatePlayer(player);
     }
 
-    private static void updateTablist(Player player) {
-        int teams = Config.getTeams().size();
+    private static void update(){
+        long now = System.currentTimeMillis();
+        int aliveCount = (int) Bukkit.getOnlinePlayers().stream()
+                .filter(p -> !p.isDead() && !p.isOp()).count();
+        int totalCount = Config.isEventStarted()
+                ? Config.getParticipantsUUID().size()
+                : aliveCount;
 
+        int teams = Config.getTeams().size();
         String eventPhase = switch (Config.getEventState()) {
             case NOT_RUNNING -> "§cNICHT GESTARTET";
             case PREPARING -> "§ePREPARING";
@@ -68,91 +83,109 @@ public class ScoreboardHandler implements Listener {
             case RUNNING -> "§aLÄUFT";
         };
 
-        Component header = Component.text(
-                "§6§lFlareon Events\n\n" +
-                        "§7Teams: §f" + teams);
+        Component header = Component.text("§6§lFlareon Events\n\n§7Teams: §f" + teams);
+        Component footer = Component.text("\n§7Phase: " + eventPhase + "\n§7Discord: §9discord.gg/flareonevents");
 
-        Component footer = Component.text(
-                "\n" +
-                        "§7Phase: " + eventPhase + "\n" +
-                        "§7Discord: §9discord.gg/flareonevents");
+        cachedContext = new ScoreboardContext(now, aliveCount, totalCount, header, footer);
 
-        player.sendPlayerListHeaderAndFooter(header, footer);
+        cachedWorldBorders.clear();
+        Bukkit.getWorlds().forEach(world ->
+                cachedWorldBorders.put(world, (int) Math.round(world.getWorldBorder().getSize()))
+        );
 
-        int listOrder = 0;
-        String prefix = "§a";
-        String suffix = "";
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            updatePlayer(player);
+        }
+    }
+
+    private static void updatePlayer(Player player) {
+
+        if (cachedContext == null) {
+            cachedContext = new ScoreboardContext(System.currentTimeMillis(), 0, 0, Component.empty(), Component.empty());
+        }
+
+        updateTablist(player);
+        updatePlayerSideboard(player);
+    }
+
+    private static void updateTablist(Player player) {
+        int teamID = Config.getPlayerTeams().getOrDefault(player.getUniqueId(), -1);
+        String prefix, suffix = teamID == -1 ? "" : "§7 [" + teamID + "]";
+        int listOrder;
 
         if (FlareonEvents.DEV_UUID.equals(player.getUniqueId())) {
-            listOrder = Integer.MAX_VALUE;
             prefix = "§4DEV | ";
+            listOrder = Integer.MAX_VALUE;
         } else if (player.isOp()) {
-            listOrder = Integer.MAX_VALUE-1;
             prefix = "§cSTAFF | ";
+            listOrder = Integer.MAX_VALUE-1;
         } else {
-            int teamID = Config.getPlayerTeams().getOrDefault(player.getUniqueId(), -1);
-            if (teamID != -1) {
-                suffix = "§7 [" + teamID + "]";
-                listOrder = 1000 - teamID;
-            }
+            prefix = "§a";
+            listOrder = (teamID != -1) ? 1000 - teamID : 1000;
         }
 
         Component display = Component.text(prefix + player.getName() + suffix);
+
         player.setPlayerListOrder(listOrder);
         player.playerListName(display);
         player.displayName(display);
+        player.customName(display);
+        player.setCustomNameVisible(true);
+        player.sendPlayerListHeaderAndFooter(cachedContext.tablistHeader, cachedContext.tablistFooter);
     }
 
     private static void updatePlayerSideboard(Player player) {
-        Scoreboard board = playerBoards.get(player.getUniqueId());
-
+        UUID uuid = player.getUniqueId();
+        Scoreboard board = playerBoards.get(uuid);
         if (board == null) return;
 
         Objective sidebar = board.getObjective(DisplaySlot.SIDEBAR);
-
         if (sidebar == null) return;
 
-        //Clear Entries
-        board.getEntries().forEach(entry -> sidebar.getScore(entry).resetScore());
+        board.getEntries().forEach(board::resetScores);
 
-        setEmptyLines(sidebar, 11);
+        int score = 11;
 
-        // --- Zeit ---
-        sidebar.getScore("§eZeit§7:").setScore(10);
+        setEmptyLine(sidebar, score--);
 
-        long startTime = Config.getStartTime() == 0 ? System.currentTimeMillis() : Config.getStartTime();
-        long runningPause = (Config.getStopSince() != 0 ? System.currentTimeMillis() - Config.getStopSince() : 0);
-        long secondsSinceStart = (System.currentTimeMillis() - startTime - runningPause) / 1000;
-        long minutes = secondsSinceStart / 60;
-        long seconds = secondsSinceStart % 60;
+        // Time
+        sidebar.getScore("§eZeit§7:").setScore(score--);
 
-        String timeText = Config.getEventState() == EventState.RUNNING ? String.format("§f%d:%02d", minutes, seconds) : "0:00";
-        sidebar.getScore(timeText).setScore(9);
+        long now = cachedContext.now;
+        long startTime = Config.getStartTime() == 0 ? now : Config.getStartTime();
+        long pauseDuration = Config.getStopSince() != 0 ? now - Config.getStopSince() : 0;
+        long seconds = (now - startTime - pauseDuration) / 1000;
 
-        setEmptyLines(sidebar, 8);
+        String timeText = Config.getEventState() == EventState.RUNNING
+                ? String.format("§f%d:%02d", seconds / 60, seconds % 60)
+                : "0:00";
+        sidebar.getScore(timeText).setScore(score--);
 
-        // --- Alive ---
-        sidebar.getScore("§aPlayer Alive§7:").setScore(7);
-        int aliveCount = (int) Bukkit.getOnlinePlayers().stream().filter(pp -> !pp.isDead() && !pp.isOp()).count();
-        int total = Config.isEventStarted() ? Config.getParticipantsUUID().size() : aliveCount;
-        sidebar.getScore("§f" + aliveCount + "§7/§f" + total).setScore(6);
+        setEmptyLine(sidebar, score--);
 
-        setEmptyLines(sidebar, 5);
+        // Alive
+        sidebar.getScore("§aÜberlebende§7:").setScore(score--);
+        int alive = cachedContext.alive();
+        int total = cachedContext.total();
+        sidebar.getScore("§f" + alive + "§7/§f" + total).setScore(score--);
 
-        sidebar.getScore("§cKills§7:").setScore(4);
-        int killCount = PlayerDeathListener.getPvpKillCounts().getOrDefault(player.getUniqueId(), 0);
-        sidebar.getScore("§f" + killCount).setScore(3);
+        setEmptyLine(sidebar, score--);
 
-        setEmptyLines(sidebar, 2);
+        // Kills
+        sidebar.getScore("§cKills§7:").setScore(score--);
+        int killCount = PlayerDeathListener.getPvpKillCounts().getOrDefault(uuid, 0);
+        sidebar.getScore("§f" + killCount).setScore(score--);
 
-        // --- Border ---
-        sidebar.getScore("§cBorder§7:").setScore(1);
-        int size = (int) Math.round(player.getWorld().getWorldBorder().getSize());
-        sidebar.getScore("§f" + size + "x" + size).setScore(0);
+        setEmptyLine(sidebar, score--);
+
+        // Border
+        sidebar.getScore("§cBorder§7:").setScore(score--);
+        int size = cachedWorldBorders.getOrDefault(player.getWorld(), 0);
+        sidebar.getScore("§f" + size + "x" + size).setScore(score);
 
     }
 
-    private static void setEmptyLines(Objective sidebar, int score) {
-        sidebar.getScore(" ".repeat(score)).setScore(score);
+    private static void setEmptyLine(Objective sidebar, int score) {
+        sidebar.getScore(EMPTY_LINES[score % EMPTY_LINES.length]).setScore(score);
     }
 }
