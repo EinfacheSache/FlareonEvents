@@ -31,7 +31,7 @@ public class GameHandler {
 
     static final int preparingTime = 3 * 60; // DEFAULT: 3 * 60
     static final int startingTime = 2 * 60; // DEFAULT: 2 * 60
-    static final int noPvPTime = 2 * 60; // DEFAULT: 2 * 60
+    static final int noPvPTime = 5 * 60; // DEFAULT: 5 * 60
     static final int netherOpenTime = 60 * 60; // DEFAULT: 60 * 60
 
     static final Title.Times times = Title.Times.times(
