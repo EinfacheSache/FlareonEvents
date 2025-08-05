@@ -21,7 +21,7 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
 
         player.setResourcePack(
-                "http://192.168.178.10:100/flareon/Flareon-Events-V1.zip",
+                "http://einfachesache.de/flareon/Flareon-Events-V1.zip",
                 null,
                 Component.text("§bBenötigtes Texturepack für FlareonEvents laden?"),
                 !FlareonEvents.DEV_UUID.equals(player.getUniqueId()) && !player.isOp()
