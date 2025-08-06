@@ -33,7 +33,6 @@ public class CommandListener implements Listener {
                 }
             }
         }
-        System.out.println(COMMAND_WHITELIST);
     }
 
     @EventHandler
