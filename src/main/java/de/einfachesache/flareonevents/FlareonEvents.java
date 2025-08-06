@@ -69,6 +69,12 @@ public final class FlareonEvents extends JavaPlugin {
     }
 
     private void registerCommands() {
+        Objects.requireNonNull(this.getCommand("help")).setExecutor(new HelpCommand());
+
+        Objects.requireNonNull(this.getCommand("recipe")).setExecutor(new RecipeGuiCommand());
+
+        Objects.requireNonNull(this.getCommand("customitem")).setExecutor(new CustomItemCommand());
+
         Objects.requireNonNull(this.getCommand("team")).setExecutor(new TeamCommand());
         Objects.requireNonNull(this.getCommand("team")).setTabCompleter(new TeamCommand());
 
@@ -77,9 +83,6 @@ public final class FlareonEvents extends JavaPlugin {
 
         Objects.requireNonNull(this.getCommand("update")).setExecutor(new UpdateCommand());
         Objects.requireNonNull(this.getCommand("update")).setTabCompleter(new UpdateCommand());
-
-        Objects.requireNonNull(this.getCommand("customitem")).setExecutor(new CustomItemCommand());
-        Objects.requireNonNull(this.getCommand("recipegui")).setExecutor(new RecipeGuiCommand());
     }
 
     private void registerListener() {
@@ -96,6 +99,7 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerFoodListener(), this);
         Bukkit.getPluginManager().registerEvents(new CustomItemHandler(), this);
         Bukkit.getPluginManager().registerEvents(new CraftingListener(), this);
+        Bukkit.getPluginManager().registerEvents(new CommandListener(), this);
         Bukkit.getPluginManager().registerEvents(new AnvilListener(), this);
 
         Bukkit.getPluginManager().registerEvents(new PoseidonsTrident(), this);

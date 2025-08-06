@@ -24,10 +24,10 @@ import java.util.List;
 
 public class CustomItemCommand implements CommandExecutor, TabCompleter {
 
-    private static final List<String> SUB_COMMANDS = Arrays.asList("FIRE_SWORD", "POSEIDONS_TRIDENT", "NYX_BOW", "REINFORCED_PICKAXE", "SUPERIOR_PICKAXE", "INGREDIENT", "MISC", "ALL");
+    private static final List<String> SUB_COMMANDS = Arrays.asList("FIRE_SWORD", "POSEIDONS_TRIDENT", "NYX_BOW", "REINFORCED_PICKAXE", "SUPERIOR_PICKAXE", "INGREDIENT", "MISC", "ALL_GEAR", "ALL");
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String alias, @NotNull String @NotNull [] args) {
 
         if (!(sender instanceof Player player)) {
             sender.sendMessage("Nur Spieler können diesen Command benutzen.");
@@ -35,10 +35,7 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length != 1) {
-            player.sendMessage(Component.text(
-                    "Usage: /" + label + " <PoseidonsTrident §7|§c NyxBow §7|§c MiningPickaxe §7|§c Ingredient §7|§c Misc §7|§c all>",
-                    NamedTextColor.RED
-            ));
+            sendUsage(player, alias);
             return true;
         }
 
@@ -49,16 +46,23 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
             case "nyx_bow" -> giveItem(player, NyxBow.createNyxBow());
             case "reinforced_pickaxe" -> giveItem(player, ReinforcedPickaxe.createReinforcedPickaxe());
             case "superior_pickaxe" -> giveItem(player, SuperiorPickaxe.createSuperiorPickaxe());
-            case "ingredient" -> giveIngredient(player);
+            case "ingredient" -> giveAllIngredients(player);
             case "misc" -> giveItem(player, SoulHeartCrystal.createSoulHeartCrystal());
+            case "all_gear" -> giveAllGear(player);
             case "all" -> giveAllItems(player);
-            default -> player.sendMessage(Component.text("Unbekannter Item-Key. " +
-                            "Bitte nutze FireSword, PoseidonsTrident, NyxBow, ReinforcedPickaxe, SuperiorPickaxe, Ingredient, Misc oder all.",
-                    NamedTextColor.RED
-            ));
+            default -> {
+                player.sendMessage(Component.text("Unbekannter Item-Key. ", NamedTextColor.RED));
+                sendUsage(player, alias);
+            }
         }
 
         return true;
+    }
+
+    private void sendUsage(Player player, String label) {
+        player.sendMessage(Component.text("§cVerwendung: /" + label + " <key>").color(NamedTextColor.RED));
+        player.sendMessage(Component.text("§7Verfügbare Keys:"));
+        SUB_COMMANDS.forEach(command -> player.sendMessage(Component.text(" §8- §c" + command)));
     }
 
     @Override
@@ -84,7 +88,7 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
                         .append(Component.text(" created with ModelData: §e" + ItemUtils.getCustomModelDataIfSet(item), NamedTextColor.GREEN)));
     }
 
-    private void giveAllItems(Player player) {
+    private void giveAllGear(Player player) {
         giveItem(player, FireSword.createFireSword());
         giveItem(player, PoseidonsTrident.createPoseidonsTrident());
         giveItem(player, NyxBow.createNyxBow());
@@ -92,13 +96,25 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
         giveItem(player, ReinforcedPickaxe.createReinforcedPickaxe());
     }
 
-    private void giveIngredient(Player player) {
+    private void giveAllIngredients(Player player) {
         player.getInventory().addItem(GoldShard.ITEM);
         player.getInventory().addItem(MagmaShard.ITEM);
         player.getInventory().addItem(TridentSpikes.ITEM);
         player.getInventory().addItem(TridentStick.ITEM);
         player.getInventory().addItem(ReinforcedStick.ITEM);
 
-        player.sendMessage(Component.text("Ingredient created!", NamedTextColor.GREEN));
+        player.sendMessage(Component.text("Ingredient items created!", NamedTextColor.GREEN));
+    }
+
+    private void giveAllItems(Player player) {
+        giveItem(player, FireSword.createFireSword());
+        giveItem(player, PoseidonsTrident.createPoseidonsTrident());
+        giveItem(player, NyxBow.createNyxBow());
+        giveItem(player, SuperiorPickaxe.createSuperiorPickaxe());
+        giveItem(player, ReinforcedPickaxe.createReinforcedPickaxe());
+
+        giveItem(player, SoulHeartCrystal.createSoulHeartCrystal());
+
+        giveAllIngredients(player);
     }
 }

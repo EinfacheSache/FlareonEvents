@@ -7,13 +7,16 @@ main: de.einfachesache.flareonevents.FlareonEvents
 api-version: '1.21'
 softdepend: [voicechat]
 commands:
+  help:
+    description: 'Event command Help'
+
   team:
     description: 'Manage your team: invite, list, leave, and more'
-    aliases: [ tm, teams ]
+    aliases: [ tm ]
 
-  recipegui:
+  recipe:
     description: 'Open the custom item recipe GUI'
-    aliases: [ rg, items, customs ]
+    aliases: [ rg, recipegui ]
 
   event:
     description: 'Administrative event management commands'

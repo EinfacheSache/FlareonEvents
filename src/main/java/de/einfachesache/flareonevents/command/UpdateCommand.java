@@ -18,7 +18,7 @@ import java.util.List;
 public class UpdateCommand implements CommandExecutor, TabCompleter {
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String alias, @NotNull String @NotNull [] args) {
 
         if (args.length == 1 && args[0].equalsIgnoreCase("book")) {
 
