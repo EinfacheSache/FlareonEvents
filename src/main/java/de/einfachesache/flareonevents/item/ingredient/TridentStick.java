@@ -6,13 +6,15 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 
+@SuppressWarnings("deprecation")
 public class TridentStick {
 
     public static final String DISPLAY_NAME = "§6Trident Stick";
     public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "trident_stick");
-    public static final ItemStack ITEM = ItemUtils.createCustomItem(Material.LIGHTNING_ROD, DISPLAY_NAME, NAMESPACED_KEY);
+    public static final ItemStack ITEM = createTridentStick();
 
     public static ShapedRecipe getTridentStickRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, ITEM);
@@ -24,5 +26,13 @@ public class TridentStick {
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 
         return recipe;
+    }
+
+    private static ItemStack createTridentStick() {
+        ItemStack itemStack = ItemUtils.createCustomItem(Material.LIGHTNING_ROD, DISPLAY_NAME, NAMESPACED_KEY);
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setCustomModelData(69);
+        itemStack.setItemMeta(meta);
+        return itemStack;
     }
 }

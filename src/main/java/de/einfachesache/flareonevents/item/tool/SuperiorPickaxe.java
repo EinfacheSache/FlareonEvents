@@ -3,6 +3,7 @@ package de.einfachesache.flareonevents.item.tool;
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.WorldUtils;
 import de.einfachesache.flareonevents.item.ItemUtils;
+import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
@@ -36,8 +37,9 @@ public class SuperiorPickaxe implements Listener {
 
     public static ShapedRecipe getSuperiorPickaxeRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createSuperiorPickaxe());
-        recipe.shape("AAA", "APA", "AAA");
+        recipe.shape("AHA", "APA", "AHA");
         recipe.setIngredient('A', Material.AMETHYST_SHARD);
+        recipe.setIngredient('H', new RecipeChoice.ExactChoice(SoulHeartCrystal.createSoulHeartCrystal()));
         recipe.setIngredient('P', new RecipeChoice.ExactChoice(ReinforcedPickaxe.createReinforcedPickaxe()));
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);

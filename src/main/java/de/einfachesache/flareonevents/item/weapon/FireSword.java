@@ -3,13 +3,11 @@ package de.einfachesache.flareonevents.item.weapon;
 import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.ingredient.GoldShard;
 import de.einfachesache.flareonevents.item.ingredient.MagmaShard;
+import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
@@ -46,9 +44,9 @@ public class FireSword implements Listener {
 
     public static ShapedRecipe getFireSwordRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createFireSword());
-        recipe.shape(" Z ", "APA", "DBD");
+        recipe.shape(" Z ", "HPH", "DBD");
         recipe.setIngredient('Z', MagmaShard.ITEM);
-        recipe.setIngredient('A', Material.NETHERITE_SCRAP);
+        recipe.setIngredient('H', SoulHeartCrystal.createSoulHeartCrystal());
         recipe.setIngredient('P', GoldShard.ITEM);
         recipe.setIngredient('D', Material.DIAMOND_BLOCK);
         recipe.setIngredient('B', Material.BLAZE_ROD);
@@ -81,7 +79,7 @@ public class FireSword implements Listener {
         double attackDamage = ((modifiers == null)
                 ? Collections.<AttributeModifier>emptyList()
                 : modifiers.get(Attribute.ATTACK_DAMAGE))
-                .stream()
+                .stream().filter(Objects::nonNull)
                 .mapToDouble(AttributeModifier::getAmount)
                 .sum();
 
@@ -125,7 +123,7 @@ public class FireSword implements Listener {
 
         long lastUse = COOLDOWN_MAP.getOrDefault(player.getUniqueId(), 0L);
         if (System.currentTimeMillis() - lastUse < COOLDOWN * 1000L) {
-            player.sendMessage(NamedTextColor.RED + "Du kannst diese Fähigkeit in " + (COOLDOWN - ((System.currentTimeMillis() - lastUse) / 1000) + "s erneut verwenden!"));
+            player.sendMessage(Component.text("Du kannst diese Fähigkeit in " + (COOLDOWN - ((System.currentTimeMillis() - lastUse) / 1000) + "s erneut verwenden!"), NamedTextColor.RED));
             return;
         }
 
@@ -135,7 +133,7 @@ public class FireSword implements Listener {
         }
 
         player.launchProjectile(Fireball.class).setShooter(player);
-        player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1f, 1f);
+        player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, SoundCategory.PLAYERS, 1f, 1f);
     }
 
     @EventHandler

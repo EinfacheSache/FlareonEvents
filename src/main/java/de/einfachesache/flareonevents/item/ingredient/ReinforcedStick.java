@@ -7,8 +7,10 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 
+@SuppressWarnings("deprecation")
 public class ReinforcedStick {
 
     public static final String DISPLAY_NAME = "§6Reinforced Stick";
@@ -29,6 +31,9 @@ public class ReinforcedStick {
     private static ItemStack createReinforcedStick() {
         ItemStack itemStack = ItemUtils.createCustomItem(Material.BREEZE_ROD, DISPLAY_NAME, NAMESPACED_KEY);
         itemStack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setCustomModelData(69);
+        itemStack.setItemMeta(meta);
         return itemStack;
     }
 }

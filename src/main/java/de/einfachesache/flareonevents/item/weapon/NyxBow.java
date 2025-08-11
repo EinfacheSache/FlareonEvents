@@ -2,6 +2,7 @@ package de.einfachesache.flareonevents.item.weapon;
 
 import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.ingredient.MagmaShard;
+import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
@@ -50,12 +51,12 @@ public class NyxBow implements Listener {
 
     public static ShapedRecipe getNyxBowRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createNyxBow());
-        recipe.shape("SWS", "EBE", "OIO");
+        recipe.shape("SWS", "EBE", "HIH");
         recipe.setIngredient('S', Material.SUGAR);
         recipe.setIngredient('W', Material.WITHER_SKELETON_SKULL);
         recipe.setIngredient('E', Material.ENDER_EYE);
         recipe.setIngredient('B', Material.BOW);
-        recipe.setIngredient('O', Material.OBSIDIAN);
+        recipe.setIngredient('H', SoulHeartCrystal.createSoulHeartCrystal());
         recipe.setIngredient('I', MagmaShard.ITEM);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);

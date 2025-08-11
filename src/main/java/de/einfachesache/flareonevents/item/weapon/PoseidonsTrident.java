@@ -7,9 +7,7 @@ import de.einfachesache.flareonevents.item.ingredient.TridentStick;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.util.TriState;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
@@ -82,7 +80,7 @@ public class PoseidonsTrident implements Listener {
         double attackDamage = ((modifiers == null)
                 ? Collections.<AttributeModifier>emptyList()
                 : modifiers.get(Attribute.ATTACK_DAMAGE))
-                .stream()
+                .stream().filter(Objects::nonNull)
                 .mapToDouble(AttributeModifier::getAmount)
                 .sum();
 
@@ -141,7 +139,10 @@ public class PoseidonsTrident implements Listener {
             long remaining = (COOLDOWN - ((now - lastUse)) / 1000);
             player.sendMessage("§cBitte warte noch " + remaining + "s, bevor du erneut wirfst!");
             event.setUseItemInHand(Event.Result.DENY);
+            return;
         }
+
+        player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, SoundCategory.PLAYERS, 1f, 1f);
     }
 
     @EventHandler

@@ -3,7 +3,6 @@ package de.einfachesache.flareonevents.listener;
 import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.EventState;
 import de.einfachesache.flareonevents.FlareonEvents;
-import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.misc.EventInfoBook;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import net.kyori.adventure.text.Component;
@@ -36,7 +35,8 @@ public class PlayerDeathListener implements Listener {
         if (Config.getEventState() == EventState.RUNNING) {
             Config.addDeathParticipant(event.getPlayer().getUniqueId());
             deceased.kick(Component.text("§4§kAA §4§lAUSLÖSCHUNG! §kAA\n§cDu bist gestorben!"));
-            event.getDrops().add(SoulHeartCrystal.createSoulHeartCrystal(ItemUtils.legacyString(deceased.displayName())));
+            event.getDrops().add(SoulHeartCrystal.createSoulHeartCrystal());
+            // event.getDrops().add(SoulHeartCrystal.createSoulHeartCrystal(ItemUtils.legacyString(deceased.displayName())));
         } else {
             event.getDrops().clear();
             new BukkitRunnable() {

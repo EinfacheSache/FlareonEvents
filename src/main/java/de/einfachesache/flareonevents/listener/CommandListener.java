@@ -39,12 +39,14 @@ public class CommandListener implements Listener {
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
 
-        if (!player.isOp()) {
-            String cmd = event.getMessage().split(" ")[0].substring(1).toLowerCase();
-            if (!COMMAND_WHITELIST.contains(cmd)) {
-                event.setCancelled(true);
-                player.sendMessage(Component.text("Du darfst diesen Befehl nicht verwenden.", NamedTextColor.RED));
-            }
+        if (player.isOp() || player.hasPermission("*")) {
+            return;
+        }
+
+        String cmd = event.getMessage().split(" ")[0].substring(1).toLowerCase();
+        if (!COMMAND_WHITELIST.contains(cmd)) {
+            event.setCancelled(true);
+            player.sendMessage(Component.text("Du darfst diesen Befehl nicht verwenden.", NamedTextColor.RED));
         }
     }
 
@@ -52,7 +54,7 @@ public class CommandListener implements Listener {
     public void onPlayerCommandSend(PlayerCommandSendEvent event) {
         Player player = event.getPlayer();
 
-        if (player.isOp()) {
+        if (player.isOp() || player.hasPermission("*")) {
             return;
         }
 

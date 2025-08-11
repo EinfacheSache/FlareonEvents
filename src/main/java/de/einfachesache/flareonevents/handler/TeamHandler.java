@@ -55,7 +55,7 @@ public class TeamHandler {
             }
         }
 
-        if(sender.getLocation().distance(target.getLocation()) > Config.getMaxInviteDistanz()) {
+        if (sender.getLocation().distance(target.getLocation()) > Config.getMaxInviteDistanz()) {
             sender.sendMessage(Component.text("Du darfst maximal " + Config.getMaxInviteDistanz() + " Blöcke vom Spieler entfernt stehen, um ihm eine Einladung senden zu können!", NamedTextColor.RED));
             return;
         }
@@ -177,11 +177,11 @@ public class TeamHandler {
 
         Config.removePlayerFromTeam(playerUUID);
 
-        if(!isKick) {
+        if (!isKick) {
             Objects.requireNonNull(player.getPlayer()).sendMessage(Component.text("Du hast das Team #" + teamId + " verlassen!", NamedTextColor.YELLOW));
         }
 
-        if(player.getPlayer() != null) {
+        if (player.getPlayer() != null) {
             VoiceModPlugin.removePlayerToTeam(player.getPlayer().getUniqueId(), teamId);
         }
 
@@ -252,7 +252,7 @@ public class TeamHandler {
 
         player.sendMessage(Component.text("Du hast " + target.getName() + " aus dem Team entfernt!", NamedTextColor.RED));
 
-        if(target.getPlayer() != null) {
+        if (target.getPlayer() != null) {
             target.getPlayer().sendMessage(Component.text("Du wurdest von " + player.getName() + " aus dem Team entfernt!", NamedTextColor.RED));
         }
 
@@ -265,6 +265,12 @@ public class TeamHandler {
         Integer teamId;
 
         if (args.length == 2 && player.isOp()) {
+
+            if (args[1].equalsIgnoreCase("all")) {
+                Config.getPlayerTeams().values().forEach(id -> sendTeamList(player, id));
+                return;
+            }
+
             try {
                 teamId = Integer.parseInt(args[1]);
                 if (!Config.getTeams().containsKey(teamId)) {
@@ -283,6 +289,11 @@ public class TeamHandler {
             teamId = Config.getPlayerTeams().get(playerUUID);
         }
 
+        sendTeamList(player, teamId);
+
+    }
+
+    private static void sendTeamList(Player player, Integer teamId) {
         Set<UUID> teamMembers = Config.getTeams().get(teamId);
         UUID leaderUUID = Config.getTeamLeaders().get(teamId);
 

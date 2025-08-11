@@ -7,6 +7,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
@@ -21,6 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class SoulHeartCrystal implements Listener {
 
     public static final String DISPLAY_NAME = "§6Soul Heart Crystal";
@@ -31,6 +34,7 @@ public class SoulHeartCrystal implements Listener {
     public static ItemStack createSoulHeartCrystal() {
         return createSoulHeartCrystal("ITEM CUSTOM CREATED");
     }
+
     public static ItemStack createSoulHeartCrystal(String droppedByPlayer) {
 
         ItemStack soulHeartCrystal = ItemUtils.createCustomItem(Material.NETHER_STAR, DISPLAY_NAME, NAMESPACED_KEY);
@@ -49,6 +53,7 @@ public class SoulHeartCrystal implements Listener {
         lore.add(serializer.deserialize("§f"));
 
         meta.lore(lore);
+        meta.setCustomModelData(69);
         meta.getPersistentDataContainer().set(DROPPED_BY_PLAYER, PersistentDataType.STRING, droppedByPlayer);
 
         soulHeartCrystal.setItemMeta(meta);
@@ -81,6 +86,7 @@ public class SoulHeartCrystal implements Listener {
         attr.setBaseValue(newHealth);
         player.setHealthScale(newHealth);
         player.sendMessage(Component.text("§aDu spürst neue Lebenskraft durchströmen dich... +1 Herz!", NamedTextColor.GREEN));
+        player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_CLUSTER_HIT, SoundCategory.PLAYERS, 1f, 1f);
 
         item.setAmount(item.getAmount() - 1);
         player.getInventory().setItemInMainHand(item.getAmount() > 0 ? item : null);
