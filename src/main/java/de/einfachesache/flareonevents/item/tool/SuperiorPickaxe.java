@@ -37,7 +37,7 @@ public class SuperiorPickaxe implements Listener {
 
     public static ShapedRecipe getSuperiorPickaxeRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createSuperiorPickaxe());
-        recipe.shape("AHA", "APA", "AHA");
+        recipe.shape("AAA", "HPH", "AAA");
         recipe.setIngredient('A', Material.AMETHYST_SHARD);
         recipe.setIngredient('H', new RecipeChoice.ExactChoice(SoulHeartCrystal.createSoulHeartCrystal()));
         recipe.setIngredient('P', new RecipeChoice.ExactChoice(ReinforcedPickaxe.createReinforcedPickaxe()));
