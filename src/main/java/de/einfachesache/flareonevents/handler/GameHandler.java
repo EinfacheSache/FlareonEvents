@@ -34,18 +34,26 @@ public class GameHandler {
     static final int noPvPTime = 5 * 60; // DEFAULT: 5 * 60
     static final int netherOpenTime = 60 * 60; // DEFAULT: 60 * 60
 
+    static String secondWord(int n) {
+        return n == 1 ? "Sekunde" : "Sekunden";
+    }
+
+    static String minuteWord(int n) {
+        return n == 1 ? "Minute" : "Minuten";
+    }
+
     static final Title.Times times = Title.Times.times(
             Duration.ofMillis(1000),  // 20 Ticks = 1 Sekunde (fadeIn)
             Duration.ofMillis(3000),  // 60 Ticks = 3 Sekunden (stay)
             Duration.ofMillis(1000)   // 20 Ticks = 1 Sekunde (fadeOut)
     );
-    static final net.kyori.adventure.sound.Sound startSound = net.kyori.adventure.sound.Sound.sound(
+    static final Sound startSound = Sound.sound(
             org.bukkit.Sound.ENTITY_ENDER_DRAGON_AMBIENT,  // Sound-Key
             net.kyori.adventure.sound.Sound.Source.MASTER, // Sound-Quelle
             1.0f,                                          // Lautstärke
             1.0f                                           // Tonhöhe
     );
-    static final net.kyori.adventure.sound.Sound notifySound = net.kyori.adventure.sound.Sound.sound(
+    static final Sound notifySound = Sound.sound(
             org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING,       // Sound-Key
             Sound.Source.MASTER,                           // Sound-Quelle
             1.0f,                                          // Lautstärke
@@ -74,10 +82,11 @@ public class GameHandler {
         world.setClearWeatherDuration(20 * 60 * 20);
         world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
 
+        int minStartTime = (preparingTime + startingTime) / 60;
         Bukkit.getServer().getOnlinePlayers().forEach(player -> {
             player.showTitle(Title.title(
                     Component.text("BEREIT?", NamedTextColor.GREEN),
-                    Component.text("Das Event startet in " + (preparingTime + startingTime) / 60 + " Minuten!", NamedTextColor.YELLOW),
+                    Component.text("Das Event startet in " + minStartTime + " " + minuteWord(minStartTime) + "!", NamedTextColor.YELLOW),
                     times));
             player.playSound(notifySound);
             resetPlayer(player, true, false);
@@ -212,15 +221,16 @@ public class GameHandler {
                                 Component.text("ACHTUNG", NamedTextColor.RED),
                                 Component.text("Event ist gestartet", NamedTextColor.YELLOW),
                                 times));
-                        player.sendMessage(Component.text(
-                                """
-                                        
-                                        §6[Event] §eDas Event startet jetzt!
-                                        §aViel Spaß und viel Erfolg!
-                                        §eMax Teamgrösse ist §c3§e Spieler!
-                                        §ePvP beginnt in §c2 Minuten§e!
-                                        §5Der Nether öffnet in §c60 Minuten§5!"""
+
+                        player.sendMessage(Component.text("""
+                                §6[Event] §eDas Event startet jetzt!
+                                §aViel Spaß und viel Erfolg!
+                                §eMax Teamgröße ist §c%d§e Spieler!
+                                §ePvP beginnt in §c%d %s§e!
+                                §5Der Nether öffnet in §c%d %s§5!"""
+                                .formatted(Config.getMaxTeamSize(), noPvPTime, minuteWord(noPvPTime), netherOpenTime, minuteWord(netherOpenTime))
                         ));
+
                         player.playSound(startSound);
                     });
 
@@ -230,12 +240,12 @@ public class GameHandler {
 
                 int minutes = secondsLeft / 60;
                 int seconds = secondsLeft % 60;
-                String timeFormatted = String.format("§eStart in §c%d:%02d §eMinuten", minutes, seconds);
+                String timeFormatted = String.format("§eStart in §c%d:%02d §e%s", minutes, seconds, minuteWord(minutes));
 
                 plugin.getServer().getOnlinePlayers().forEach(player -> {
                     if (secondsLeft == 120 || secondsLeft == 60 || secondsLeft == 30 || secondsLeft <= 10) {
                         player.showTitle(Title.title(
-                                Component.text(secondsLeft <= 60 ? String.format("§eNoch §a%d §eSekunden", secondsLeft) : String.format("§eNoch §a%d §eMinuten", minutes), NamedTextColor.RED),
+                                Component.text(secondsLeft <= 60 ? String.format("§eNoch §a%d §e%s", secondsLeft, secondWord(secondsLeft)) : String.format("§eNoch §a%d §e%s", minutes, minuteWord(minutes)), NamedTextColor.RED),
                                 Component.text(secondsLeft == 120 ? "Mache dich bereit!" : "", NamedTextColor.YELLOW),
                                 times));
                         player.playSound(notifySound);
@@ -276,7 +286,7 @@ public class GameHandler {
 
                 int minutes = secondsLeft / 60;
                 int seconds = secondsLeft % 60;
-                String timeFormatted = String.format("§ePVP in §c%d:%02d §eMinuten", minutes, seconds);
+                String timeFormatted = String.format("§ePVP in §c%d:%02d §e%s", minutes, seconds, minuteWord(minutes));
 
                 plugin.getServer().getOnlinePlayers().forEach(player -> player.sendActionBar(Component.text(timeFormatted)));
 
@@ -308,7 +318,7 @@ public class GameHandler {
 
                 int minutes = secondsLeft / 60;
                 int seconds = secondsLeft % 60;
-                String timeFormatted = String.format("§eNether öffnet in §c%d:%02d §eMinuten", minutes, seconds);
+                String timeFormatted = String.format("§eNether öffnet in §c%d:%02d §e%s", minutes, seconds, minuteWord(minutes));
 
                 plugin.getServer().getOnlinePlayers().forEach(player -> player.sendActionBar(Component.text(timeFormatted)));
 
