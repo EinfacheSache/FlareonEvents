@@ -192,7 +192,7 @@ public class Config {
                     Config.playerSpawnLocations.add(loc);
                 });
 
-        FlareonEvents.getLogManager().info("✅ " + Config.playerSpawnLocations.size() + " Spawnpunkte geladen.");
+        FlareonEvents.getLogManager().info("✅  " + Config.playerSpawnLocations.size() + " player spawn points loaded from config");
     }
 
 
