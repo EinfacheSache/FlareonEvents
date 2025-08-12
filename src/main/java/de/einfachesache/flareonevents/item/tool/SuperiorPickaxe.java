@@ -188,6 +188,7 @@ public class SuperiorPickaxe implements Listener {
         int cy = center.getBlockY();
         int cz = center.getBlockZ();
         int maxY = world.getMaxHeight();
+        int minY = world.getMinHeight();
 
         Set<Location> fake = new HashSet<>();
         List<Location> locations = new ArrayList<>();
@@ -204,7 +205,7 @@ public class SuperiorPickaxe implements Listener {
                             int x = cx + dx;
                             int y = cy + dy;
                             int z = cz + dz;
-                            if (y < 0 || y >= maxY) continue;
+                            if (y <= minY || y >= maxY) continue;
 
                             Block b = world.getBlockAt(x, y, z);
                             Material type = b.getType();
