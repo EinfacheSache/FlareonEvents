@@ -69,7 +69,7 @@
     <dependency>
       <groupId>com.github.EinfacheSache</groupId>
       <artifactId>easyapi</artifactId>
-      <version>045a566de3</version>
+      <version>46339f14e7</version>
     </dependency>
     <dependency>
       <groupId>de.maxhenkel.voicechat</groupId>
