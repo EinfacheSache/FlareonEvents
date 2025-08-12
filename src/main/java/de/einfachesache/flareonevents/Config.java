@@ -1,13 +1,14 @@
 package de.einfachesache.flareonevents;
 
 import de.einfachesache.api.util.FileUtils;
-import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.FireSword;
 import de.einfachesache.flareonevents.item.weapon.NyxBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.text.Component;
 import org.bspfsystems.yamlconfiguration.configuration.ConfigurationSection;
 import org.bukkit.*;
@@ -18,10 +19,10 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"removal", "deprecation"})
 public class Config {
 
     private static long startTime = 0;
@@ -42,19 +43,32 @@ public class Config {
     private static final Map<Integer, UUID> TEAM_LEADERS = new ConcurrentHashMap<>();
 
     public static void reloadBook() {
-        FlareonEvents.getInfoBookFile().reloadConfiguration();
-        loadInfoBook();
+        FlareonEvents.getInfoBookFile().reloadConfigurationAsync()
+                .thenRun(() -> Bukkit.getScheduler().runTask(FlareonEvents.getPlugin(), Config::loadInfoBook));
     }
 
     public static void reloadFiles() {
-        FlareonEvents.getItemsFile().reloadConfiguration();
-        FlareonEvents.getTeamsFile().reloadConfiguration();
-        FlareonEvents.getFileConfig().reloadConfiguration();
-        FlareonEvents.getInfoBookFile().reloadConfiguration();
-        FlareonEvents.getLocationsFile().reloadConfiguration();
-        FlareonEvents.getParticipantsFile().reloadConfiguration();
-        FlareonEvents.getDeathParticipantsFile().reloadConfiguration();
-        loadFiles();
+        CompletableFuture.allOf(
+                FlareonEvents.getItemsFile().reloadConfigurationAsync(),
+                FlareonEvents.getTeamsFile().reloadConfigurationAsync(),
+                FlareonEvents.getConfigFile().reloadConfigurationAsync(),
+                FlareonEvents.getInfoBookFile().reloadConfigurationAsync(),
+                FlareonEvents.getParticipantsFile().reloadConfigurationAsync(),
+                FlareonEvents.getDeathParticipantsFile().reloadConfigurationAsync(),
+                FlareonEvents.getLocationsFile().reloadConfigurationAsync()
+        ).whenComplete((ok, err) -> Bukkit.getScheduler().runTask(
+                FlareonEvents.getPlugin(), () -> {
+                    if (err != null) { FlareonEvents.getLogManager().error("Reload failed", err); return; }
+                    loadItems();
+                    loadTeams();
+                    loadConfig();
+                    loadInfoBook();
+                    loadParticipants();
+                    loadDeathParticipants();
+                    loadMainSpawnLocations();
+                    loadPlayerSpawnLocations();
+                }
+        ));
     }
 
     public static void loadFiles() {
@@ -71,7 +85,7 @@ public class Config {
             resetGameOnNewWorldGeneration();
     }
 
-    private static final FileUtils config = FlareonEvents.getFileConfig();
+    private static final FileUtils config = FlareonEvents.getConfigFile();
 
     private static void loadConfig() {
         startTime = config.getLong("start-time", 0);
@@ -314,7 +328,7 @@ public class Config {
             String name = entry.getKey().toString();
             int level = Integer.parseInt(entry.getValue().toString());
             NamespacedKey key = NamespacedKey.minecraft(name);
-            Enchantment enchantment = org.bukkit.Registry.ENCHANTMENT.get(key);
+            Enchantment enchantment = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).get(key);
 
             if (enchantment == null) {
                 FlareonEvents.getLogManager().warn("Could not find enchantment " + key);
@@ -327,6 +341,7 @@ public class Config {
         return enchantments;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     private static Map<Attribute, AttributeModifier> loadAttributes(String itemKey) {
 
         Map<Attribute, AttributeModifier> attributes = new HashMap<>();
@@ -344,9 +359,9 @@ public class Config {
             double amount = ((Number) map.get("amount")).doubleValue();
             AttributeModifier.Operation op = AttributeModifier.Operation.valueOf(map.get("operation").toString());
             EquipmentSlot slot = EquipmentSlot.valueOf(map.get("slot").toString());
-            UUID uuid = ItemUtils.stringToUUID(attrPath);
 
-            AttributeModifier mod = new AttributeModifier(uuid, attrPath, amount, op, slot);
+            NamespacedKey modifierKey = new NamespacedKey(FlareonEvents.getPlugin(), attrPath.toLowerCase(Locale.ROOT));
+            AttributeModifier mod = new AttributeModifier(modifierKey, amount, op, slot.getGroup());
             attributes.put(attribute, mod);
         }
 
@@ -419,7 +434,7 @@ public class Config {
         locationsFile.set(savePath + ".yaw", location.getYaw());
         locationsFile.set(savePath + ".pitch", location.getPitch());
 
-        locationsFile.save();
+        locationsFile.saveAsync();
     }
 
     public static void addParticipant(UUID playerUUID) {
@@ -499,7 +514,7 @@ public class Config {
 
     public static void save(FileUtils file, String key, Object value) {
         file.set(key, value);
-        file.save();
+        file.saveAsync();
     }
 
 

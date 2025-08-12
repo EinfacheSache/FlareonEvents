@@ -178,7 +178,7 @@ public final class FlareonEvents extends JavaPlugin {
         return infoBookFile;
     }
 
-    public static FileUtils getFileConfig() {
+    public static FileUtils getConfigFile() {
         return configFile;
     }
 
