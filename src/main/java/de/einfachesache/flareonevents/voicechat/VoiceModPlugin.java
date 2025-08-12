@@ -1,6 +1,7 @@
 package de.einfachesache.flareonevents.voicechat;
 
 import de.einfachesache.flareonevents.Config;
+import de.einfachesache.flareonevents.FlareonEvents;
 import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.api.events.*;
 import net.kyori.adventure.text.Component;
@@ -56,7 +57,7 @@ public class VoiceModPlugin implements VoicechatPlugin {
         VoicechatConnection conn = serverApi.getConnectionOf(playerUUID);
         if (conn != null) {
             conn.setGroup(TEAM_VOICE_GROUP.get(teamID));
-            Objects.requireNonNull(Bukkit.getPlayer(playerUUID)).sendMessage(Component.text("Du bist jetzt in der Voice-Gruppe #" + teamID + ".", NamedTextColor.GREEN));
+            Objects.requireNonNull(Bukkit.getPlayer(playerUUID)).sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Du bist jetzt in der Voice-Gruppe #" + teamID + ".", NamedTextColor.GREEN)));
         }
     }
 
@@ -64,7 +65,7 @@ public class VoiceModPlugin implements VoicechatPlugin {
         VoicechatConnection conn = serverApi.getConnectionOf(playerUUID);
         if (conn != null) {
             conn.setGroup(null);
-            Objects.requireNonNull(Bukkit.getPlayer(playerUUID)).sendMessage(Component.text("Du hast die Voice-Gruppe #" + teamID + " verlassen.", NamedTextColor.YELLOW));
+            Objects.requireNonNull(Bukkit.getPlayer(playerUUID)).sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Du hast die Voice-Gruppe #" + teamID + " verlassen.", NamedTextColor.YELLOW)));
         }
     }
 

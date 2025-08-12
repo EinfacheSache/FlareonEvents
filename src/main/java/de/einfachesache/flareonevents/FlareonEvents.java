@@ -1,7 +1,8 @@
 package de.einfachesache.flareonevents;
 
-import de.cubeattack.api.logger.LogManager;
-import de.cubeattack.api.util.FileUtils;
+
+import de.einfachesache.api.logger.LogManager;
+import de.einfachesache.api.util.FileUtils;
 import de.einfachesache.flareonevents.command.*;
 import de.einfachesache.flareonevents.handler.ScoreboardHandler;
 import de.einfachesache.flareonevents.item.ItemRecipe;
@@ -15,6 +16,8 @@ import de.einfachesache.flareonevents.item.weapon.NyxBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import de.einfachesache.flareonevents.listener.*;
 import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.WorldBorder;
@@ -38,6 +41,8 @@ public final class FlareonEvents extends JavaPlugin {
     private static final LogManager logger = LogManager.getLogger();
 
     public static final UUID DEV_UUID = UUID.fromString("201e5046-24df-4830-8b4a-82b635eb7cc7");
+    public static final Component PLUGIN_PREFIX = Component.text("[FLAREON] ", NamedTextColor.GOLD);
+
     private static boolean voiceChatEnabled;
 
     @Override
@@ -89,6 +94,7 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(), this);
         Bukkit.getPluginManager().registerEvents(new EntityDamageListener(), this);
         Bukkit.getPluginManager().registerEvents(new PortalCreateListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ResourcePackListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockUpdateListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerLoginListener(), this);

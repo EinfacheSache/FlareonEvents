@@ -46,7 +46,7 @@ public class CommandListener implements Listener {
         String cmd = event.getMessage().split(" ")[0].substring(1).toLowerCase();
         if (!COMMAND_WHITELIST.contains(cmd)) {
             event.setCancelled(true);
-            player.sendMessage(Component.text("Du darfst diesen Befehl nicht verwenden.", NamedTextColor.RED));
+            player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Du darfst diesen Befehl nicht verwenden.", NamedTextColor.RED)));
         }
     }
 

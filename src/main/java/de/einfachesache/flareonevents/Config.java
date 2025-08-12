@@ -1,6 +1,6 @@
 package de.einfachesache.flareonevents;
 
-import de.cubeattack.api.util.FileUtils;
+import de.einfachesache.api.util.FileUtils;
 import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
