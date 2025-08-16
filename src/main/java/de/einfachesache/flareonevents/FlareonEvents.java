@@ -5,6 +5,7 @@ import de.einfachesache.api.logger.LogManager;
 import de.einfachesache.api.util.FileUtils;
 import de.einfachesache.flareonevents.command.*;
 import de.einfachesache.flareonevents.handler.ScoreboardHandler;
+import de.einfachesache.flareonevents.handler.SpectatorHandler;
 import de.einfachesache.flareonevents.item.ItemRecipe;
 import de.einfachesache.flareonevents.item.PassiveItemEffects;
 import de.einfachesache.flareonevents.item.misc.EventInfoBook;
@@ -117,6 +118,7 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ReinforcedPickaxe(), this);
 
         Bukkit.getPluginManager().registerEvents(new ScoreboardHandler(), this);
+        Bukkit.getPluginManager().registerEvents(new SpectatorHandler(), this);
         Bukkit.getPluginManager().registerEvents(new SoulHeartCrystal(), this);
         Bukkit.getPluginManager().registerEvents(new EventInfoBook(), this);
 

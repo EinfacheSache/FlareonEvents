@@ -4,12 +4,12 @@ import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.EventState;
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.handler.GameHandler;
+import de.einfachesache.flareonevents.handler.SpectatorHandler;
 import de.einfachesache.flareonevents.handler.TeamHandler;
 import de.einfachesache.flareonevents.item.misc.EventInfoBook;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -34,7 +34,6 @@ public class PlayerDeathListener implements Listener {
 
         Player deceased = event.getEntity();
         Player killer = deceased.getKiller();
-        Location deathLocation = deceased.getLocation();
 
         AttributeInstance attr = deceased.getAttribute(Attribute.MAX_HEALTH);
         if (attr != null) {
@@ -65,8 +64,7 @@ public class PlayerDeathListener implements Listener {
                 @Override
                 public void run() {
                     deceased.spigot().respawn();
-                    deceased.teleport(deathLocation);
-                    deceased.setGameMode(GameMode.SPECTATOR);
+                    SpectatorHandler.attach(deceased);
                 }
             }.runTaskLater(FlareonEvents.getPlugin(), 1L);
         }

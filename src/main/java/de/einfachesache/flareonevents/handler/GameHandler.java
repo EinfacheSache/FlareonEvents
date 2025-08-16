@@ -63,7 +63,7 @@ public class GameHandler {
             1.0f                                           // Tonhöhe
     );
 
-    public static void prepareEvent() {
+    public static void prepareEvent(boolean forceStart) {
 
         tasks.forEach(BukkitTask::cancel);
 
@@ -85,7 +85,7 @@ public class GameHandler {
         world.setClearWeatherDuration(20 * 60 * 20);
         world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
 
-        int minStartTime = (preparingTime + startingTime) / 60;
+        int minStartTime = (forceStart ? 1 / 12:  (preparingTime + startingTime) / 60);
         Bukkit.getServer().getOnlinePlayers().forEach(player -> {
             player.showTitle(Title.title(
                     Component.text("BEREIT?", NamedTextColor.GREEN),
@@ -95,11 +95,11 @@ public class GameHandler {
             resetPlayer(player, true, false);
         });
 
-        eventStartScheduler();
-        startCountdownTimerSchedule();
+        eventStartScheduler(forceStart);
+        startCountdownTimerSchedule(forceStart);
     }
 
-    private static void eventStartScheduler() {
+    private static void eventStartScheduler(boolean forceStart) {
 
         tasks.add(new BukkitRunnable() {
             @Override
@@ -154,10 +154,10 @@ public class GameHandler {
                         Bukkit.getServer().getOnlinePlayers().forEach(
                                 player -> resetPlayer(player, true, true));
                     }
-                }.runTaskLater(plugin, startingTime * 20L));
+                }.runTaskLater(plugin,  (forceStart ? 5 : startingTime) * 20L));
 
             }
-        }.runTaskLater(plugin, preparingTime * 20L));
+        }.runTaskLater(plugin,  (forceStart ? 5 : preparingTime) * 20L));
     }
 
     public static void cancelEvent() {
@@ -250,10 +250,10 @@ public class GameHandler {
     }
 
 
-    private static void startCountdownTimerSchedule() {
+    private static void startCountdownTimerSchedule(boolean forceStart) {
 
         tasks.add(new BukkitRunnable() {
-            int secondsLeft = preparingTime + startingTime;
+            int secondsLeft = (forceStart ? 10 : (preparingTime + startingTime));
 
             @Override
             public void run() {

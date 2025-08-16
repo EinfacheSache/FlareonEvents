@@ -38,7 +38,7 @@ public class EventCommand implements CommandExecutor, TabCompleter {
         String sub = args[0].toLowerCase();
         return switch (sub) {
             case "pvp" -> handlePvP(sender);
-            case "start" -> handleStart(sender);
+            case "start" -> handleStart(sender, args);
             case "cancel" -> handleCancel(sender);
             case "reset" -> handleReset(sender, args);
             case "spawncircle" -> handleSpawnCircle(sender, args);
@@ -57,13 +57,20 @@ public class EventCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private boolean handleStart(CommandSender sender) {
+    private boolean handleStart(CommandSender sender, String[] args) {
         if (Config.getEventState().getId() > 0 && !(Config.getEventState() == EventState.ENDED)) {
             sender.sendMessage("§cDas Event wurde bereits gestartet!");
             return false;
         }
-        GameHandler.prepareEvent();
-        sender.sendMessage("§aDu hast das Event erfolgreich gestartet!");
+
+        boolean forceStart = false;
+
+        if (args.length == 2) {
+            forceStart = Boolean.parseBoolean(args[1]);
+        }
+
+        GameHandler.prepareEvent(forceStart);
+        sender.sendMessage("§aDu hast das Event erfolgreich " + (forceStart ? "force " : "") + "gestartet!");
         return true;
     }
 

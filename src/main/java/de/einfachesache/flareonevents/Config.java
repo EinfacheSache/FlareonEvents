@@ -271,7 +271,7 @@ public class Config {
         NyxBow.WITHER_EFFECT_TIME = itemsFile.getInt("items.nyx_bow.wither_effect_time");
         NyxBow.SLOW_BLIND_EFFECT_CHANCE = itemsFile.getDouble("items.nyx_bow.slow_blind_effect_chance");
         NyxBow.SLOW_BLIND_EFFECT_TIME = itemsFile.getInt("items.nyx_bow.slow_blind_effect_time");
-        NyxBow.DASH_COOLDOWN = itemsFile.getInt("items.nyx_bow.dash_cooldown") * 1000;
+        NyxBow.DASH_COOLDOWN = itemsFile.getInt("items.nyx_bow.dash_cooldown");
         NyxBow.DASH_STRENGTH = itemsFile.getDouble("items.nyx_bow.dash_strength");
         NyxBow.DASH_LIFT = itemsFile.getDouble("items.nyx_bow.dash_lift");
         NyxBow.SHOOT_COOLDOWN = itemsFile.getInt("items.nyx_bow.shoot_cooldown");

@@ -97,7 +97,7 @@ public class NyxBow implements Listener {
         lore.add(serializer.deserialize("§7§oBesonderheit: §bSpeed I§7 in Hand"));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Left-Click: §eDash nach vorne"));
-        lore.add(serializer.deserialize("§7Cooldown: §e" + DASH_COOLDOWN / 1000 + "ms"));
+        lore.add(serializer.deserialize("§7Cooldown: §e" + DASH_COOLDOWN + "s"));
         lore.add(serializer.deserialize("§f"));
 
         if (!ENCHANTMENTS.isEmpty()) {
@@ -146,8 +146,8 @@ public class NyxBow implements Listener {
 
         long now = System.currentTimeMillis();
         long lastUse = dashCooldownMap.getOrDefault(player.getUniqueId(), 0L);
-        if (now - lastUse < DASH_COOLDOWN) {
-            long remaining = (DASH_COOLDOWN - (now - lastUse));
+        if (now - lastUse < DASH_COOLDOWN * 1000L) {
+            long remaining = ((DASH_COOLDOWN * 1000L) - (now - lastUse));
             player.sendMessage("§cBitte warte noch " + remaining / 1000 + "s, bevor du erneut Dashed!");
             return;
         }
