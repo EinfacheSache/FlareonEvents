@@ -10,12 +10,12 @@ items:
 
     # Material & Anzeige-Name
     material: GOLDEN_SWORD
-    display_name: "§c§lFire Sword"
+    display_name: "§c§lHades's Sword"
 
     # Attribute-Modifikatoren
     attributes:
       - attribute: attack_damage
-        amount: 7.5
+        amount: 7
         operation: ADD_NUMBER
         slot: HAND
       - attribute: attack_speed
@@ -34,7 +34,7 @@ items:
 
     # Material & Anzeige-Name
     material: BOW
-    display_name: "§4§lNyx Bow"
+    display_name: "§4§lNyx's Bow"
 
     # Verzauberungen
     enchantments:
@@ -43,9 +43,15 @@ items:
     # Effekte & cooldown
     wither_effect_chance: 0.5      # Chance, Wither-Effekt zu vergeben
     wither_effect_time: 3          # Dauer in Sekunden
+
     slow_blind_effect_chance: 0.33 # Chance, Slowness + Blindness zu vergeben
     slow_blind_effect_time: 2      # Dauer in Sekunden
-    cooldown: 1200                 # Cooldown in Millisekunden
+
+    dash_cooldown: 7
+    dash_strength: 1.9
+    dash_lift: 0.25
+
+    shoot_cooldown: 1200                 # Cooldown in Millisekunden
 
   poseidons_trident:
     # NamespacedKey in Java
@@ -53,7 +59,7 @@ items:
 
     # Material & Anzeige-Name
     material: TRIDENT
-    display_name: "§6§lPoseidon's Trident"
+    display_name: "§b§lPoseidon's Trident"
 
     # Verzauberungen
     enchantments:
@@ -62,7 +68,7 @@ items:
     # Attribute-Modifikatoren
     attributes:
       - attribute: attack_damage
-        amount: 9.0
+        amount: 9
         operation: ADD_NUMBER
         slot: HAND
       - attribute: attack_speed
@@ -81,7 +87,7 @@ items:
 
     # Item-Grundlagen
     material: DIAMOND_PICKAXE
-    display_name: "§8§lReinforced Pickaxe"
+    display_name: "§6§lReinforced Pickaxe"
     # Attributes
     attributes:
       - attribute: attack_speed
@@ -98,12 +104,12 @@ items:
 
     # Item-Grundlagen
     material: NETHERITE_PICKAXE
-    display_name: "§6§kkk §8§lSuperior Pickaxe §6§kkk"
+    display_name: "§6§l§kABC§r§6§l Superior Pickaxe §kXYZ§r§6§l"
     # Verzauberungen
     enchantments:
       efficiency: 3
     # X-Ray-Konfiguration
     xray:
       enabled_time: 5    # Dauer in Sekunden
-      radius: 25         # Radius in Blöcken
+      radius: 30         # Radius in Blöcken
       cooldown: 45       # Cooldown in Sekunden
