@@ -32,7 +32,7 @@ public class SoulHeartCrystal implements Listener {
     public static final NamespacedKey DROPPED_BY_PLAYER = new NamespacedKey(FlareonEvents.getPlugin(), "dropped_by_player");
 
     public static ItemStack createSoulHeartCrystal() {
-        return createSoulHeartCrystal("ITEM CUSTOM CREATED");
+        return createSoulHeartCrystal(null);
     }
 
     public static ItemStack createSoulHeartCrystal(String droppedByPlayer) {
@@ -49,12 +49,14 @@ public class SoulHeartCrystal implements Listener {
         lore.add(serializer.deserialize("§7➤ §aEinmalig benutzbar"));
         lore.add(serializer.deserialize("§7➤ §cMaximal " + (int) MAX_ALLOWED_HEALTH / 2 + " Herzen möglich"));
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§8Geborgen von: §5" + droppedByPlayer));
-        lore.add(serializer.deserialize("§f"));
+        if(droppedByPlayer != null) {
+            lore.add(serializer.deserialize("§8Geborgen von: §5" + droppedByPlayer));
+            lore.add(serializer.deserialize("§f"));
+        }
 
         meta.lore(lore);
         meta.setCustomModelData(69);
-        meta.getPersistentDataContainer().set(DROPPED_BY_PLAYER, PersistentDataType.STRING, droppedByPlayer);
+        meta.getPersistentDataContainer().set(DROPPED_BY_PLAYER, PersistentDataType.STRING, String.valueOf(droppedByPlayer));
 
         soulHeartCrystal.setItemMeta(meta);
 
@@ -85,7 +87,7 @@ public class SoulHeartCrystal implements Listener {
         double newHealth = Math.min(currentMaxHealth + 2, MAX_ALLOWED_HEALTH);
         attr.setBaseValue(newHealth);
         player.setHealthScale(newHealth);
-        player.sendMessage(Component.text("§aDu spürst neue Lebenskraft durchströmen dich... +1 Herz!", NamedTextColor.GREEN));
+        player.sendMessage(Component.text("Du erhältst zusätzliche Lebenskraft... +1 Herz.", NamedTextColor.GREEN));
         player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_CLUSTER_HIT, SoundCategory.PLAYERS, 1f, 1f);
 
         item.setAmount(item.getAmount() - 1);
