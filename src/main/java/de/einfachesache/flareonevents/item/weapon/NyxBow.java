@@ -28,8 +28,10 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import java.util.*;
+
 
 @SuppressWarnings("deprecation")
 public class NyxBow implements Listener {
@@ -41,12 +43,16 @@ public class NyxBow implements Listener {
     public static double WITHER_EFFECT_CHANCE;
     public static int SLOW_BLIND_EFFECT_TIME;
     public static int WITHER_EFFECT_TIME;
-    public static int COOLDOWN;
+    public static int SHOOT_COOLDOWN;
+    public static int DASH_COOLDOWN;
+    public static double DASH_STRENGTH;
+    public static double DASH_LIFT;
     public static ItemFlag[] ITEM_FLAGS;
     public static Map<Enchantment, Integer> ENCHANTMENTS;
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS;
 
-    private static final Map<UUID, Long> cooldownMap = new HashMap<>();
+    private static final Map<UUID, Long> dashCooldownMap = new HashMap<>();
+    private static final Map<UUID, Long> shootCooldownMap = new HashMap<>();
     private static final Map<UUID, Long> preparedCooldownMap = new HashMap<>();
 
     public static ShapedRecipe getNyxBowRecipe() {
@@ -90,13 +96,16 @@ public class NyxBow implements Listener {
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7§oBesonderheit: §bSpeed I§7 in Hand"));
         lore.add(serializer.deserialize("§f"));
+        lore.add(serializer.deserialize("§7Left-Click: §eDash nach vorne"));
+        lore.add(serializer.deserialize("§7Cooldown: §e" + DASH_COOLDOWN / 1000 + "ms"));
+        lore.add(serializer.deserialize("§f"));
 
         if (!ENCHANTMENTS.isEmpty()) {
             lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
             lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
         }
 
-        lore.add(serializer.deserialize("§7Cooldown: §e" + COOLDOWN + "ms"));
+        lore.add(serializer.deserialize("§7Cooldown: §e" + SHOOT_COOLDOWN + "ms"));
         lore.add(serializer.deserialize("§f"));
 
         meta.lore(lore);
@@ -129,17 +138,45 @@ public class NyxBow implements Listener {
     }
 
     @EventHandler
-    public void onBowShoot(PlayerInteractEvent event) {
-        Player shooter = event.getPlayer();
+    public void onLeftClick(PlayerInteractEvent event) {
+        if (!isNyxBowItem(event.getItem())) return;
+        if (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK) return;
 
+        Player player = event.getPlayer();
+
+        long now = System.currentTimeMillis();
+        long lastUse = dashCooldownMap.getOrDefault(player.getUniqueId(), 0L);
+        if (now - lastUse < DASH_COOLDOWN) {
+            long remaining = (DASH_COOLDOWN - (now - lastUse));
+            player.sendMessage("§cBitte warte noch " + remaining / 1000 + "s, bevor du erneut Dashed!");
+            return;
+        }
+
+        Vector dir = player.getLocation().getDirection().normalize();
+        Vector dash = dir.multiply(DASH_STRENGTH);
+        dash.setY(Math.max(dash.getY(), DASH_LIFT));
+
+        player.setVelocity(dash);
+
+        dashCooldownMap.put(player.getUniqueId(), now);
+
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1.2f);
+        player.spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add(0, 1, 0), 8, 0.3, 0.2, 0.3, 0.01);
+    }
+
+
+    @EventHandler
+    public void onBowShoot(PlayerInteractEvent event) {
         if (!isNyxBowItem(event.getItem())) return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.useItemInHand() == Event.Result.DENY) return;
 
+        Player shooter = event.getPlayer();
+
         long now = System.currentTimeMillis();
-        long lastUse = cooldownMap.getOrDefault(shooter.getUniqueId(), 0L);
-        if (now - lastUse < COOLDOWN) {
-            long remaining = (COOLDOWN - (now - lastUse));
+        long lastUse = shootCooldownMap.getOrDefault(shooter.getUniqueId(), 0L);
+        if (now - lastUse < SHOOT_COOLDOWN) {
+            long remaining = (SHOOT_COOLDOWN - (now - lastUse));
             shooter.sendMessage("§cBitte warte noch " + remaining + "ms, bevor du erneut schießt!");
             event.setUseItemInHand(Event.Result.DENY);
             return;
@@ -158,8 +195,8 @@ public class NyxBow implements Listener {
         arrow.setGlowing(true);
 
         long preparedCooldown = preparedCooldownMap.get(shooter.getUniqueId());
-        int cooldownInMilliSec = Math.max(0,  (int) (COOLDOWN - (System.currentTimeMillis() - preparedCooldown)));
-        cooldownMap.put(shooter.getUniqueId(), preparedCooldown);
+        int cooldownInMilliSec = Math.max(0,  (int) (SHOOT_COOLDOWN - (System.currentTimeMillis() - preparedCooldown)));
+        shootCooldownMap.put(shooter.getUniqueId(), preparedCooldown);
         shooter.setCooldown(shooter.getInventory().getItemInMainHand(), cooldownInMilliSec / 50);
     }
 

@@ -27,6 +27,7 @@ public class Config {
 
     private static long startTime = 0;
     private static long stopSince = 0;
+    private static boolean kickOnDeath = false;
     private static EventState eventState = EventState.NOT_RUNNING;
 
     private static Location mainSpawnLocation;
@@ -44,11 +45,11 @@ public class Config {
 
     public static void reloadBook() {
         FlareonEvents.getInfoBookFile().reloadConfigurationAsync()
-                .thenRun(() -> Bukkit.getScheduler().runTask(FlareonEvents.getPlugin(), Config::loadInfoBook));
+                .thenRun(() -> runSync(Config::loadInfoBook));
     }
 
-    public static void reloadFiles() {
-        CompletableFuture.allOf(
+    public static CompletableFuture<Void> reloadFiles() {
+        CompletableFuture<Void> all = CompletableFuture.allOf(
                 FlareonEvents.getItemsFile().reloadConfigurationAsync(),
                 FlareonEvents.getTeamsFile().reloadConfigurationAsync(),
                 FlareonEvents.getConfigFile().reloadConfigurationAsync(),
@@ -56,19 +57,32 @@ public class Config {
                 FlareonEvents.getParticipantsFile().reloadConfigurationAsync(),
                 FlareonEvents.getDeathParticipantsFile().reloadConfigurationAsync(),
                 FlareonEvents.getLocationsFile().reloadConfigurationAsync()
-        ).whenComplete((ok, err) -> Bukkit.getScheduler().runTask(
-                FlareonEvents.getPlugin(), () -> {
-                    if (err != null) { FlareonEvents.getLogManager().error("Reload failed", err); return; }
-                    loadItems();
-                    loadTeams();
-                    loadConfig();
-                    loadInfoBook();
-                    loadParticipants();
-                    loadDeathParticipants();
-                    loadMainSpawnLocations();
-                    loadPlayerSpawnLocations();
-                }
-        ));
+        );
+
+        return all.thenCompose(v -> runSync(() -> {
+            loadItems();
+            loadTeams();
+            loadConfig();
+            loadInfoBook();
+            loadParticipants();
+            loadDeathParticipants();
+            loadMainSpawnLocations();
+            loadPlayerSpawnLocations();
+        }));
+    }
+
+    private static CompletableFuture<Void> runSync(Runnable task) {
+        CompletableFuture<Void> cf = new CompletableFuture<>();
+        Bukkit.getScheduler().runTask(FlareonEvents.getPlugin(), () -> {
+            try {
+                task.run();
+                cf.complete(null);
+            } catch (Throwable t) {
+                FlareonEvents.getLogManager().error("Reload failed", t);
+                cf.completeExceptionally(t);
+            }
+        });
+        return cf;
     }
 
     public static void loadFiles() {
@@ -90,6 +104,7 @@ public class Config {
     private static void loadConfig() {
         startTime = config.getLong("start-time", 0);
         stopSince = config.getLong("stop-since", 0);
+        kickOnDeath = config.getBoolean("kick-on-death", false);
         eventState = EventState.valueOf(config.get("event-state", "NOT_RUNNING"));
     }
 
@@ -256,7 +271,10 @@ public class Config {
         NyxBow.WITHER_EFFECT_TIME = itemsFile.getInt("items.nyx_bow.wither_effect_time");
         NyxBow.SLOW_BLIND_EFFECT_CHANCE = itemsFile.getDouble("items.nyx_bow.slow_blind_effect_chance");
         NyxBow.SLOW_BLIND_EFFECT_TIME = itemsFile.getInt("items.nyx_bow.slow_blind_effect_time");
-        NyxBow.COOLDOWN = itemsFile.getInt("items.nyx_bow.cooldown");
+        NyxBow.DASH_COOLDOWN = itemsFile.getInt("items.nyx_bow.dash_cooldown") * 1000;
+        NyxBow.DASH_STRENGTH = itemsFile.getDouble("items.nyx_bow.dash_strength");
+        NyxBow.DASH_LIFT = itemsFile.getDouble("items.nyx_bow.dash_lift");
+        NyxBow.SHOOT_COOLDOWN = itemsFile.getInt("items.nyx_bow.shoot_cooldown");
 
         // Verzauberungen einlesen
         NyxBow.ENCHANTMENTS = loadEnchantments("nyx_bow");
@@ -375,6 +393,10 @@ public class Config {
 
     public static long getStopSince() {
         return stopSince;
+    }
+
+    public static boolean isKickOnDeath() {
+        return kickOnDeath;
     }
 
     public static boolean isEventStarted() {
