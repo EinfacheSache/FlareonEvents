@@ -28,7 +28,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
 
     private static final Component MAIN_GUI_TITLE = Component.text("Custom Item Rezepte", NamedTextColor.GOLD).decorate(TextDecoration.BOLD, TextDecoration.ITALIC);
     private static final String CATEGORY_GUI_KEY = "category_gui";
-    private static final int[] CATEGORY_GUI_POSITIONS = {10, 12, 14, 16};
+    private static final int[] ITEM_GUI_POSITIONS = {10, 12, 14, 16, 28, 30, 32, 34};
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String alias, String @NotNull [] args) {
@@ -76,7 +76,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
             meta.getPersistentDataContainer().set(new NamespacedKey(FlareonEvents.getPlugin(), CATEGORY_GUI_KEY), PersistentDataType.STRING, type.name());
             icon.setItemMeta(meta);
 
-            gui.setItem(CATEGORY_GUI_POSITIONS[i], icon);
+            gui.setItem(ITEM_GUI_POSITIONS[i], icon);
         }
 
         player.openInventory(gui);
@@ -106,11 +106,12 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
             }
         }
 
-        int index = 10;
+        int index = 0;
         for (CustomItems item : items) {
-            if (index >= totalSlots - 1) break;
-            gui.setItem(index, item.getItem().clone());
-            index += 2;
+            int itemPos = ITEM_GUI_POSITIONS[index];
+            if (itemPos >= totalSlots - 1) break;
+            gui.setItem(itemPos, item.getItem());
+            index++;
         }
 
         gui.setItem(totalSlots - 1, ItemUtils.createGuiBackButton());
@@ -157,7 +158,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
 
         int size = inv.getSize();
         for (int i = 0; i < size; i++) {
-            if (centerSlots.contains(i) || i == size - 1) continue;  // Mitte und Back‑Button auslassen
+            if (centerSlots.contains(i) || i == size - 1) continue;
             if (inv.getItem(i) == null) {
                 inv.setItem(i, filler);
             }
