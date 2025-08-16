@@ -1,3 +1,4 @@
 start-time: 0
 stop-since: 0
 event-state: NOT_RUNNING
+kick-on-death: false

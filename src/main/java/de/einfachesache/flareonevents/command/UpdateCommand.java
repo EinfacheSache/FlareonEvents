@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class UpdateCommand implements CommandExecutor, TabCompleter {
 
@@ -37,10 +38,8 @@ public class UpdateCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        Config.reloadFiles();
+        CompletableFuture.allOf(Config.reloadFiles()).thenRun(() -> updateInventorys(CustomItems.values()));
         ItemRecipe.reloadAllPluginRecipes();
-
-        updateInventorys(CustomItems.values());
 
         sender.sendMessage("§aAlle Configs & Custom-Items wurden aktualisiert!");
 

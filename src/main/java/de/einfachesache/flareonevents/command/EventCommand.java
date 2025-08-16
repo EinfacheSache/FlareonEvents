@@ -1,6 +1,7 @@
 package de.einfachesache.flareonevents.command;
 
 import de.einfachesache.flareonevents.Config;
+import de.einfachesache.flareonevents.EventState;
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.handler.GameHandler;
 import net.kyori.adventure.text.Component;
@@ -57,7 +58,7 @@ public class EventCommand implements CommandExecutor, TabCompleter {
     }
 
     private boolean handleStart(CommandSender sender) {
-        if (Config.getEventState().getId() > 0) {
+        if (Config.getEventState().getId() > 0 && !(Config.getEventState() == EventState.ENDED)) {
             sender.sendMessage("§cDas Event wurde bereits gestartet!");
             return false;
         }

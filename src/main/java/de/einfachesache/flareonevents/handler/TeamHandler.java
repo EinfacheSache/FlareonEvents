@@ -20,7 +20,7 @@ public class TeamHandler {
     static final FlareonEvents PLUGIN = FlareonEvents.getPlugin();
     static final Map<UUID, List<String>> PENDING_INVITES = new ConcurrentHashMap<>();
 
-    public static void handleInviteCommand(Player sender, String[] args) {
+    public static void handleInvite(Player sender, String[] args) {
         if (args.length != 2) {
             sender.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Verwendung: /team invite <Spielername>", NamedTextColor.RED)));
             return;
@@ -96,7 +96,7 @@ public class TeamHandler {
         }, 60 * 20L);
     }
 
-    public static void handleAcceptCommand(Player player, String[] args) {
+    public static void handleAccept(Player player, String[] args) {
         if (args.length != 2) {
             player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Verwendung: /team accept <Spielername>", NamedTextColor.RED)));
             return;
@@ -164,11 +164,13 @@ public class TeamHandler {
         }
     }
 
-    public static void handleLeaveCommand(OfflinePlayer player, boolean isKick) {
+    public static void handleLeave(OfflinePlayer player, boolean isKick) {
         UUID playerUUID = player.getUniqueId();
 
-        if (!isKick && !Config.getPlayerTeams().containsKey(playerUUID)) {
-            Objects.requireNonNull(player.getPlayer()).sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Du bist in keinem Team!", NamedTextColor.RED)));
+        if (!Config.getPlayerTeams().containsKey(playerUUID)) {
+            if(isKick){
+                Objects.requireNonNull(player.getPlayer()).sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Du bist in keinem Team!", NamedTextColor.RED)));
+            }
             return;
         }
 
@@ -203,7 +205,7 @@ public class TeamHandler {
         }
     }
 
-    public static void handleKickCommand(Player player, String[] args) {
+    public static void handleKick(Player player, String[] args) {
 
         if (args.length != 2) {
             player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Verwendung: /team kick <Spielername>", NamedTextColor.RED)));
@@ -256,7 +258,7 @@ public class TeamHandler {
             target.getPlayer().sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Du wurdest von " + player.getName() + " aus dem Team entfernt!", NamedTextColor.RED)));
         }
 
-        handleLeaveCommand(target, true);
+        handleLeave(target, true);
     }
 
 

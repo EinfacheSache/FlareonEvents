@@ -25,7 +25,7 @@ public class ScoreboardHandler implements Listener {
     private static final ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
     private static final Map<UUID, Scoreboard> playerBoards = new HashMap<>();
     private static final Map<World, Integer> cachedWorldBorders = new HashMap<>();
-    private static final String[] EMPTY_LINES = { "§0", "§1", "§2", "§3", "§4", "§5", "§6", "§7", "§8", "§9" };
+    private static final String[] EMPTY_LINES = {"§0", "§1", "§2", "§3", "§4", "§5", "§6", "§7", "§8", "§9"};
 
     private static volatile ScoreboardContext cachedContext;
 
@@ -35,7 +35,8 @@ public class ScoreboardHandler implements Listener {
             int total,
             Component tablistHeader,
             Component tablistFooter
-    ) {}
+    ) {
+    }
 
     public ScoreboardHandler() {
         new BukkitRunnable() {
@@ -67,7 +68,7 @@ public class ScoreboardHandler implements Listener {
         updatePlayer(player);
     }
 
-    private static void update(){
+    private static void update() {
         long now = System.currentTimeMillis();
         int aliveCount = (int) Bukkit.getOnlinePlayers().stream()
                 .filter(p -> !p.isDead() && !p.isOp()).count();
@@ -81,6 +82,7 @@ public class ScoreboardHandler implements Listener {
             case PREPARING -> "§ePREPARING";
             case STARTING -> "§eSTARTING";
             case RUNNING -> "§aLÄUFT";
+            case ENDED -> "§cBEENDET";
         };
 
         Component header = Component.text("§6§lFlareon Events\n\n§7Teams: §f" + teams);
@@ -116,9 +118,12 @@ public class ScoreboardHandler implements Listener {
         if (FlareonEvents.DEV_UUID.equals(player.getUniqueId())) {
             prefix = "§4DEV | ";
             listOrder = Integer.MAX_VALUE;
+        } else if (player.getUniqueId().equals(FlareonEvents.OWNER_UUID)) {
+            prefix = "§4OWNER | ";
+            listOrder = Integer.MAX_VALUE - 1;
         } else if (player.isOp()) {
             prefix = "§cSTAFF | ";
-            listOrder = Integer.MAX_VALUE-1;
+            listOrder = Integer.MAX_VALUE - 2;
         } else {
             prefix = "§a";
             listOrder = (teamID != -1) ? 1000 - teamID : 1000;

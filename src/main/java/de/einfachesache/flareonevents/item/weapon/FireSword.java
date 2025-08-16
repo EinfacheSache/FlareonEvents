@@ -25,6 +25,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -36,6 +38,13 @@ public class FireSword implements Listener {
     public static String DISPLAY_NAME;
     public static double FIRE_TICKS_CHANCE;
     public static int FIRE_TICKS_TIME, COOLDOWN;
+
+    private static final int RANGE = 20;
+    private static final int FIREBALL_COUNT = 5;
+    private static final double HEIGHT_ABOVE = 7.5;
+    private static final double RING_RADIUS = 2;     // Abstand um das Ziel
+    private static final double DOWNWARD_SPEED = 0.5; // Fallgeschwindigkeit
+
     public static ItemFlag[] ITEM_FLAGS;
     public static Map<Enchantment, Integer> ENCHANTMENTS;
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS;
@@ -113,26 +122,66 @@ public class FireSword implements Listener {
 
     @EventHandler
     public void onRightClick(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+
         Player player = event.getPlayer();
-
-        if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            return;
-        }
-
         if (!isFireSwordItem(event.getItem())) return;
 
-        long lastUse = COOLDOWN_MAP.getOrDefault(player.getUniqueId(), 0L);
-        if (System.currentTimeMillis() - lastUse < COOLDOWN * 1000L) {
-            player.sendMessage(Component.text("Du kannst diese Fähigkeit in " + (COOLDOWN - ((System.currentTimeMillis() - lastUse) / 1000) + "s erneut verwenden!"), NamedTextColor.RED));
+        long now = System.currentTimeMillis();
+        long last = COOLDOWN_MAP.getOrDefault(player.getUniqueId(), 0L);
+        long diff = now - last;
+        if (diff < COOLDOWN * 1000L) {
+            long remaining = (COOLDOWN * 1000L - diff + 999) / 1000; // auf volle Sekunde runden
+            player.sendMessage(Component.text("Du kannst diese Fähigkeit in " + remaining + "s erneut verwenden!", NamedTextColor.RED));
             return;
         }
 
-        if (player.getGameMode() != GameMode.CREATIVE) {
-            event.getPlayer().setCooldown(event.getItem(), COOLDOWN * 20);
-            COOLDOWN_MAP.put(player.getUniqueId(), System.currentTimeMillis());
+        // Ziel ermitteln (Block oder Entity) bis 20 Blöcke
+        World world = player.getWorld();
+        Location eye = player.getEyeLocation();
+        Vector dir = eye.getDirection();
+
+        RayTraceResult hit = world.rayTrace(
+                eye,
+                dir,
+                RANGE,
+                FluidCollisionMode.NEVER,
+                true,           // passierbare Blöcke ignorieren (Laub etc.)
+                0.2,
+                e -> e != player
+        );
+        if (hit == null) {
+            player.sendMessage(Component.text("Kein Ziel innerhalb von 20 Blöcken.", NamedTextColor.GRAY));
+            return;
+        } else {
+            hit.getHitPosition();
         }
 
-        player.launchProjectile(Fireball.class).setShooter(player);
+        Location target = hit.getHitPosition().toLocation(world);
+
+        // 5 Positionen im Kreis um das Ziel (horizontal), alle 6 Blöcke höher
+        for (int i = 0; i < FIREBALL_COUNT; i++) {
+            double angle = (2 * Math.PI / FIREBALL_COUNT) * i;
+            double xOff = Math.cos(angle) * RING_RADIUS;
+            double zOff = Math.sin(angle) * RING_RADIUS;
+
+            Location spawnLoc = target.clone().add(xOff, HEIGHT_ABOVE, zOff);
+
+            // Fireball = keine Explosion. Auch kein Feuer:
+            Fireball fb = world.spawn(spawnLoc, Fireball.class, f -> {
+                f.setIsIncendiary(false);
+                f.setDirection(new Vector(0, -1, 0)); // senkrecht nach unten
+            });
+
+            // direkte Abwärtsgeschwindigkeit für „gerade runter“
+            fb.setVelocity(new Vector(0, -DOWNWARD_SPEED, 0));
+        }
+
+        // Cooldown & Feedback
+        if (player.getGameMode() != GameMode.CREATIVE) {
+            event.getPlayer().setCooldown(event.getItem(), COOLDOWN * 20);
+            COOLDOWN_MAP.put(player.getUniqueId(), now);
+        }
         player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, SoundCategory.PLAYERS, 1f, 1f);
     }
 

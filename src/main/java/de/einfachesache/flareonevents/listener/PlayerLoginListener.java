@@ -22,7 +22,7 @@ public class PlayerLoginListener implements Listener {
         boolean isParticipant = Config.getParticipantsUUID().contains(uuid);
         boolean isDead = Config.getDeathParticipantsUUID().contains(uuid);
 
-        if (isParticipant && !isDead) return;
+        if (isParticipant && (!isDead || !Config.isKickOnDeath())) return;
 
         event.disallow(PlayerLoginEvent.Result.KICK_OTHER, Component.text(
                 " \n" +

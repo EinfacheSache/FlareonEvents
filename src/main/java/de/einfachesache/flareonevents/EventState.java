@@ -5,7 +5,8 @@ public enum EventState {
     NOT_RUNNING(0),
     PREPARING(1),
     STARTING(2),
-    RUNNING(3);
+    RUNNING(3),
+    ENDED(4);
 
     private final int id;
 

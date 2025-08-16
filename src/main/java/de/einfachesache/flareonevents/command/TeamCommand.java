@@ -37,19 +37,19 @@ public class TeamCommand implements CommandExecutor, TabCompleter, Listener {
 
         switch (subCommand) {
             case "invite":
-                TeamHandler.handleInviteCommand(player, args);
+                TeamHandler.handleInvite(player, args);
                 break;
             case "accept":
-                TeamHandler.handleAcceptCommand(player, args);
+                TeamHandler.handleAccept(player, args);
                 break;
             case "leave":
-                TeamHandler.handleLeaveCommand(player, false);
+                TeamHandler.handleLeave(player, false);
                 break;
             case "list":
                 TeamHandler.handleListCommand(player, args);
                 break;
             case "kick":
-                TeamHandler.handleKickCommand(player, args);
+                TeamHandler.handleKick(player, args);
                 break;
             default:
                 sendHelpMessage(player, alias);

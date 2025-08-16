@@ -41,6 +41,7 @@ public final class FlareonEvents extends JavaPlugin {
     private static final LogManager logger = LogManager.getLogger();
 
     public static final UUID DEV_UUID = UUID.fromString("201e5046-24df-4830-8b4a-82b635eb7cc7");
+    public static final UUID OWNER_UUID = UUID.fromString("66d27373-3e65-4549-bbf2-39e1d5dc8631");
     public static final Component PLUGIN_PREFIX = Component.text("[FLAREON] ", NamedTextColor.GOLD);
 
     private static boolean voiceChatEnabled;

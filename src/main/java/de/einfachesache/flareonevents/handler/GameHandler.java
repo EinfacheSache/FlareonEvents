@@ -21,6 +21,7 @@ import org.bukkit.util.Vector;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class GameHandler {
@@ -34,12 +35,14 @@ public class GameHandler {
     static final int noPvPTime = 5 * 60; // DEFAULT: 5 * 60
     static final int netherOpenTime = 60 * 60; // DEFAULT: 60 * 60
 
+    static String winner = "§cNO WINNER§6";
+
     static String secondWord(int n) {
-        return n == 1 ? "Sekunde" : "Sekunden";
+        return n <= 1 ? "Sekunde" : "Sekunden";
     }
 
     static String minuteWord(int n) {
-        return n == 1 ? "Minute" : "Minuten";
+        return n <= 1 ? "Minute" : "Minuten";
     }
 
     static final Title.Times times = Title.Times.times(
@@ -47,7 +50,7 @@ public class GameHandler {
             Duration.ofMillis(3000),  // 60 Ticks = 3 Sekunden (stay)
             Duration.ofMillis(1000)   // 20 Ticks = 1 Sekunde (fadeOut)
     );
-    static final Sound startSound = Sound.sound(
+    static final Sound startAndEndSound = Sound.sound(
             org.bukkit.Sound.ENTITY_ENDER_DRAGON_AMBIENT,  // Sound-Key
             net.kyori.adventure.sound.Sound.Source.MASTER, // Sound-Quelle
             1.0f,                                          // Lautstärke
@@ -183,26 +186,67 @@ public class GameHandler {
     }
 
     public static void pauseEvent() {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Config.setEventState(EventState.NOT_RUNNING);
+            Config.setStopSince(System.currentTimeMillis());
 
-        Config.setEventState(EventState.NOT_RUNNING);
+            plugin.getServer().getWorlds().forEach(world -> world.setPVP(false));
+            plugin.getServer().getOnlinePlayers().forEach(player -> {
+
+                player.showTitle(Title.title(
+                        Component.text("Pause!", NamedTextColor.YELLOW),
+                        Component.text("Das Event wurde pausiert!", NamedTextColor.YELLOW), times));
+                player.playSound(notifySound);
+
+                if (!player.isOp()) {
+                    Objects.requireNonNull(player.getAttribute(Attribute.JUMP_STRENGTH)).setBaseValue(0);
+                    player.setVelocity(new Vector());
+                    player.setWalkSpeed(0.0f);
+                    player.setFlying(false);
+                }
+            });
+            plugin.getServer().broadcast(Component.text("Das Event wurde kurzzeitig pausiert. Das Event startet in Kürze erneut!", NamedTextColor.YELLOW));
+        }, 5);
+    }
+
+    public static void endEvent() {
+
+        tasks.forEach(BukkitTask::cancel);
+
+        Config.setEventState(EventState.ENDED);
         Config.setStopSince(System.currentTimeMillis());
 
         plugin.getServer().getWorlds().forEach(world -> world.setPVP(false));
         plugin.getServer().getOnlinePlayers().forEach(player -> {
-
             player.showTitle(Title.title(
-                    Component.text("Pause!", NamedTextColor.YELLOW),
-                    Component.text("Das Event wurde pausiert!", NamedTextColor.YELLOW), times));
-            player.playSound(notifySound);
-
-            if (!player.isOp()) {
-                Objects.requireNonNull(player.getAttribute(Attribute.JUMP_STRENGTH)).setBaseValue(0);
-                player.setVelocity(new Vector());
-                player.setWalkSpeed(0.0f);
-                player.setFlying(false);
-            }
+                    Component.text("Event Beendet!", NamedTextColor.RED),
+                    Component.text( winner + " hat gewonnen!", NamedTextColor.GOLD), times));
+            player.playSound(startAndEndSound);
         });
-        plugin.getServer().broadcast(Component.text("Das Event wurde kurzzeitig pausiert. Das Event startet in Kürze erneut!", NamedTextColor.YELLOW));
+        plugin.getServer().broadcast(Component.text("Das Event ist beendet. Vielen Dank für eure Teilnahme!", NamedTextColor.GOLD));
+    }
+
+    public static boolean isEventEnd() {
+        int aliveTeams = Config.getTeams().size();
+        if (aliveTeams > 1) return false;
+
+        List<Player> aliveSoloPlayer = Bukkit.getOnlinePlayers().stream()
+                .filter(player -> !player.isOp())
+                .filter(player -> player.getGameMode() == GameMode.SURVIVAL)
+                .filter(player -> !Config.getDeathParticipantsUUID().contains(player.getUniqueId().toString()))
+                .filter(player -> !Config.getPlayerTeams().containsKey(player.getUniqueId())).collect(Collectors.toUnmodifiableList());
+
+        if (aliveTeams + aliveSoloPlayer.size() > 1) {
+            return false;
+        }
+
+        if (aliveTeams == 1) {
+            winner = "§cTeam " + Config.getTeams().entrySet().iterator().next().getKey() + "§6";
+        } else if (!aliveSoloPlayer.isEmpty()) {
+            winner = "§c" + aliveSoloPlayer.getFirst().getName() + "§6";
+        }
+
+        return true;
     }
 
 
@@ -215,6 +259,10 @@ public class GameHandler {
             public void run() {
 
                 if (secondsLeft <= 0) {
+
+                    int noPvPTimeMin = noPvPTime / 60;
+                    int netherOpenTimeMin = netherOpenTime / 60;
+
                     plugin.getServer().getOnlinePlayers().forEach(player -> {
                         player.sendActionBar(Component.text("Event ist gestartet", NamedTextColor.DARK_RED));
                         player.showTitle(Title.title(
@@ -228,10 +276,10 @@ public class GameHandler {
                                 §eMax Teamgröße ist §c%d§e Spieler!
                                 §ePvP beginnt in §c%d %s§e!
                                 §5Der Nether öffnet in §c%d %s§5!"""
-                                .formatted(Config.getMaxTeamSize(), noPvPTime, minuteWord(noPvPTime), netherOpenTime, minuteWord(netherOpenTime))
+                                .formatted(Config.getMaxTeamSize(), noPvPTimeMin, minuteWord(noPvPTimeMin), netherOpenTimeMin, minuteWord(netherOpenTimeMin))
                         ));
 
-                        player.playSound(startSound);
+                        player.playSound(startAndEndSound);
                     });
 
                     this.cancel();
