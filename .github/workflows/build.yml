@@ -3,7 +3,6 @@ name: Build
 on:
   push:
     branches: [ main, master ]
-    tags: [ "*" ]
   pull_request:
     branches: [ main, master ]
 
@@ -11,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # nötig für Release-Upload bei Tags
+      contents: write  # wichtig für Release-Uploads
 
     steps:
       - name: Checkout
@@ -27,25 +26,12 @@ jobs:
       - name: Build with Maven
         run: mvn -B -V clean package
 
-      # (Optional) Artefakt im Actions-Tab für Nicht-Tag-Builds
-      # -> bleibt immer ZIP; kannst du entfernen, wenn du es nicht brauchst
-      - name: Upload artifact (Actions tab)
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: FlareonEvents
-          path: target/FlareonEvents-1.0-SNAPSHOT.jar
-          if-no-files-found: error
-          overwrite: true
-
-      # JAR direkt ans Release anhängen, sobald ein Tag gebaut wird
-      - name: Upload JAR to GitHub Release (on tag)
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Create or update "latest" release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: latest
+          release_name: "Latest Build"
           files: target/FlareonEvents-1.0-SNAPSHOT.jar
-          fail_on_unmatched_files: true
-          draft: false
-          prerelease: false
+          overwrite: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
