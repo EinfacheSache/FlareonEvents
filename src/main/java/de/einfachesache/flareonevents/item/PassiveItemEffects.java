@@ -1,44 +1,94 @@
 package de.einfachesache.flareonevents.item;
 
+import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.WorldUtils;
+import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
+import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.FireSword;
 import de.einfachesache.flareonevents.item.weapon.NyxBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
-import de.einfachesache.flareonevents.item.tool.*;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class PassiveItemEffects {
+import java.util.ArrayList;
+import java.util.List;
+
+@SuppressWarnings("SameParameterValue")
+public final class PassiveItemEffects {
+
+    // FAST: 1 s – “direkt”
+    private static final int FAST_PERIOD_TICKS  = 20;                     // 1 s
+    private static final int FAST_EFFECT_TICKS  = FAST_PERIOD_TICKS + 5;  // 25 Ticks (~1.25 s)
+    private static final int FAST_REFRESH_TICKS = FAST_PERIOD_TICKS + 1;  // 21 Ticks -> vor Ablauf erneuern
+
+    // SLOW: 2.5 s
+    private static final int SLOW_PERIOD_TICKS  = 50;                         // 2.5 s
+    private static final int SLOW_EFFECT_TICKS  = SLOW_PERIOD_TICKS * 2 + 10; // 110 Ticks ≈ 5.5 s
+    private static final int SLOW_REFRESH_TICKS = SLOW_PERIOD_TICKS + 1;      // 2.5 s + 1 Tick
 
     public static void applyPassiveEffects() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            whenInMainHand(player);
+        var plugin = FlareonEvents.getPlugin();
+        Bukkit.getScheduler().runTaskTimer(plugin, PassiveItemEffects::tickFast, FAST_PERIOD_TICKS, FAST_PERIOD_TICKS);
+        Bukkit.getScheduler().runTaskTimer(plugin, PassiveItemEffects::tickSlow, SLOW_PERIOD_TICKS, SLOW_PERIOD_TICKS);
+    }
+
+    private static void tickFast() {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (isNoRelevantMode(p)) continue;
+
+            ItemStack item = p.getInventory().getItemInMainHand();
+            if (item.getType().isAir()) continue;
+
+            List<PotionEffect> add = new ArrayList<>(3);
+
+            if (FireSword.isFireSwordItem(item)) {
+                maybeAdd(add, p, PotionEffectType.FIRE_RESISTANCE, 0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
+                maybeAdd(add, p, PotionEffectType.STRENGTH,       0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
+            } else if (PoseidonsTrident.isPoseidonsTridentItem(item)) {
+                maybeAdd(add, p, PotionEffectType.DOLPHINS_GRACE,  0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
+                maybeAdd(add, p, PotionEffectType.WATER_BREATHING, 0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
+            } else if (NyxBow.isNyxBowItem(item)) {
+                maybeAdd(add, p, PotionEffectType.SPEED, 0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
+            }
+
+            if (!add.isEmpty()) p.addPotionEffects(add);
         }
     }
 
-    private static void whenInMainHand(Player player) {
+    private static void tickSlow() {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (isNoRelevantMode(p)) continue;
 
-        ItemStack item = player.getInventory().getItemInMainHand();
+            ItemStack item = p.getInventory().getItemInMainHand();
+            if (item.getType().isAir()) continue;
 
-        if (FireSword.isFireSwordItem(item)) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 30, 0, true, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 30, 0, true, false));
+            boolean isPick = ReinforcedPickaxe.isReinforcedPickaxeItem(item)
+                    || SuperiorPickaxe.isSuperiorPickaxeItem(item);
+            if (!isPick) continue;
+
+            PotionEffect cur = p.getPotionEffect(PotionEffectType.NIGHT_VISION);
+            if (cur != null && cur.getDuration() >= SLOW_REFRESH_TICKS) continue;
+
+            if (WorldUtils.isPlayerInCave(p)) {
+                p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION,
+                        SLOW_EFFECT_TICKS, 0, true, false));
+            }
         }
+    }
 
-        if (PoseidonsTrident.isPoseidonsTridentItem(item)) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 30, 0, true, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 30, 0, true, false));
-        }
+    private static boolean isNoRelevantMode(Player p) {
+        GameMode gm = p.getGameMode();
+        return gm != GameMode.SURVIVAL && gm != GameMode.ADVENTURE && gm != GameMode.CREATIVE;
+    }
 
-        if (NyxBow.isNyxBowItem(item)) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 30, 0, true, false));
-        }
-
-        if ((ReinforcedPickaxe.isReinforcedPickaxeItem(item) || SuperiorPickaxe.isSuperiorPickaxeItem(item)) && WorldUtils.isPlayerInCave(player)) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 30, 0, true, false));
+    private static void maybeAdd(List<PotionEffect> list, Player p, PotionEffectType type, int amplifier, int duration, int refreshThreshold) {
+        PotionEffect cur = p.getPotionEffect(type);
+        if (cur == null || cur.getAmplifier() < amplifier || cur.getDuration() < refreshThreshold) {
+            list.add(new PotionEffect(type, duration, amplifier, true, false));
         }
     }
 }

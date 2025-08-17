@@ -132,7 +132,7 @@ public final class FlareonEvents extends JavaPlugin {
 
     private void setupEvent() {
         ItemRecipe.loadRecipes();
-        Bukkit.getScheduler().runTaskTimer(this, PassiveItemEffects::applyPassiveEffects, 20L, 20L);
+        PassiveItemEffects.applyPassiveEffects();
         Bukkit.getOnlinePlayers().forEach(player -> {
             ScoreboardHandler.addScoreboardToPlayer(player);
             if (!Config.isEventIsRunning()) {
