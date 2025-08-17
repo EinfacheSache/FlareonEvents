@@ -1,5 +1,12 @@
 # FlareonEvents
 
+[![Java 21](https://img.shields.io/badge/Java-21-red?logo=openjdk)](https://openjdk.org/)
+[![Paper 1.21.6](https://img.shields.io/badge/Paper-1.21.6-green?logo=papermc)](https://papermc.io/)
+[![Minecraft 1.21.x](https://img.shields.io/badge/Minecraft-1.21.x-blue?logo=minecraft&logoColor=white)](https://www.minecraft.net/)
+[![API 1.21](https://img.shields.io/badge/API-1.21-blue)](https://docs.papermc.io/)
+[![Build with Maven](https://img.shields.io/badge/Build-Maven-orange?logo=apachemaven)](https://maven.apache.org/)
+[![CI](https://github.com/EinfacheSache/FlareonEvents/actions/workflows/build.yml/badge.svg)](https://github.com/EinfacheSache/FlareonEvents/actions/workflows/build.yml)
+
 🌍 Available Languages: [English](README.md) | [Deutsch](README.de.md)
 
 A comprehensive **Paper 1.21.x** event plugin for Minecraft servers featuring a **team system**, **custom items with recipes/GUI**, **event phases** (Preparation/Start/Running), **scoreboard**, **world border control**, resource pack distribution, and optional **Simple Voice Chat** integration (softdepend).
