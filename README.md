@@ -1,155 +1,157 @@
 # FlareonEvents
 
-Ein umfangreiches **Paper 1.21.x** Event-Plugin für Minecraft-Server mit **Team-System**, **Custom Items samt Rezepten/GUI**, **Event-Phasen** (Vorbereitung/Start/Running), **Scoreboard**, **Welt­border-Steuerung**, Ressourcenpaket-Verteilung sowie optionaler **Simple Voice Chat**-Integration (Softdepend).
+🌍 Available Languages: [English](README.md) | [Deutsch](README.de.md)
 
-> **Getestete Umgebung:** Java 21, Paper 1.21.6.  
+A comprehensive **Paper 1.21.x** event plugin for Minecraft servers featuring a **team system**, **custom items with recipes/GUI**, **event phases** (Preparation/Start/Running), **scoreboard**, **world border control**, resource pack distribution, and optional **Simple Voice Chat** integration (softdepend).
+
+> **Tested environment:** Java 21, Paper 1.21.6.  
 > **Build:** Maven (`mvn clean package`) → `target/FlareonEvents-1.0-SNAPSHOT.jar`  
-> **API-Version:** 1.21 | **Softdepend:** `voicechat` (Simple Voice Chat API)
+> **API version:** 1.21 | **Softdepend:** `voicechat` (Simple Voice Chat API)
 
 ---
 
-## Inhalt
+## Table of Contents
 - [Features](#features)
 - [Installation](#installation)
-- [Konfiguration](#konfiguration)
+- [Configuration](#configuration)
     - [config.yml](#configyml)
     - [items.yml (Custom Items)](#itemsyml-custom-items)
     - [teams.yml](#teamsyml)
     - [infoBook.yml](#infobookyml)
     - [locations.yml](#locationsyml)
     - [participants.yml & deathParticipants.yml](#participantsyml--deathparticipantsyml)
-- [Befehle & Rechte](#befehle--rechte)
-- [Custom Items – Übersicht](#custom-items--übersicht)
-- [Ablauf & Mechaniken](#ablauf--mechaniken)
+- [Commands & Permissions](#commands--permissions)
+- [Custom Items – Overview](#custom-items--overview)
+- [Flow & Mechanics](#flow--mechanics)
 - [Integration: Simple Voice Chat](#integration-simple-voice-chat)
-- [Entwicklung](#entwicklung)
+- [Development](#development)
 - [FAQ](#faq)
 
 ---
 
 ## Features
 
-- **Event-Phasen**: Vorbereitung → Start → Running → (Ende)
-- **Team-System**: Einladen/Annehmen/Kicken/Verlassen, Teamgröße & Einladungsreichweite konfigurierbar
-- **Custom Items**: Feuer-Schwert, Nyx-Bogen, Poseidons Dreizack, verstärkte/superior Spitzhacken u. a.
-- **Rezept-GUI**: Übersicht aller Items & Zutaten direkt im Spiel
-- **Welt­border-Steuerung**: Stepweise Verkleinerung, Ankündigungen per Title/Actionbar
-- **PvP-/Nether-Steuerung**: PvP Umschaltbar, Nether wird erst später freigegeben
-- **Teilnehmer-Verwaltung**: Whitelist fürs laufende Event, optionales Kick-on-Death
-- **Scoreboard**: Phase, Spieler/Teams, Kills, Border-Größe
-- **Ressourcenpaket**: Erzwingbar für Nicht-OPs; Statusmeldungen bei Download/Fehler
-- **Quality-of-Life**: Angepasster Chat-Renderer, Schutz rund um Spawnpunkte, Bed/Anchor im Nether deaktiviert
-- **Optional: Simple Voice Chat**: Automatische Team-Gruppen
+- **Event phases**: Preparation → Start → Running → (End)
+- **Team system**: Invite/Accept/Kick/Leave, configurable team size & invite distance
+- **Custom items**: Fire Sword, Nyx Bow, Poseidon's Trident, reinforced/superior pickaxes, etc.
+- **Recipe GUI**: In-game overview of all items & ingredients
+- **World border control**: Step-based shrinking, announcements via Title/Actionbar
+- **PvP/Nether control**: PvP toggle, Nether unlocks later
+- **Participant management**: Whitelist for running event, optional kick-on-death
+- **Scoreboard**: Phase, players/teams, kills, border size
+- **Resource pack**: Enforced for non-OPs; status messages on download/failure
+- **Quality of Life**: Custom chat renderer, spawn protection, bed/anchor disabled in Nether
+- **Optional: Simple Voice Chat**: Automatic team groups
 
 ---
 
 ## Installation
 
-1. **Voraussetzungen**
+1. **Requirements**
     - Java 21
-    - Paper **1.21.6** (oder kompatible 1.21.x)
-    - *Optional:* [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) (Server- & Clientseite)
+    - Paper **1.21.6** (or compatible 1.21.x)
+    - *Optional:* [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) (server & client side)
 
-2. **Plugin installieren**
-    - `FlareonEvents-*.jar` nach `plugins/` kopieren
-    - Server starten → Standard-Konfigs werden unter `plugins/FlareonEvents/` erzeugt
-    - Bei Nutzung von Voice Chat das entsprechende Plugin zusätzlich installieren
+2. **Plugin installation**
+    - Copy `FlareonEvents-*.jar` into `plugins/`
+    - Start the server → default configs will be created in `plugins/FlareonEvents/`
+    - If using Voice Chat, install the corresponding plugin as well
 
-3. **Ressourcenpaket**
-    - Standard-URL: `https://einfachesache.de/texturepack/Flareon-Events-V2.zip`
-    - Nicht-OPs (außer DEV-UUID) bekommen das Pack **erzwingend** mit Prompt. Status/Fehler werden im Chat angezeigt.
+3. **Resource pack**
+    - Default URL: `https://einfachesache.de/texturepack/Flareon-Events-V2.zip`
+    - Non-OPs (except DEV-UUID) receive the pack **enforced** with prompt. Status/errors are displayed in chat.
 
 ---
 
-## Konfiguration
+## Configuration
 
-Die Dateien liegen unter `plugins/FlareonEvents/`.
+Files are located under `plugins/FlareonEvents/`.
 
 ### `config.yml`
 
 ```yml
-start-time: 0        # Timestamp/Marker für Start
-stop-since: 0        # Timestamp/Marker fürs Stoppen
+start-time: 0        # Timestamp/marker for start
+stop-since: 0        # Timestamp/marker for stop
 event-state: NOT_RUNNING
-kick-on-death: false # true = Tote dürfen dem laufenden Event nicht (wieder) beitreten
+kick-on-death: false # true = dead players cannot (re)join the running event
 ```
 
 ### `items.yml` (Custom Items)
 
-- Globale Flags unter `generell.item_flags` (z. B. `HIDE_ATTRIBUTES`, `HIDE_ENCHANTS`)
-- Je Item: `key` (NamespacedKey), `material`, `display_name`, Attribute/Verzauberungen und **Fähigkeiten/Cooldowns**
+- Global flags under `generell.item_flags` (e.g. `HIDE_ATTRIBUTES`, `HIDE_ENCHANTS`)
+- Per item: `key` (NamespacedKey), `material`, `display_name`, attributes/enchantments and **abilities/cooldowns**
 
-**Auszug der Fähigkeiten (konfigurierbar):**
-- `fire_sword`: Feuer-Ticks-Chance/-Dauer, **cooldown** (Rechtsklick-Skill – Feuerball)
-- `nyx_bow`: Wither-/Slow+Blind-Chancen & Dauer, **dash** (Rechtsklick), **shoot_cooldown**
-- `poseidons_trident`: **Lightning** bei Wurf & teils im Nahkampf, **cooldown**
-- `superior_pickaxe`: **X-Ray-Fähigkeit** (Zeit, Radius, Cooldown)
+**Excerpt of abilities (configurable):**
+- `fire_sword`: Fire tick chance/duration, **cooldown** (right-click skill – fireball)
+- `nyx_bow`: Wither/Slow+Blind chance & duration, **dash** (right-click), **shoot_cooldown**
+- `poseidons_trident`: **Lightning** on throw & partially melee, **cooldown**
+- `superior_pickaxe`: **X-Ray ability** (time, radius, cooldown)
 
-Siehe auch Abschnitt [Custom Items – Übersicht](#custom-items--übersicht).
+See also [Custom Items – Overview](#custom-items--overview).
 
 ### `teams.yml`
 
 ```yml
-max-invite-distanz: 45  # Reichweite zum Einladen in Blöcken
-max-team-size: 3        # Maximale Teamgröße
+max-invite-distanz: 45  # Invite distance in blocks
+max-team-size: 3        # Maximum team size
 next-team-id: 1
-teams: { }              # Wird zur Laufzeit gefüllt
+teams: { }              # Filled at runtime
 ```
 
 ### `infoBook.yml`
 
-- Mehrseitiges Info-/Regelbuch, das Spieler erhalten (z. B. beim Join).
-- Beinhaltet u. a. Hinweise zu **PvP/Nether**, **Border** (Start- und Zielgrößen) und **gebannte Items/Funktionen**.
+- Multi-page info/rule book players receive (e.g. on join).
+- Contains info such as **PvP/Nether**, **border** (start/target size), and **banned items/functions**.
 
 ### `locations.yml`
 
 ```yml
 main-spawn:
-player-spawns: [ ]  # Spawnpunkte der Teilnehmer (per Befehl gesetzt)
+player-spawns: [ ]  # Player spawn points (set via command)
 ```
 
 ### `participants.yml` & `deathParticipants.yml`
 
-- Listen von (toten) Teilnehmern – steuern Join/Kick-Logik während laufendem Event.
+- Lists of (dead) participants – controls join/kick logic during running events.
 
 ---
 
-## Befehle & Rechte
+## Commands & Permissions
 
-> **Standard-Permission für Admin-Kommandos:** `event.op`
+> **Default permission for admin commands:** `event.op`
 
-**Allgemein**
-- `/help` – Übersicht
-- `/recipe` – Öffnet das **Rezept-GUI**
+**General**
+- `/help` – Overview
+- `/recipe` – Opens the **recipe GUI**
 
 **Team**
-- `/team invite <Spieler>` – Spieler ins eigene Team einladen
-- `/team accept <Spieler>` – Einladung annehmen
-- `/team leave` – Team verlassen
-- `/team kick <Spieler>` – Teammitglied entfernen
-- `/team list [TeamID]` – Teammitglieder anzeigen
+- `/team invite <player>` – Invite a player to your team
+- `/team accept <player>` – Accept invitation
+- `/team leave` – Leave team
+- `/team kick <player>` – Remove team member
+- `/team list [TeamID]` – Show team members
 
-**Event-Verwaltung** *(Admin, `event.op`)*
-- `/event start [true|false]` – Event vorbereiten/starten (optional **force**)
-- `/event pause` – Event pausieren
-- `/event cancel` – Event abbrechen
-- `/event pvp` – PvP umschalten
-- `/event reset <Spieler|all> [true|false]` – Spieler zurücksetzen (Inv/Status)
-- `/event spawncircle` – Kreisförmige Spawnpunkte generieren
-- `/event setspawn [number]` – Eigenen Standort als Spawnpunkt speichern
+**Event management** *(Admin, `event.op`)*
+- `/event start [true|false]` – Prepare/start event (optional **force**)
+- `/event pause` – Pause event
+- `/event cancel` – Cancel event
+- `/event pvp` – Toggle PvP
+- `/event reset <player|all> [true|false]` – Reset player (inv/status)
+- `/event spawncircle` – Generate circular spawn points
+- `/event setspawn [number]` – Save current location as spawn point
 
-**Wartung/Reload** *(Admin, `event.op`)*
-- `/update` – **Alle Konfigs & Custom Items** neu laden (inkl. Inventar-Updates)
-- `/update book` – Info-Buch aktualisieren/neu verteilen
-- `/customitem <…>` – Admin-Itemgeber (z. B. `fire_sword`, `nyx_bow`, `poseidons_trident`, `reinforced_pickaxe`, `superior_pickaxe`, `soul`, `all`, `ingredients`, `gear` …)
+**Maintenance/Reload** *(Admin, `event.op`)*
+- `/update` – **Reload all configs & custom items** (incl. inventory updates)
+- `/update book` – Update/re-distribute info book
+- `/customitem <…>` – Admin item giver (e.g. `fire_sword`, `nyx_bow`, `poseidons_trident`, `reinforced_pickaxe`, `superior_pickaxe`, `soul`, `all`, `ingredients`, `gear` …)
 
-> Hinweis: Der **Command-Whitelist**-Mechanismus blendet Nicht-OPs Befehle aus, die nicht explizit erlaubt sind.
+> Note: The **command whitelist** mechanism hides commands for non-OPs unless explicitly allowed.
 
 ---
 
-## Custom Items – Übersicht
+## Custom Items – Overview
 
-| Item-ID           | Anzeige-Name          | Material           | Key (NamespacedKey)         |
+| Item-ID           | Display Name         | Material           | Key (NamespacedKey)         |
 |-------------------|----------------------|-------------------|-----------------------------|
 | fire_sword        | §cFire Sword         | DIAMOND_SWORD     | flareonevents:fire_sword    |
 | nyx_bow           | §5Nyx Bow            | BOW               | flareonevents:nyx_bow       |
@@ -159,48 +161,48 @@ player-spawns: [ ]  # Spawnpunkte der Teilnehmer (per Befehl gesetzt)
 
 ---
 
-## Ablauf & Mechaniken
+## Flow & Mechanics
 
-- **Phasen**: `PREPARING` → `STARTING` → `RUNNING` → `ENDED`
-    - In `STARTING` ist Bewegung für Nicht-OPs gesperrt (nur Blickrichtung erlaubt).
-    - Vor dem Start sind Hunger/Damage für Adventure-Spieler deaktiviert.
-- **PvP**: Global umschaltbar; Kill-Zähler wird erfasst.
-- **Nether**: Portalerzeugung ist zunächst deaktiviert und wird **später freigeschaltet** (Ankündigung im Spiel).
-- **Weltborder**: Verkleinert sich **schrittweise** auf eine Zielgröße; das Plugin kündigt Schritte per Title/Actionbar an.
-- **Spawn-Schutz**: Blöcke rund um festgelegte Spawnpunkte sind geschützt; Explosionsschäden werden dort entfernt.
-- **Tod**: Blitz-Effekt, Team-Entfernung, optional Kick (abhängig von `kick-on-death`). Wenn nur noch **ein Spieler/ein Team** übrig ist, wird das Event beendet.
-- **Ressourcenpaket**: Wird mit fester UUID & URL verteilt; für Nicht-OPs (außer DEV-UUID) *erzwingend*. Statusmeldungen bei `ACCEPTED/DECLINED/FAILED_DOWNLOAD`.
+- **Phases**: `PREPARING` → `STARTING` → `RUNNING` → `ENDED`
+    - In `STARTING`, non-OPs are frozen (only looking around allowed).
+    - Before start, hunger/damage for Adventure players is disabled.
+- **PvP**: Globally toggleable; kill counter is tracked.
+- **Nether**: Portal creation initially disabled, **unlocked later** (broadcast in-game).
+- **World border**: Shrinks **stepwise** to a target size; plugin announces steps via Title/Actionbar.
+- **Spawn protection**: Blocks around set spawn points are protected; explosion damage removed there.
+- **Death**: Lightning effect, team removal, optional kick (depending on `kick-on-death`). If only **one player/team** remains, event ends.
+- **Resource pack**: Distributed with fixed UUID & URL; *enforced* for non-OPs (except DEV-UUID). Status messages on `ACCEPTED/DECLINED/FAILED_DOWNLOAD`.
 
 ---
 
 ## Integration: Simple Voice Chat
 
 - **Softdepend:** `voicechat`
-- Wenn installiert, werden **Team-Gruppen automatisch erstellt** und Spieler beim Beitritt/Teamwechsel der passenden Voice-Gruppe zugeordnet.
-- Beim Verlassen werden sie sauber entfernt. Keine Konfiguration notwendig.
+- If installed, **team groups are automatically created** and players are assigned to their team group on join/team change.
+- On leave, players are properly removed. No config required.
 
 ---
 
-## Entwicklung
+## Development
 
-### Projekt bauen
-- **Voraussetzungen:** JDK 21, Maven 3.9+
+### Build project
+- **Requirements:** JDK 21, Maven 3.9+
 - **Build:**
   ```bash
   mvn clean package
   ```
-- Das JAR liegt anschließend unter `target/`.
+- JAR will be located under `target/`.
 
-### Abhängigkeiten (Auszug)
+### Dependencies (excerpt)
 - `io.papermc.paper:paper-api:1.21.6-R0.1-SNAPSHOT` *(provided)*
 - `de.maxhenkel.voicechat:voicechat-api:2.5.31` *(provided)*
 
-### Code-Überblick
+### Code overview
 - **Main:** `de.einfachesache.flareonevents.FlareonEvents`
 - **Config/Assets:** `plugins/FlareonEvents/*.yml`
 - **Teams:** `handler.TeamHandler` (+ `/team`)
-- **Game/Phasen:** `handler.GameHandler` (+ `/event`)
-- **Custom Items:** `item.*` (Crafting/GUI/Passiveffekte)
+- **Game/Phases:** `handler.GameHandler` (+ `/event`)
+- **Custom Items:** `item.*` (Crafting/GUI/Passive effects)
 - **Listener:** `listener.*` (Chat, Damage, Food, Join/Login, Move, Interact, Crafting, etc.)
 - **Voice Chat:** `voicechat.VoiceModPlugin`
 
@@ -208,21 +210,21 @@ player-spawns: [ ]  # Spawnpunkte der Teilnehmer (per Befehl gesetzt)
 
 ## FAQ
 
-**Wie setze ich die Spawnpunkte?**  
-Nutze `/event setspawn [number]` an deinem Standort. Mit `/event spawncircle` kannst du einen Ring aus Spawnpunkten generieren.
+**How do I set spawn points?**  
+Use `/event setspawn [number]` at your location. With `/event spawncircle`, you can generate a ring of spawn points.
 
-**Wie aktiviere ich den Nether?**  
-Der Nether wird automatisch **zur richtigen Zeit** vom Plugin freigeschaltet (Ingame-Broadcast).
+**How do I enable the Nether?**  
+The Nether is automatically **unlocked at the right time** by the plugin (in-game broadcast).
 
-**Warum sehe ich manche Befehle nicht?**  
-Nicht-OPs erhalten nur eine **Whitelist** an sichtbaren Befehlen.
+**Why can’t I see some commands?**  
+Non-OPs only see a **whitelist** of commands.
 
-**Kann ich die Item-Werte anpassen?**  
-Ja, in `items.yml` (z. B. Cooldowns, Effekte, Attribute, Verzauberungen). Danach `/update` ausführen.
+**Can I adjust item values?**  
+Yes, in `items.yml` (e.g. cooldowns, effects, attributes, enchantments). Then run `/update`.
 
 ---
 
-> ✨ **Tipps**
-> - Nutze `/recipe`, um Spielern die **Custom-Item-Rezepte** zugänglich zu machen.
-> - Halte `teams.yml` (Teamgröße/Einladungsreichweite) passend zu deinem Event-Format.
-> - `kick-on-death: true` für strikte Event-Formate (Elimination).
+> ✨ **Tips**
+> - Use `/recipe` to give players access to **custom item recipes**.
+> - Adjust `teams.yml` (team size/invite distance) to match your event format.
+> - `kick-on-death: true` for strict elimination-style events.
