@@ -24,15 +24,25 @@ jobs:
       - name: Build with Maven
         run: mvn -B -V clean package
 
-      - name: Upload JAR to 'latest' Release
-        if: github.event_name == 'push'
+      # Release neu erzeugen/aktualisieren → frische Source-ZIPs
+      - name: Create or update Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: "Latest Build"
+          body: |
+            Automated build from ${{ github.repository }} @ ${{ github.sha }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # JAR ins Release anhängen
+      - name: Upload JAR asset
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: target/FlareonEvents-1.0-SNAPSHOT.jar
           asset_name: FlareonEvents-1.0-SNAPSHOT.jar
           tag: latest
-          release_name: "Latest Build"
           overwrite: true
-          body: |
-            Automated build from ${{ github.repository }} @ ${{ github.sha }}.
