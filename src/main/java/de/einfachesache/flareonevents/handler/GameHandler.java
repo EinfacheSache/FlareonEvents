@@ -87,11 +87,17 @@ public class GameHandler {
 
         int minStartTime = (forceStart ? 1 / 12:  (preparingTime + startingTime) / 60);
         Bukkit.getServer().getOnlinePlayers().forEach(player -> {
+
             player.showTitle(Title.title(
                     Component.text("BEREIT?", NamedTextColor.GREEN),
                     Component.text("Das Event startet in " + minStartTime + " " + minuteWord(minStartTime) + "!", NamedTextColor.YELLOW),
                     times));
             player.playSound(notifySound);
+
+            if(player.getGameMode() == GameMode.SPECTATOR) {
+                player.setSpectatorTarget(null);
+            }
+
             resetPlayer(player, true, false);
         });
 
@@ -172,13 +178,17 @@ public class GameHandler {
         plugin.getServer().getWorlds().forEach(world -> world.setPVP(false));
         plugin.getServer().getOnlinePlayers().forEach(player -> {
 
+            if(player.getGameMode() == GameMode.SPECTATOR) {
+                player.setSpectatorTarget(null);
+            }
+
+            resetPlayer(player, true, true);
+
             player.showTitle(Title.title(
                     Component.text("STOP!", NamedTextColor.RED),
                     Component.text("Das Event wurde gestoppt!", NamedTextColor.YELLOW), times));
             player.playSound(notifySound);
-
             player.teleport(Config.getMainSpawnLocation());
-            resetPlayer(player, true, true);
             player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
 
         });

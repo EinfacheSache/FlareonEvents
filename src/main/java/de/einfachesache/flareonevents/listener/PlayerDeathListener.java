@@ -9,6 +9,7 @@ import de.einfachesache.flareonevents.handler.TeamHandler;
 import de.einfachesache.flareonevents.item.misc.EventInfoBook;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -18,7 +19,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,16 +43,12 @@ public class PlayerDeathListener implements Listener {
 
         if (Config.getEventState() != EventState.RUNNING) {
             event.getDrops().clear();
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    deceased.spigot().respawn();
-                    deceased.setGameMode(GameMode.ADVENTURE);
-                    deceased.teleport(Config.getMainSpawnLocation());
-                    deceased.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
-                }
-            }.runTaskLater(FlareonEvents.getPlugin(), 1L);
-
+            Bukkit.getScheduler().runTask(FlareonEvents.getPlugin(), () -> {
+                deceased.spigot().respawn();
+                deceased.setGameMode(GameMode.ADVENTURE);
+                deceased.teleport(Config.getMainSpawnLocation());
+                deceased.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
+            });
             return;
         }
 
@@ -60,13 +56,7 @@ public class PlayerDeathListener implements Listener {
         if (Config.isKickOnDeath()) {
             deceased.kick(Component.text("§4§kAA §4§lAUSLÖSCHUNG! §kAA\n§cDu bist gestorben!"));
         } else {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    deceased.spigot().respawn();
-                    SpectatorHandler.attach(deceased);
-                }
-            }.runTaskLater(FlareonEvents.getPlugin(), 1L);
+            SpectatorHandler.attach(deceased, false);
         }
 
         if (killer != null && !killer.equals(deceased)) {

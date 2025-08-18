@@ -1,10 +1,13 @@
 package de.einfachesache.flareonevents.handler;
 
+import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
+import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
 import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.FlareonEvents;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,46 +26,75 @@ public class SpectatorHandler implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        getSpectatorsOf(e.getPlayer()).forEach(SpectatorHandler::attach);
+        getSpectatorsOf(e.getPlayer()).forEach((player) -> attach(player, true));
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
-        List<Player> players = getSpectatorsOf(e.getPlayer());
-        players.forEach(player -> {
-            player.setSpectatorTarget(null);
-            attach(player);
+        List<Player> spectators = getSpectatorsOf(e.getPlayer());
+        spectators.forEach(spectator -> {
+            spectator.setSpectatorTarget(null);
+            attach(spectator, true);
         });
     }
 
-    public static void attach(Player player) {
-        if (player.getGameMode() != GameMode.SPECTATOR) {
-            player.setGameMode(GameMode.SPECTATOR);
+    @EventHandler(ignoreCancelled = true)
+    public void onStopSpectate(PlayerStopSpectatingEntityEvent e) {
+        Player player = e.getPlayer();
+
+        if (player.isOp()) {
+            player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("§eDu hast das Zuschauen von §c" + e.getSpectatorTarget().getName() + "§e beendet")));
+            return;
         }
 
-        player.setSpectatorTarget(null);
+        e.setCancelled(true);
+    }
+
+
+    @EventHandler(ignoreCancelled = true)
+    public void onStartSpectate(PlayerStartSpectatingEntityEvent e) {
+        Entity target = e.getNewSpectatorTarget();
+        Player player = e.getPlayer();
+
+        if (!(target instanceof Player targetPlayer)) {
+            return;
+        }
+
+        if (player.isOp()) {
+            return;
+        }
+
+        targetPlayer.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("§eDir schaut nun §c" + player.getName() + "§e zu")));
+    }
+
+    public static void attach(Player player, boolean reattach) {
+
+        if (reattach) player.setSpectatorTarget(null);
 
         Bukkit.getScheduler().runTask(FlareonEvents.getPlugin(), () -> {
             Player target = getTarget(player);
+            Location playerLocation = player.getLocation();
+
             if (target == null || !target.isOnline()) {
                 FlareonEvents.getLogManager().error("Can't find Spectator target for " + player.getName());
                 return;
             }
 
-            boolean sameWorld = player.getWorld().equals(target.getWorld());
-            boolean near = sameWorld && player.getLocation().distanceSquared(target.getLocation()) <= 90 * 90;
-
-            if (near) {
-                Bukkit.getScheduler().runTask(FlareonEvents.getPlugin(), () -> player.setSpectatorTarget(target));
-            } else {
-                long delay = sameWorld ? 8L : 12L;
-                player.teleportAsync(target.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN).thenRun(() ->
-                        Bukkit.getScheduler().runTaskLater(FlareonEvents.getPlugin(), () -> player.setSpectatorTarget(target), delay));
+            if (player.isDead()) {
+                player.spigot().respawn();
             }
 
-            player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(
-                    Component.text("§eDu schaust nun §c" + target.getName() + "§e zu.")
-            ));
+            if (player.getGameMode() != GameMode.SPECTATOR) {
+                player.setGameMode(GameMode.SPECTATOR);
+            }
+
+            boolean sameWorld = playerLocation.getWorld().equals(target.getWorld());
+            boolean near = sameWorld && playerLocation.distanceSquared(target.getLocation()) <= 120 * 120;
+            long delay = near ? (reattach ? 3 : 7) : 15;
+
+            player.teleportAsync(target.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN).thenRun(() ->
+                    Bukkit.getScheduler().runTaskLater(FlareonEvents.getPlugin(), () -> player.setSpectatorTarget(target), delay));
+            player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("§eDu schaust nun §c" + target.getName() + "§e zu. (took: " + delay + "ms)")));
         });
     }
 
