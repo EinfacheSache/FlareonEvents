@@ -61,7 +61,7 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
 
     private void sendUsage(Player player, String label) {
         player.sendMessage(Component.text("§cVerwendung: /" + label + " <key>").color(NamedTextColor.RED));
-        player.sendMessage(Component.text("§7Verfügbare Keys:"));
+        player.sendMessage(Component.text("§7Verfügbare Subcommands:"));
         SUB_COMMANDS.forEach(command -> player.sendMessage(Component.text(" §8- §c" + command)));
     }
 

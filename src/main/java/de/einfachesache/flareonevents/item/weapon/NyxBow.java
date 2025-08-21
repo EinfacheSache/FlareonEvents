@@ -4,6 +4,8 @@ import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.ingredient.MagmaShard;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -195,7 +197,7 @@ public class NyxBow implements Listener {
         arrow.setGlowing(true);
 
         long preparedCooldown = preparedCooldownMap.get(shooter.getUniqueId());
-        int cooldownInMilliSec = Math.max(0,  (int) (SHOOT_COOLDOWN - (System.currentTimeMillis() - preparedCooldown)));
+        int cooldownInMilliSec = Math.max(0, (int) (SHOOT_COOLDOWN - (System.currentTimeMillis() - preparedCooldown)));
         shootCooldownMap.put(shooter.getUniqueId(), preparedCooldown);
         shooter.setCooldown(shooter.getInventory().getItemInMainHand(), cooldownInMilliSec / 50);
     }
@@ -207,21 +209,42 @@ public class NyxBow implements Listener {
         if (!arrow.getPersistentDataContainer().has(NAMESPACED_KEY, PersistentDataType.BYTE)) return;
         if (!(event.getEntity() instanceof LivingEntity livingEntity)) return;
 
-        String message = null;
-        double random = Math.random();
-        if (random < WITHER_EFFECT_CHANCE) {
-            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 20 * WITHER_EFFECT_TIME, 0));
-            message = "§5" + livingEntity.getName() + " hat §4§lNyx Bow §5Effekt erhalten!";
-        }
+        double roll = Math.random();
+        boolean applyWither = roll < WITHER_EFFECT_CHANCE;
+        boolean applySlowBlind = roll < (WITHER_EFFECT_CHANCE * SLOW_BLIND_EFFECT_CHANCE);
 
-        if (random < SLOW_BLIND_EFFECT_CHANCE) {
+        if (!applyWither) return;
+
+        livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 20 * WITHER_EFFECT_TIME, 0));
+        if (applySlowBlind) {
             livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20 * SLOW_BLIND_EFFECT_TIME, 0));
             livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * SLOW_BLIND_EFFECT_TIME, 0));
-            message = "§5" + livingEntity.getName() + " hat §4§lNyx Bow§6 §kkk§5 Effekt §6§kkk §5erhalten!";
         }
 
-        if(message != null){
-            shooter.sendMessage(Component.text(message));
+        String targetName = livingEntity.getName();
+        Component prefix = Component.text("✦ ", NamedTextColor.DARK_PURPLE)
+                .append(Component.text(NyxBow.DISPLAY_NAME, NamedTextColor.DARK_PURPLE, TextDecoration.BOLD))
+                .append(Component.text(": ", NamedTextColor.GRAY));
+
+        Component msg;
+        if (applySlowBlind) {
+            msg = prefix.append(
+                            Component.text(targetName, NamedTextColor.GOLD))
+                    .append(Component.text(" erleidet ", NamedTextColor.GRAY))
+                    .append(Component.text("Wither", NamedTextColor.DARK_PURPLE, TextDecoration.BOLD))
+                    .append(Component.text(", ", NamedTextColor.GRAY))
+                    .append(Component.text("Slowness", NamedTextColor.BLUE, TextDecoration.BOLD))
+                    .append(Component.text(" & ", NamedTextColor.GRAY))
+                    .append(Component.text("Blindness", NamedTextColor.YELLOW, TextDecoration.BOLD))
+                    .append(Component.text(".", NamedTextColor.GRAY));
+        } else {
+            msg = prefix.append(
+                            Component.text(targetName, NamedTextColor.GOLD))
+                    .append(Component.text(" erleidet ", NamedTextColor.GRAY))
+                    .append(Component.text("Wither", NamedTextColor.DARK_PURPLE, TextDecoration.BOLD))
+                    .append(Component.text(".", NamedTextColor.GRAY));
         }
+
+        shooter.sendMessage(msg);
     }
 }

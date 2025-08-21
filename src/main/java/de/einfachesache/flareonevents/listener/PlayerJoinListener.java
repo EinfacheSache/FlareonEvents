@@ -9,6 +9,7 @@ import de.einfachesache.flareonevents.item.ItemRecipe;
 import de.einfachesache.flareonevents.item.misc.EventInfoBook;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,9 +30,9 @@ public class PlayerJoinListener implements Listener {
     private static final UUID PACK_UUID = UUID.nameUUIDFromBytes("FLAREON_EVENTS_RESOURCE_PACK".getBytes(StandardCharsets.UTF_8 ));
     private static final String PACK_URL = "https://einfachesache.de/texturepack/Flareon-Events-V2.zip";
     private static final Component PACK_PROMPT =
-            Component.text("Benötigtes Texturepack für ")
-                    .append(Component.text("FlareonEvents", NamedTextColor.AQUA))
-                    .append(Component.text(" laden?"));
+            Component.text("Benötigtes Texturepack für ", NamedTextColor.GRAY)
+                    .append(Component.text("Flareon Events", NamedTextColor.GOLD, TextDecoration.BOLD)
+                    .append(Component.text(" laden?", NamedTextColor.GRAY)));
 
     private final CompletableFuture<byte[]> packHash = new CompletableFuture<>();
 
