@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class PlayerDeathListener implements Listener {
             Bukkit.getScheduler().runTask(FlareonEvents.getPlugin(), () -> {
                 deceased.spigot().respawn();
                 deceased.setGameMode(GameMode.ADVENTURE);
-                deceased.teleport(Config.getMainSpawnLocation());
+                deceased.teleportAsync(Config.getMainSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 deceased.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
             });
             return;

@@ -14,6 +14,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -95,7 +96,7 @@ public class GameHandler {
             player.playSound(notifySound);
 
             if(player.getGameMode() == GameMode.SPECTATOR) {
-                player.setSpectatorTarget(null);
+                SpectatorHandler.stopSpectating(player);
             }
 
             resetPlayer(player, true, false);
@@ -123,7 +124,7 @@ public class GameHandler {
                                 Config.addParticipant(player.getUniqueId());
 
                                 Location playerSpawnLocation = playerSpawnLocationIterator.next().toHighestLocation().add(0, 1, 0);
-                                player.teleport(playerSpawnLocation);
+                                player.teleportAsync(playerSpawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
                                 playerAssignedSpawns.put(player.getUniqueId(), playerSpawnLocation);
 
                                 Objects.requireNonNull(player.getAttribute(Attribute.JUMP_STRENGTH)).setBaseValue(0);
@@ -179,7 +180,7 @@ public class GameHandler {
         plugin.getServer().getOnlinePlayers().forEach(player -> {
 
             if(player.getGameMode() == GameMode.SPECTATOR) {
-                player.setSpectatorTarget(null);
+                SpectatorHandler.stopSpectating(player);
             }
 
             resetPlayer(player, true, true);
@@ -188,7 +189,7 @@ public class GameHandler {
                     Component.text("STOP!", NamedTextColor.RED),
                     Component.text("Das Event wurde gestoppt!", NamedTextColor.YELLOW), times));
             player.playSound(notifySound);
-            player.teleport(Config.getMainSpawnLocation());
+            player.teleportAsync(Config.getMainSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
 
         });

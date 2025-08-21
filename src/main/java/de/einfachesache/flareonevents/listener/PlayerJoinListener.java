@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -75,9 +76,9 @@ public class PlayerJoinListener implements Listener {
         if (!Config.isEventIsRunning()) {
             player.setGameMode(GameMode.ADVENTURE);
             player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
-            player.teleport(Config.getEventState() == EventState.STARTING
+            player.teleportAsync(Config.getEventState() == EventState.STARTING
                     ? GameHandler.getPlayerAssignedSpawn(player)
-                    : Config.getMainSpawnLocation());
+                    : Config.getMainSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
     }
 

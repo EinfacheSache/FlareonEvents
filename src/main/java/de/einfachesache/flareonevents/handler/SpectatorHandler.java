@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -24,16 +25,21 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SpectatorHandler implements Listener {
 
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent e) {
-        getSpectatorsOf(e.getPlayer()).forEach((player) -> attach(player, true));
+    private static final List<Player> ALLOWED_STOP_SPECTATING_PLAYERS = new ArrayList<>();
+
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        getSpectatorsOf(e.getPlayer()).forEach(spectator -> {
+            stopSpectating(spectator);
+            attach(spectator, true);
+        });
     }
 
-    @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent e) {
-        List<Player> spectators = getSpectatorsOf(e.getPlayer());
-        spectators.forEach(spectator -> {
-            spectator.setSpectatorTarget(null);
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerQuit(PlayerQuitEvent e) {
+        getSpectatorsOf(e.getPlayer()).forEach((spectator) -> {
+            stopSpectating(spectator);
             attach(spectator, true);
         });
     }
@@ -42,7 +48,7 @@ public class SpectatorHandler implements Listener {
     public void onStopSpectate(PlayerStopSpectatingEntityEvent e) {
         Player player = e.getPlayer();
 
-        if (player.isOp()) {
+        if (ALLOWED_STOP_SPECTATING_PLAYERS.remove(player) || player.isOp()) {
             player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("§eDu hast das Zuschauen von §c" + e.getSpectatorTarget().getName() + "§e beendet")));
             return;
         }
@@ -53,14 +59,20 @@ public class SpectatorHandler implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onStartSpectate(PlayerStartSpectatingEntityEvent e) {
-        Entity target = e.getNewSpectatorTarget();
         Player player = e.getPlayer();
+        Entity target = e.getNewSpectatorTarget();
 
-        if (!(target instanceof Player targetPlayer)) {
+        if (player.isOp()) {
             return;
         }
 
-        if (player.isOp()) {
+        if (!(target instanceof Player targetPlayer)) {
+            e.setCancelled(true);
+            return;
+        }
+
+        if (!e.getCurrentSpectatorTarget().equals(player)) {
+            e.setCancelled(true);
             return;
         }
 
@@ -69,7 +81,7 @@ public class SpectatorHandler implements Listener {
 
     public static void attach(Player player, boolean reattach) {
 
-        if (reattach) player.setSpectatorTarget(null);
+        if (reattach) stopSpectating(player);
 
         Bukkit.getScheduler().runTask(FlareonEvents.getPlugin(), () -> {
             Player target = getTarget(player);
@@ -137,5 +149,10 @@ public class SpectatorHandler implements Listener {
             }
         }
         return res;
+    }
+
+    public static void stopSpectating(Player spectator) {
+        ALLOWED_STOP_SPECTATING_PLAYERS.add(spectator);
+        spectator.setSpectatorTarget(null);
     }
 }
