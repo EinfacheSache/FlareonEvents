@@ -47,7 +47,7 @@ public class PoseidonsTrident implements Listener {
 
     private static final Map<UUID, Long> cooldownMap = new HashMap<>();
 
-    public static ShapedRecipe getPoseidonsTridentRecipe() {
+    public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createPoseidonsTrident());
         recipe.shape(" AB", " CA", "C  ");
         recipe.setIngredient('A', Material.DIAMOND_BLOCK);

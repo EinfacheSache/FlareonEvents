@@ -58,7 +58,7 @@ public class NyxBow implements Listener {
     private static final Map<UUID, Long> shootCooldownMap = new HashMap<>();
     private static final Map<UUID, Long> preparedCooldownMap = new HashMap<>();
 
-    public static ShapedRecipe getNyxBowRecipe() {
+    public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createNyxBow());
         recipe.shape("SWS", "EBE", "HIH");
         recipe.setIngredient('S', Material.SUGAR);

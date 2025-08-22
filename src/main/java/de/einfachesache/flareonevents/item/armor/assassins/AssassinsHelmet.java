@@ -31,7 +31,7 @@ public class AssassinsHelmet implements Listener {
     public static Map<Enchantment, Integer> ENCHANTMENTS = new HashMap<>();
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS = new HashMap<>();
 
-    public static ShapedRecipe getAssassinsAmorRecipe() {
+    public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createAssassinsAmor());
         recipe.shape(" Z ", "HPH", "DBD");
         recipe.setIngredient('Z', MagmaShard.ITEM);

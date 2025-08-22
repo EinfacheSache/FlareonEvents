@@ -16,7 +16,7 @@ public class GoldShard {
     public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "gold_shard");
     public static final ItemStack ITEM = createGoldShard();
 
-    public static ShapedRecipe getGoldShardRecipe() {
+    public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, ITEM);
         recipe.shape("AAA", "BAB", "AAA");
         recipe.setIngredient('A', Material.GOLD_INGOT);

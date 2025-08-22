@@ -53,7 +53,7 @@ public class FireSword implements Listener {
 
     public static final Map<UUID, Long> COOLDOWN_MAP = new HashMap<>();
 
-    public static ShapedRecipe getFireSwordRecipe() {
+    public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createFireSword());
         recipe.shape(" Z ", "HPH", "DBD");
         recipe.setIngredient('Z', MagmaShard.ITEM);

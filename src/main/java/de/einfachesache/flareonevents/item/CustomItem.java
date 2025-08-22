@@ -12,9 +12,11 @@ import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.FireSword;
 import de.einfachesache.flareonevents.item.weapon.NyxBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
+import de.einfachesache.flareonevents.item.weapon.SoulEaterAxe;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -22,32 +24,41 @@ import java.util.function.Supplier;
 
 public enum CustomItem {
 
-    FIRE_SWORD(FireSword.DISPLAY_NAME, FireSword.NAMESPACED_KEY, CustomItemType.WEAPON, FireSword::createFireSword),
-    NYX_BOW(NyxBow.DISPLAY_NAME, NyxBow.NAMESPACED_KEY, CustomItemType.WEAPON, NyxBow::createNyxBow),
-    POSEIDONS_TRIDENT(PoseidonsTrident.DISPLAY_NAME, PoseidonsTrident.NAMESPACED_KEY, CustomItemType.WEAPON, PoseidonsTrident::createPoseidonsTrident),
+    FIRE_SWORD(FireSword.DISPLAY_NAME, FireSword.NAMESPACED_KEY, CustomItemType.WEAPON, FireSword.getShapedRecipe(), FireSword::createFireSword),
+    NYX_BOW(NyxBow.DISPLAY_NAME, NyxBow.NAMESPACED_KEY, CustomItemType.WEAPON, NyxBow.getShapedRecipe(), NyxBow::createNyxBow),
+    SOUL_EATER_AXE(SoulEaterAxe.DISPLAY_NAME, SoulEaterAxe.NAMESPACED_KEY, CustomItemType.WEAPON, SoulEaterAxe.getShapedRecipe(), SoulEaterAxe::createSoulEaterAxe),
+    POSEIDONS_TRIDENT(PoseidonsTrident.DISPLAY_NAME, PoseidonsTrident.NAMESPACED_KEY, CustomItemType.WEAPON, PoseidonsTrident.getShapedRecipe(), PoseidonsTrident::createPoseidonsTrident),
 
-    REINFORCED_PICKAXE(ReinforcedPickaxe.DISPLAY_NAME, ReinforcedPickaxe.NAMESPACED_KEY, CustomItemType.TOOL, ReinforcedPickaxe::createReinforcedPickaxe),
-    SUPERIOR_PICKAXE(SuperiorPickaxe.DISPLAY_NAME, SuperiorPickaxe.NAMESPACED_KEY, CustomItemType.TOOL, SuperiorPickaxe::createSuperiorPickaxe),
+    REINFORCED_PICKAXE(ReinforcedPickaxe.DISPLAY_NAME, ReinforcedPickaxe.NAMESPACED_KEY, CustomItemType.TOOL, ReinforcedPickaxe.getShapedRecipe(), ReinforcedPickaxe::createReinforcedPickaxe),
+    SUPERIOR_PICKAXE(SuperiorPickaxe.DISPLAY_NAME, SuperiorPickaxe.NAMESPACED_KEY, CustomItemType.TOOL, SuperiorPickaxe.getShapedRecipe(), SuperiorPickaxe::createSuperiorPickaxe),
 
-    SOUL_HEART_CRYSTAL(SoulHeartCrystal.DISPLAY_NAME, SoulHeartCrystal.NAMESPACED_KEY, CustomItemType.MISC, SoulHeartCrystal::createSoulHeartCrystal),
+    ASSASSINS_HELMET(AssassinsHelmet.DISPLAY_NAME, AssassinsHelmet.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsHelmet.getShapedRecipe(), AssassinsHelmet::createAssassinsAmor),
+    ASSASSINS_CHESTPLATE(AssassinsChestplate.DISPLAY_NAME, AssassinsChestplate.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsChestplate.getShapedRecipe(), AssassinsChestplate::createAssassinsAmor),
+    ASSASSINS_LEGGINGS(AssassinsLeggings.DISPLAY_NAME, AssassinsLeggings.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsLeggings.getShapedRecipe(), AssassinsLeggings::createAssassinsAmor),
+    ASSASSINS_BOOTS(AssassinsBoots.DISPLAY_NAME, AssassinsBoots.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsBoots.getShapedRecipe(), AssassinsBoots::createAssassinsAmor),
 
-    ASSASSINS_HELMET(AssassinsHelmet.DISPLAY_NAME, AssassinsHelmet.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsHelmet::createAssassinsAmor),
-    ASSASSINS_CHESTPLATE(AssassinsChestplate.DISPLAY_NAME, AssassinsChestplate.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsChestplate::createAssassinsAmor),
-    ASSASSINS_LEGGINGS(AssassinsLeggings.DISPLAY_NAME, AssassinsLeggings.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsLeggings::createAssassinsAmor),
-    ASSASSINS_BOOTS(AssassinsBoots.DISPLAY_NAME, AssassinsBoots.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsBoots::createAssassinsAmor),
+    GOLD_SHARD(GoldShard.DISPLAY_NAME, GoldShard.NAMESPACED_KEY, CustomItemType.INGREDIENT, GoldShard.getShapedRecipe(), GoldShard.ITEM::clone),
+    MAGMA_SHARD(MagmaShard.DISPLAY_NAME, MagmaShard.NAMESPACED_KEY, CustomItemType.INGREDIENT, MagmaShard.getShapedRecipe(), MagmaShard.ITEM::clone),
+    TRIDENT_SPIKES(TridentSpikes.DISPLAY_NAME, TridentSpikes.NAMESPACED_KEY, CustomItemType.INGREDIENT, TridentSpikes.getShapedRecipe(), TridentSpikes.ITEM::clone),
+    TRIDENT_STICK(TridentStick.DISPLAY_NAME, TridentStick.NAMESPACED_KEY, CustomItemType.INGREDIENT, TridentStick.getShapedRecipe(), TridentStick.ITEM::clone),
+    REINFORCED_STICK(ReinforcedStick.DISPLAY_NAME, ReinforcedStick.NAMESPACED_KEY, CustomItemType.INGREDIENT, ReinforcedStick.getShapedRecipe(), ReinforcedStick.ITEM::clone),
 
-    GOLD_SHARD(GoldShard.DISPLAY_NAME, GoldShard.NAMESPACED_KEY, CustomItemType.INGREDIENT, GoldShard.ITEM::clone),
-    MAGMA_SHARD(MagmaShard.DISPLAY_NAME, MagmaShard.NAMESPACED_KEY, CustomItemType.INGREDIENT, MagmaShard.ITEM::clone),
-    TRIDENT_SPIKES(TridentSpikes.DISPLAY_NAME, TridentSpikes.NAMESPACED_KEY, CustomItemType.INGREDIENT, TridentSpikes.ITEM::clone),
-    TRIDENT_STICK(TridentStick.DISPLAY_NAME, TridentStick.NAMESPACED_KEY, CustomItemType.INGREDIENT, TridentStick.ITEM::clone),
-    REINFORCED_STICK(ReinforcedStick.DISPLAY_NAME, ReinforcedStick.NAMESPACED_KEY, CustomItemType.INGREDIENT, ReinforcedStick.ITEM::clone),
+    SOUL_HEART_CRYSTAL(SoulHeartCrystal.DISPLAY_NAME, SoulHeartCrystal.NAMESPACED_KEY, CustomItemType.MISC, null, SoulHeartCrystal::createSoulHeartCrystal),
 
-    EVENT_INFO_BOOK(EventInfoBook.DISPLAY_NAME, EventInfoBook.NAMESPACED_KEY, CustomItemType.OTHER, EventInfoBook::createEventInfoBook);
+    EVENT_INFO_BOOK(EventInfoBook.DISPLAY_NAME, EventInfoBook.NAMESPACED_KEY, CustomItemType.OTHER, null, EventInfoBook::createEventInfoBook);
 
-    private final String displayName; private final NamespacedKey namespacedKey; private final CustomItemType customItemType; private final Supplier<ItemStack> creator;
+    private final String displayName;
+    private final NamespacedKey namespacedKey;
+    private final CustomItemType customItemType;
+    private final Supplier<ItemStack> creator;
+    private final ShapedRecipe recipe;
 
-    CustomItem(String displayName, NamespacedKey namespacedKey, CustomItemType customItemType, Supplier<ItemStack> creator) {
-        this.displayName = displayName; this.namespacedKey = namespacedKey; this.customItemType = customItemType; this.creator = creator;
+    CustomItem(String displayName, NamespacedKey namespacedKey, CustomItemType customItemType, ShapedRecipe recipe, Supplier<ItemStack> creator) {
+        this.displayName = displayName;
+        this.namespacedKey = namespacedKey;
+        this.customItemType = customItemType;
+        this.creator = creator;
+        this.recipe = recipe;
     }
 
     public boolean matches(ItemStack item) {
@@ -69,6 +80,10 @@ public enum CustomItem {
 
     public NamespacedKey getNamespacedKey() {
         return namespacedKey;
+    }
+
+    public ShapedRecipe getRecipe() {
+        return recipe;
     }
 
     public enum CustomItemType {

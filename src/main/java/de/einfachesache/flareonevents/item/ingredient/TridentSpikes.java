@@ -17,7 +17,7 @@ public class TridentSpikes {
     public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "trident_spikes");
     public static final ItemStack ITEM = createTridentSpikes();
 
-    public static ShapedRecipe getTridentSpikesRecipe() {
+    public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, ITEM);
         recipe.shape(" H ", " F ", " H ");
         recipe.setIngredient('H', SoulHeartCrystal.createSoulHeartCrystal());

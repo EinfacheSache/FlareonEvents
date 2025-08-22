@@ -71,13 +71,13 @@ public class CraftingListener implements Listener {
         NamespacedKey key;
 
         if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.FIRE_SWORD)) {
-            key = FireSword.getFireSwordRecipe().getKey();
+            key = FireSword.getShapedRecipe().getKey();
         } else if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.NYX_BOW)) {
-            key = NyxBow.getNyxBowRecipe().getKey();
+            key = NyxBow.getShapedRecipe().getKey();
         } else if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.POSEIDONS_TRIDENT)) {
-            key = PoseidonsTrident.getPoseidonsTridentRecipe().getKey();
+            key = PoseidonsTrident.getShapedRecipe().getKey();
         } else if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.SUPERIOR_PICKAXE)) {
-            key = SuperiorPickaxe.getSuperiorPickaxeRecipe().getKey();
+            key = SuperiorPickaxe.getShapedRecipe().getKey();
         } else {
             key = null;
         }
@@ -86,7 +86,7 @@ public class CraftingListener implements Listener {
             return;
         }
 
-        if (key != SuperiorPickaxe.getSuperiorPickaxeRecipe().getKey()) {
+        if (key != SuperiorPickaxe.getShapedRecipe().getKey()) {
             if (craftedOnce.contains(key)) {
                 event.setResult(Event.Result.DENY);
                 player.sendMessage("§cDieses Item wurde bereits gecraftet und kann nur einmal hergestellt werden.");

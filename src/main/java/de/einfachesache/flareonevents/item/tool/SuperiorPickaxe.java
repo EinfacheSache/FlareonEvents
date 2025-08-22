@@ -36,7 +36,7 @@ public class SuperiorPickaxe implements Listener {
     private static final Map<UUID, Long> cooldownMap = new HashMap<>();
     public static Map<Enchantment, Integer> ENCHANTMENTS;
 
-    public static ShapedRecipe getSuperiorPickaxeRecipe() {
+    public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createSuperiorPickaxe());
         recipe.shape("AAA", "HPH", "AAA");
         recipe.setIngredient('A', Material.AMETHYST_SHARD);
@@ -54,7 +54,7 @@ public class SuperiorPickaxe implements Listener {
         ItemMeta meta = item.getItemMeta();
 
         meta.getPersistentDataContainer().set(NAMESPACED_KEY, PersistentDataType.BYTE, (byte) 1);
-        meta.getPersistentDataContainer().remove(ReinforcedPickaxe.getReinforcedPickaxeRecipe().getKey());
+        meta.getPersistentDataContainer().remove(ReinforcedPickaxe.getShapedRecipe().getKey());
         meta.displayName(Component.text(DISPLAY_NAME));
 
         List<Component> lore = new ArrayList<>();

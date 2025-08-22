@@ -16,7 +16,7 @@ public class TridentStick {
     public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "trident_stick");
     public static final ItemStack ITEM = createTridentStick();
 
-    public static ShapedRecipe getTridentStickRecipe() {
+    public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, ITEM);
         recipe.shape("ABA", "C C", "ABA");
         recipe.setIngredient('A', Material.PRISMARINE_CRYSTALS);

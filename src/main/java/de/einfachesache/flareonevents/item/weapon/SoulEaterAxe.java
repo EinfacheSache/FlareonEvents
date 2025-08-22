@@ -1,4 +1,4 @@
-package de.einfachesache.flareonevents.item.armor.assassins;
+package de.einfachesache.flareonevents.item.weapon;
 
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.item.ItemUtils;
@@ -11,31 +11,27 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings("deprecation")
-public class AssassinsBoots implements Listener {
+public class SoulEaterAxe {
 
-    public static NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "assassinsBoots");
-    public static Material MATERIAL = Material.LEATHER_BOOTS;
-    public static String DISPLAY_NAME = "BOOTS";
+    public static NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "soul_eater_axe");
+    public static Material MATERIAL = Material.IRON_AXE;
+    public static String DISPLAY_NAME = "SOUL EATER AXE";
 
-    public static ItemFlag[] ITEM_FLAGS = new ItemFlag[]{};
+    public static ItemFlag[] ITEM_FLAGS = new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS};
     public static Map<Enchantment, Integer> ENCHANTMENTS = new HashMap<>();
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS = new HashMap<>();
 
     public static ShapedRecipe getShapedRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createAssassinsAmor());
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createSoulEaterAxe());
         recipe.shape(" Z ", "HPH", "DBD");
         recipe.setIngredient('Z', MagmaShard.ITEM);
         recipe.setIngredient('H', SoulHeartCrystal.createSoulHeartCrystal());
@@ -48,7 +44,7 @@ public class AssassinsBoots implements Listener {
         return recipe;
     }
 
-    public static ItemStack createAssassinsAmor() {
+    public static ItemStack createSoulEaterAxe() {
         ItemStack item = ItemUtils.createCustomItem(MATERIAL, DISPLAY_NAME, NAMESPACED_KEY);
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         ItemMeta meta = item.getItemMeta();
@@ -61,9 +57,20 @@ public class AssassinsBoots implements Listener {
             meta.addEnchant(entry.getKey(), entry.getValue(), true);
         }
 
+        var modifiers = meta.getAttributeModifiers();
+        double attackDamage = ((modifiers == null)
+                ? Collections.<AttributeModifier>emptyList()
+                : modifiers.get(Attribute.ATTACK_DAMAGE))
+                .stream().filter(Objects::nonNull)
+                .mapToDouble(AttributeModifier::getAmount)
+                .sum();
+
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Besonderheit: ..."));
+        lore.add(serializer.deserialize("§f"));
+        lore.add(serializer.deserialize("§7Schaden: §4" + attackDamage));
+        lore.add(serializer.deserialize("§f"));
 
         // Dynamisch aus ENCHANTMENTS-Map
         if (!ENCHANTMENTS.isEmpty()) {

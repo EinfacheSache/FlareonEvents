@@ -37,7 +37,7 @@ public class ReinforcedPickaxe implements Listener {
     public static Map<Enchantment, Integer> ENCHANTMENTS;
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS;
 
-    public static ShapedRecipe getReinforcedPickaxeRecipe() {
+    public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createReinforcedPickaxe());
         recipe.shape("GBG", "DSD", " S ");
         recipe.setIngredient('G', Material.GOLD_INGOT);
