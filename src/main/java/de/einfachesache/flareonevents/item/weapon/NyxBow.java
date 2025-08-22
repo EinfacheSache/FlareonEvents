@@ -223,23 +223,21 @@ public class NyxBow implements Listener {
 
         String targetName = livingEntity.getName();
         Component prefix = Component.text("✦ ", NamedTextColor.DARK_PURPLE)
-                .append(Component.text(NyxBow.DISPLAY_NAME, NamedTextColor.DARK_PURPLE, TextDecoration.BOLD))
+                .append(Component.text(NyxBow.DISPLAY_NAME))
                 .append(Component.text(": ", NamedTextColor.GRAY));
 
         Component msg;
         if (applySlowBlind) {
-            msg = prefix.append(
-                            Component.text(targetName, NamedTextColor.GOLD))
+            msg = prefix.append(Component.text(targetName, NamedTextColor.GOLD))
                     .append(Component.text(" erleidet ", NamedTextColor.GRAY))
                     .append(Component.text("Wither", NamedTextColor.DARK_PURPLE, TextDecoration.BOLD))
                     .append(Component.text(", ", NamedTextColor.GRAY))
-                    .append(Component.text("Slowness", NamedTextColor.BLUE, TextDecoration.BOLD))
+                    .append(Component.text("Slowness", NamedTextColor.DARK_GRAY, TextDecoration.BOLD))
                     .append(Component.text(" & ", NamedTextColor.GRAY))
-                    .append(Component.text("Blindness", NamedTextColor.YELLOW, TextDecoration.BOLD))
+                    .append(Component.text("Blindness", NamedTextColor.DARK_GRAY, TextDecoration.BOLD))
                     .append(Component.text(".", NamedTextColor.GRAY));
         } else {
-            msg = prefix.append(
-                            Component.text(targetName, NamedTextColor.GOLD))
+            msg = prefix.append(Component.text(targetName, NamedTextColor.GOLD))
                     .append(Component.text(" erleidet ", NamedTextColor.GRAY))
                     .append(Component.text("Wither", NamedTextColor.DARK_PURPLE, TextDecoration.BOLD))
                     .append(Component.text(".", NamedTextColor.GRAY));

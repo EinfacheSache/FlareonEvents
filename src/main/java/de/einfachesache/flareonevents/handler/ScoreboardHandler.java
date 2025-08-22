@@ -5,6 +5,8 @@ import de.einfachesache.flareonevents.EventState;
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.listener.PlayerDeathListener;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -77,16 +79,30 @@ public class ScoreboardHandler implements Listener {
                 : aliveCount;
 
         int teams = Config.getTeams().size();
-        String eventPhase = switch (Config.getEventState()) {
-            case NOT_RUNNING -> "§cNICHT GESTARTET";
-            case PREPARING -> "§ePREPARING";
-            case STARTING -> "§eSTARTING";
-            case RUNNING -> "§aLÄUFT";
-            case ENDED -> "§cBEENDET";
+        Component eventPhase = switch (Config.getEventState()) {
+            case NOT_RUNNING -> Component.text("NICHT GESTARTET", NamedTextColor.RED);
+            case PREPARING -> Component.text("VORBEREITUNG", NamedTextColor.YELLOW);
+            case STARTING -> Component.text("STARTET", NamedTextColor.GOLD);
+            case RUNNING -> Component.text("LÄUFT", NamedTextColor.GREEN);
+            case ENDED -> Component.text("BEENDET", NamedTextColor.RED);
         };
 
-        Component header = Component.text("§6§lFlareon Events\n\n§7Teams: §f" + teams);
-        Component footer = Component.text("\n§7Phase: " + eventPhase + "\n§7Discord: §9discord.gg/flareonevents");
+        Component header = Component.text()
+                .append(Component.text("Flareon Events", NamedTextColor.GOLD, TextDecoration.BOLD))
+                .append(Component.newline())
+                .append(Component.newline())
+                .append(Component.text("Teams: ", NamedTextColor.GRAY))
+                .append(Component.text(String.valueOf(teams), NamedTextColor.WHITE))
+                .build();
+
+        Component footer = Component.text()
+                .append(Component.newline())
+                .append(Component.text("Phase: ", NamedTextColor.GRAY))
+                .append(eventPhase)
+                .append(Component.newline())
+                .append(Component.text("Discord: ", NamedTextColor.GRAY))
+                .append(Component.text("flareonevents.de/discord", NamedTextColor.BLUE))
+                .build();
 
         cachedContext = new ScoreboardContext(now, aliveCount, totalCount, header, footer);
 

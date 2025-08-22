@@ -39,6 +39,7 @@ public class FireSword implements Listener {
     public static double FIRE_TICKS_CHANCE;
     public static int FIRE_TICKS_TIME, COOLDOWN;
 
+    private static final float POWER = 250f;
     private static final int RANGE = 20;
     private static final int FIREBALL_COUNT = 5;
     private static final double HEIGHT_ABOVE = 7.5;
@@ -159,21 +160,25 @@ public class FireSword implements Listener {
 
         Location target = hit.getHitPosition().toLocation(world);
 
-        // 5 Positionen im Kreis um das Ziel (horizontal), alle 6 Blöcke höher
         for (int i = 0; i < FIREBALL_COUNT; i++) {
             double angle = (2 * Math.PI / FIREBALL_COUNT) * i;
             double xOff = Math.cos(angle) * RING_RADIUS;
             double zOff = Math.sin(angle) * RING_RADIUS;
 
             Location spawnLoc = target.clone().add(xOff, HEIGHT_ABOVE, zOff);
-
-            // Fireball = keine Explosion. Auch kein Feuer:
             Fireball fb = world.spawn(spawnLoc, Fireball.class, f -> {
-                f.setIsIncendiary(false);
-                f.setDirection(new Vector(0, -1, 0)); // senkrecht nach unten
+                f.setYield(POWER);
+                f.setDirection(new Vector(0, -1, 0));
             });
+            fb.setVelocity(new Vector(0, -DOWNWARD_SPEED, 0));
+        }
 
-            // direkte Abwärtsgeschwindigkeit für „gerade runter“
+        {
+            Location center = target.clone().add(0, HEIGHT_ABOVE, 0);
+            Fireball fb = world.spawn(center, Fireball.class, f -> {
+                f.setYield(POWER);
+                f.setDirection(new Vector(0, -1, 0));
+            });
             fb.setVelocity(new Vector(0, -DOWNWARD_SPEED, 0));
         }
 

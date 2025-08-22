@@ -81,7 +81,6 @@ public class ReinforcedPickaxe implements Listener {
         lore.add(serializer.deserialize("§7Besonderheit: §bNight Vision §7in Höhlen"));
         lore.add(serializer.deserialize("§f"));
 
-        // Dynamisch aus der geladenen ENCHANTMENTS-Map
         if (!ReinforcedPickaxe.ENCHANTMENTS.isEmpty()) {
             lore.add(serializer.deserialize(("§7Enchantment" + (ReinforcedPickaxe.ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
             lore.addAll(ItemUtils.getEnchantments(ReinforcedPickaxe.ENCHANTMENTS));

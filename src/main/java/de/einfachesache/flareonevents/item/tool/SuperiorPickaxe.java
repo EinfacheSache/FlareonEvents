@@ -58,12 +58,10 @@ public class SuperiorPickaxe implements Listener {
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         ItemMeta meta = item.getItemMeta();
 
-        // Persistent Data & Material
         meta.getPersistentDataContainer().set(NAMESPACED_KEY, PersistentDataType.BYTE, (byte) 1);
         meta.getPersistentDataContainer().remove(ReinforcedPickaxe.getReinforcedPickaxeRecipe().getKey());
         meta.displayName(Component.text(DISPLAY_NAME));
 
-        // Lore zusammenbauen
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Beim §bAbbauen §7von §6Erzen §7können"));
@@ -78,12 +76,10 @@ public class SuperiorPickaxe implements Listener {
         lore.add(serializer.deserialize("§7Besonderheit: §bNight Vision §7in Höhlen"));
         lore.add(serializer.deserialize("§f"));
 
-        // X-Ray-Info dynamisch aus Konfiguration
         lore.add(serializer.deserialize("§7Right-Click → Für §e" + XRAY_ENABLED_TIME + "s §4X-RAY §7(Radius: §e" + XRAY_RADIUS + " Blöcke§7)"));
         lore.add(serializer.deserialize("§7Cooldown: §e" + XRAY_COOLDOWN + "s"));
         lore.add(serializer.deserialize("§f"));
 
-        // Dynamisch aus ENCHANTMENTS-Map
         if (!ENCHANTMENTS.isEmpty()) {
             lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
             lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
@@ -95,7 +91,6 @@ public class SuperiorPickaxe implements Listener {
         item.setItemMeta(meta);
         item.addItemFlags(ITEM_FLAGS);
 
-        // Material anpassen und zurückgeben
         return item.withType(MATERIAL);
     }
 
