@@ -1,6 +1,10 @@
 package de.einfachesache.flareonevents.command;
 
 import de.einfachesache.flareonevents.item.ItemUtils;
+import de.einfachesache.flareonevents.item.armor.assassins.AssassinsBoots;
+import de.einfachesache.flareonevents.item.armor.assassins.AssassinsChestplate;
+import de.einfachesache.flareonevents.item.armor.assassins.AssassinsHelmet;
+import de.einfachesache.flareonevents.item.armor.assassins.AssassinsLeggings;
 import de.einfachesache.flareonevents.item.ingredient.*;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
@@ -24,7 +28,7 @@ import java.util.List;
 
 public class CustomItemCommand implements CommandExecutor, TabCompleter {
 
-    private static final List<String> SUB_COMMANDS = Arrays.asList("FIRE_SWORD", "POSEIDONS_TRIDENT", "NYX_BOW", "REINFORCED_PICKAXE", "SUPERIOR_PICKAXE", "INGREDIENT", "MISC", "ALL_GEAR", "ALL");
+    private static final List<String> SUB_COMMANDS = Arrays.asList("FIRE_SWORD", "POSEIDONS_TRIDENT", "NYX_BOW", "REINFORCED_PICKAXE", "SUPERIOR_PICKAXE", "INGREDIENT", "MISC", "ALL_GEAR", "ALL_ARMOR", "ALL");
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String alias, @NotNull String @NotNull [] args) {
@@ -49,6 +53,7 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
             case "ingredient" -> giveAllIngredients(player);
             case "misc" -> giveItem(player, SoulHeartCrystal.createSoulHeartCrystal());
             case "all_gear" -> giveAllGear(player);
+            case "all_armor" -> giveAllArmor(player);
             case "all" -> giveAllItems(player);
             default -> {
                 player.sendMessage(Component.text("Unbekannter Item-Key. ", NamedTextColor.RED));
@@ -96,6 +101,13 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
         giveItem(player, ReinforcedPickaxe.createReinforcedPickaxe());
     }
 
+    private void giveAllArmor(Player player) {
+        giveItem(player, AssassinsHelmet.createAssassinsAmor());
+        giveItem(player, AssassinsChestplate.createAssassinsAmor());
+        giveItem(player, AssassinsLeggings.createAssassinsAmor());
+        giveItem(player, AssassinsBoots.createAssassinsAmor());
+    }
+
     private void giveAllIngredients(Player player) {
         player.getInventory().addItem(GoldShard.ITEM);
         player.getInventory().addItem(MagmaShard.ITEM);
@@ -107,14 +119,11 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
     }
 
     private void giveAllItems(Player player) {
-        giveItem(player, FireSword.createFireSword());
-        giveItem(player, PoseidonsTrident.createPoseidonsTrident());
-        giveItem(player, NyxBow.createNyxBow());
-        giveItem(player, SuperiorPickaxe.createSuperiorPickaxe());
-        giveItem(player, ReinforcedPickaxe.createReinforcedPickaxe());
+
+        giveAllGear(player);
+        giveAllArmor(player);
+        giveAllIngredients(player);
 
         giveItem(player, SoulHeartCrystal.createSoulHeartCrystal());
-
-        giveAllIngredients(player);
     }
 }

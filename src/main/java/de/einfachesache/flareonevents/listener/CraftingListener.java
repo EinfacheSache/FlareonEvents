@@ -1,5 +1,7 @@
 package de.einfachesache.flareonevents.listener;
 
+import de.einfachesache.flareonevents.item.CustomItem;
+import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.FireSword;
 import de.einfachesache.flareonevents.item.weapon.NyxBow;
@@ -53,7 +55,7 @@ public class CraftingListener implements Listener {
             return;
         }
 
-        if (isCustomItem(result)) {
+        if (isOneTimeCraftableItem(result)) {
             if (event.isShiftClick()) {
                 event.setResult(Event.Result.DENY);
                 event.getWhoClicked().sendMessage("§cDu kannst dieses Item nur einmal craften!");
@@ -68,13 +70,13 @@ public class CraftingListener implements Listener {
 
         NamespacedKey key;
 
-        if (FireSword.isFireSwordItem(inv.getResult())) {
+        if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.FIRE_SWORD)) {
             key = FireSword.getFireSwordRecipe().getKey();
-        } else if (NyxBow.isNyxBowItem(inv.getResult())) {
+        } else if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.NYX_BOW)) {
             key = NyxBow.getNyxBowRecipe().getKey();
-        } else if (PoseidonsTrident.isPoseidonsTridentItem(inv.getResult())) {
+        } else if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.POSEIDONS_TRIDENT)) {
             key = PoseidonsTrident.getPoseidonsTridentRecipe().getKey();
-        } else if (SuperiorPickaxe.isSuperiorPickaxeItem(inv.getResult())) {
+        } else if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.SUPERIOR_PICKAXE)) {
             key = SuperiorPickaxe.getSuperiorPickaxeRecipe().getKey();
         } else {
             key = null;
@@ -100,16 +102,16 @@ public class CraftingListener implements Listener {
     @EventHandler
     public void onAutoCraft(CrafterCraftEvent event) {
         ItemStack result = event.getResult();
-        if (isCustomItem(result)) {
+        if (isOneTimeCraftableItem(result)) {
             event.setCancelled(true);
         }
     }
 
-    private boolean isCustomItem(ItemStack item) {
-        return FireSword.isFireSwordItem(item)
-                || PoseidonsTrident.isPoseidonsTridentItem(item)
-                || NyxBow.isNyxBowItem(item)
-                || SuperiorPickaxe.isSuperiorPickaxeItem(item);
+    private boolean isOneTimeCraftableItem(ItemStack item) {
+        return ItemUtils.isCustomItem(item, CustomItem.FIRE_SWORD)
+                || ItemUtils.isCustomItem(item, CustomItem.NYX_BOW)
+                || ItemUtils.isCustomItem(item, CustomItem.POSEIDONS_TRIDENT)
+                || ItemUtils.isCustomItem(item, CustomItem.SUPERIOR_PICKAXE);
     }
 
     private void craftedItem(Player player, NamespacedKey itemKey, String itemName) {

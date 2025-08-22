@@ -1,6 +1,10 @@
 package de.einfachesache.flareonevents.item;
 
 import de.einfachesache.flareonevents.FlareonEvents;
+import de.einfachesache.flareonevents.item.armor.assassins.AssassinsBoots;
+import de.einfachesache.flareonevents.item.armor.assassins.AssassinsChestplate;
+import de.einfachesache.flareonevents.item.armor.assassins.AssassinsHelmet;
+import de.einfachesache.flareonevents.item.armor.assassins.AssassinsLeggings;
 import de.einfachesache.flareonevents.item.ingredient.*;
 import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
@@ -25,6 +29,11 @@ public class ItemRecipe {
         Bukkit.addRecipe(ReinforcedPickaxe.getReinforcedPickaxeRecipe(), true);
         Bukkit.addRecipe(SuperiorPickaxe.getSuperiorPickaxeRecipe(), true);
 
+        Bukkit.addRecipe(AssassinsHelmet.getAssassinsAmorRecipe(), true);
+        Bukkit.addRecipe(AssassinsChestplate.getAssassinsAmorRecipe(), true);
+        Bukkit.addRecipe(AssassinsLeggings.getAssassinsAmorRecipe(), true);
+        Bukkit.addRecipe(AssassinsBoots.getAssassinsAmorRecipe(), true);
+
         Bukkit.addRecipe(GoldShard.getGoldShardRecipe(), true);
         Bukkit.addRecipe(MagmaShard.getMagmaShardRecipe(), true);
         Bukkit.addRecipe(ReinforcedStick.getReinforcedStickRecipe(), true);
@@ -39,6 +48,11 @@ public class ItemRecipe {
 
         player.discoverRecipe(ReinforcedPickaxe.getReinforcedPickaxeRecipe().getKey());
         player.discoverRecipe(SuperiorPickaxe.getSuperiorPickaxeRecipe().getKey());
+
+        player.discoverRecipe(AssassinsHelmet.getAssassinsAmorRecipe().getKey());
+        player.discoverRecipe(AssassinsChestplate.getAssassinsAmorRecipe().getKey());
+        player.discoverRecipe(AssassinsLeggings.getAssassinsAmorRecipe().getKey());
+        player.discoverRecipe(AssassinsBoots.getAssassinsAmorRecipe().getKey());
 
         player.discoverRecipe(GoldShard.getGoldShardRecipe().getKey());
         player.discoverRecipe(MagmaShard.getMagmaShardRecipe().getKey());

@@ -1,5 +1,6 @@
 package de.einfachesache.flareonevents.item.weapon;
 
+import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.ingredient.MagmaShard;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
@@ -72,12 +73,6 @@ public class NyxBow implements Listener {
         return recipe;
     }
 
-    public static boolean isNyxBowItem(ItemStack item) {
-        if (item == null || item.getType() != MATERIAL) return false;
-        if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return false;
-        return DISPLAY_NAME.equalsIgnoreCase((ItemUtils.legacyString(item.getItemMeta().displayName())));
-    }
-
     public static ItemStack createNyxBow() {
         ItemStack item = ItemUtils.createCustomItem(MATERIAL, DISPLAY_NAME, NAMESPACED_KEY);
         ItemMeta meta = item.getItemMeta();
@@ -122,7 +117,7 @@ public class NyxBow implements Listener {
     @EventHandler
     public void onShoot(EntityShootBowEvent event) {
         if (!(event.getBow() != null && event.getBow().hasItemMeta())) return;
-        if (!isNyxBowItem(event.getBow())) return;
+        if (!ItemUtils.isCustomItem(event.getBow(), CustomItem.NYX_BOW)) return;
 
         Arrow arrow = (Arrow) event.getProjectile();
 
@@ -141,7 +136,7 @@ public class NyxBow implements Listener {
 
     @EventHandler
     public void onLeftClick(PlayerInteractEvent event) {
-        if (!isNyxBowItem(event.getItem())) return;
+        if (!ItemUtils.isCustomItem(event.getItem(), CustomItem.NYX_BOW)) return;
         if (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK) return;
 
         Player player = event.getPlayer();
@@ -169,7 +164,7 @@ public class NyxBow implements Listener {
 
     @EventHandler
     public void onBowShoot(PlayerInteractEvent event) {
-        if (!isNyxBowItem(event.getItem())) return;
+        if (!ItemUtils.isCustomItem(event.getItem(), CustomItem.NYX_BOW)) return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.useItemInHand() == Event.Result.DENY) return;
 
@@ -191,7 +186,7 @@ public class NyxBow implements Listener {
     public void onLaunch(ProjectileLaunchEvent e) {
         if (!(e.getEntity() instanceof Arrow arrow)) return;
         if (!(arrow.getShooter() instanceof Player shooter)) return;
-        if (!isNyxBowItem(shooter.getInventory().getItemInMainHand())) return;
+        if (!ItemUtils.isCustomItem(shooter.getInventory().getItemInMainHand(), CustomItem.NYX_BOW)) return;
 
         arrow.setColor(Color.BLACK);
         arrow.setGlowing(true);

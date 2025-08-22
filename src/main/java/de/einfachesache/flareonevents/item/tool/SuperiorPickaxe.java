@@ -2,6 +2,7 @@ package de.einfachesache.flareonevents.item.tool;
 
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.WorldUtils;
+import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import net.kyori.adventure.text.Component;
@@ -45,12 +46,6 @@ public class SuperiorPickaxe implements Listener {
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 
         return recipe;
-    }
-
-    public static boolean isSuperiorPickaxeItem(ItemStack item) {
-        if (item == null || item.getType() != Material.NETHERITE_PICKAXE) return false;
-        if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return false;
-        return DISPLAY_NAME.equalsIgnoreCase((ItemUtils.legacyString(item.getItemMeta().displayName())));
     }
 
     public static ItemStack createSuperiorPickaxe() {
@@ -99,7 +94,7 @@ public class SuperiorPickaxe implements Listener {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (!isSuperiorPickaxeItem(item)) return;
+        if (!ItemUtils.isCustomItem(item, CustomItem.SUPERIOR_PICKAXE)) return;
 
         Material blockType = event.getBlock().getType();
 
@@ -121,13 +116,12 @@ public class SuperiorPickaxe implements Listener {
         }
     }
 
-
     @EventHandler
     public void onPlayerInteraction(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (!isSuperiorPickaxeItem(item)) return;
+        if (!ItemUtils.isCustomItem(item, CustomItem.SUPERIOR_PICKAXE)) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) return;
 

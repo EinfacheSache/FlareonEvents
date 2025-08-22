@@ -1,6 +1,7 @@
 package de.einfachesache.flareonevents.item.weapon;
 
 import de.einfachesache.flareonevents.FlareonEvents;
+import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.ingredient.TridentSpikes;
 import de.einfachesache.flareonevents.item.ingredient.TridentStick;
@@ -58,12 +59,6 @@ public class PoseidonsTrident implements Listener {
         return recipe;
     }
 
-    public static boolean isPoseidonsTridentItem(ItemStack item) {
-        if (item == null || item.getType() != MATERIAL) return false;
-        if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return false;
-        return DISPLAY_NAME.equalsIgnoreCase((ItemUtils.legacyString(item.getItemMeta().displayName())));
-    }
-
     public static ItemStack createPoseidonsTrident() {
         ItemStack trident = ItemUtils.createCustomItem(Material.TRIDENT, DISPLAY_NAME, NAMESPACED_KEY);
         ItemMeta meta = trident.getItemMeta();
@@ -116,7 +111,7 @@ public class PoseidonsTrident implements Listener {
     public void onMeleeHit(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player player)) return;
         ItemStack item = player.getInventory().getItemInMainHand();
-        if (!isPoseidonsTridentItem(item)) return;
+        if (!ItemUtils.isCustomItem(item, CustomItem.POSEIDONS_TRIDENT)) return;
 
         if (Math.random() < ON_MELEE_LIGHTNING_CHANCE) {
             player.getWorld().strikeLightning(event.getEntity().getLocation()).getPersistentDataContainer().set(
@@ -129,7 +124,7 @@ public class PoseidonsTrident implements Listener {
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
 
-        if (!isPoseidonsTridentItem(item)) return;
+        if (!ItemUtils.isCustomItem(item, CustomItem.POSEIDONS_TRIDENT)) return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.useItemInHand() == Event.Result.DENY) return;
 
@@ -148,7 +143,7 @@ public class PoseidonsTrident implements Listener {
     @EventHandler
     public void onLaunch(ProjectileLaunchEvent e) {
         if (!(e.getEntity() instanceof Trident trident)) return;
-        if (!isPoseidonsTridentItem(trident.getItemStack())) return;
+        if (!ItemUtils.isCustomItem(trident.getItemStack(), CustomItem.POSEIDONS_TRIDENT)) return;
         if (!(trident.getShooter() instanceof Player shooter)) return;
 
         trident.setVisualFire(TriState.TRUE);
@@ -166,7 +161,7 @@ public class PoseidonsTrident implements Listener {
     public void onProjectileHit(ProjectileHitEvent event) {
         if (!(event.getEntity() instanceof Trident trident)) return;
         if (!(trident.getShooter() instanceof Player player)) return;
-        if (!isPoseidonsTridentItem(trident.getItemStack())) return;
+        if (!ItemUtils.isCustomItem(trident.getItemStack(), CustomItem.POSEIDONS_TRIDENT)) return;
 
         if (Math.random() < THROW_LIGHTNING_CHANCE) {
             LightningStrike lightningStrike = trident.getWorld().strikeLightning(trident.getLocation());

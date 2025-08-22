@@ -1,5 +1,6 @@
 package de.einfachesache.flareonevents.item.weapon;
 
+import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.ingredient.GoldShard;
 import de.einfachesache.flareonevents.item.ingredient.MagmaShard;
@@ -66,12 +67,6 @@ public class FireSword implements Listener {
         return recipe;
     }
 
-    public static boolean isFireSwordItem(ItemStack item) {
-        if (item == null || item.getType() != MATERIAL) return false;
-        if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return false;
-        return DISPLAY_NAME.equalsIgnoreCase((ItemUtils.legacyString(item.getItemMeta().displayName())));
-    }
-
     public static ItemStack createFireSword() {
         ItemStack item = ItemUtils.createCustomItem(MATERIAL, DISPLAY_NAME, NAMESPACED_KEY);
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
@@ -126,7 +121,7 @@ public class FireSword implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         Player player = event.getPlayer();
-        if (!isFireSwordItem(event.getItem())) return;
+        if (!ItemUtils.isCustomItem(event.getItem(), CustomItem.FIRE_SWORD)) return;
 
         long now = System.currentTimeMillis();
         long last = COOLDOWN_MAP.getOrDefault(player.getUniqueId(), 0L);
@@ -195,7 +190,7 @@ public class FireSword implements Listener {
         if (!(event.getEntity() instanceof Fireball fireball)) return;
         if (!(fireball.getShooter() instanceof Player shooter)) return;
         if (!(event.getHitEntity() instanceof LivingEntity target)) return;
-        if (!isFireSwordItem(shooter.getInventory().getItemInMainHand())) return;
+        if (!ItemUtils.isCustomItem(shooter.getInventory().getItemInMainHand(), CustomItem.FIRE_SWORD)) return;
 
         target.setFireTicks(FIRE_TICKS_TIME * 20);
     }
@@ -203,7 +198,7 @@ public class FireSword implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player player)) return;
-        if (!isFireSwordItem(player.getInventory().getItemInMainHand())) return;
+        if (!ItemUtils.isCustomItem(player.getInventory().getItemInMainHand(), CustomItem.FIRE_SWORD)) return;
         if (!(event.getEntity() instanceof LivingEntity target)) return;
 
         if (Math.random() < FIRE_TICKS_CHANCE) {

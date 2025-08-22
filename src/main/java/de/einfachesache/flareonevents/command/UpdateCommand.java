@@ -2,7 +2,7 @@ package de.einfachesache.flareonevents.command;
 
 import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.FlareonEvents;
-import de.einfachesache.flareonevents.item.CustomItems;
+import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.ItemRecipe;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import org.bukkit.Bukkit;
@@ -25,7 +25,7 @@ public class UpdateCommand implements CommandExecutor, TabCompleter {
 
             Config.reloadBook();
 
-            updateInventorys(CustomItems.EVENT_INFO_BOOK);
+            updateInventorys(CustomItem.EVENT_INFO_BOOK);
 
             sender.sendMessage("§aDas Event-Buch wurden aktualisiert!");
 
@@ -38,7 +38,7 @@ public class UpdateCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        CompletableFuture.allOf(Config.reloadFiles()).thenRun(() -> updateInventorys(CustomItems.values()));
+        CompletableFuture.allOf(Config.reloadFiles()).thenRun(() -> updateInventorys(CustomItem.values()));
         ItemRecipe.reloadAllPluginRecipes();
 
         sender.sendMessage("§aAlle Configs & Custom-Items wurden aktualisiert!");
@@ -46,7 +46,7 @@ public class UpdateCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private void updateInventorys(CustomItems... customItems) {
+    private void updateInventorys(CustomItem... customItems) {
         for (Player player : Bukkit.getOnlinePlayers()) {
 
             PlayerInventory inventory = player.getInventory();
@@ -65,13 +65,13 @@ public class UpdateCommand implements CommandExecutor, TabCompleter {
         }
     }
 
-    private ItemStack replaceInSlot(ItemStack oldItem, CustomItems... customItems) {
+    private ItemStack replaceInSlot(ItemStack oldItem, CustomItem... customItems) {
         if (oldItem == null || !oldItem.hasItemMeta()) return oldItem;
-        for (CustomItems customItem : customItems) {
+        for (CustomItem customItem : customItems) {
             if (customItem.matches(oldItem)) {
                 ItemStack newItem = customItem.getItem();
                 newItem.setAmount(oldItem.getAmount());
-                return customItem.equals(CustomItems.SOUL_HEART_CRYSTAL) ? SoulHeartCrystal.createSoulHeartCrystal(SoulHeartCrystal.getDroppedByPlayer(oldItem)) : newItem;
+                return customItem.equals(CustomItem.SOUL_HEART_CRYSTAL) ? SoulHeartCrystal.createSoulHeartCrystal(SoulHeartCrystal.getDroppedByPlayer(oldItem)) : newItem;
             }
         }
         return oldItem;

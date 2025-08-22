@@ -1,7 +1,7 @@
 package de.einfachesache.flareonevents.command;
 
 import de.einfachesache.flareonevents.FlareonEvents;
-import de.einfachesache.flareonevents.item.CustomItems;
+import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -28,6 +28,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
 
     private static final Component MAIN_GUI_TITLE = Component.text("Custom Item Rezepte", NamedTextColor.GOLD).decorate(TextDecoration.BOLD, TextDecoration.ITALIC);
     private static final String CATEGORY_GUI_KEY = "category_gui";
+    private static final int[] CATEGORY_GUI_POSITIONS = {10, 12, 14, 16, 31};
     private static final int[] ITEM_GUI_POSITIONS = {10, 12, 14, 16, 28, 30, 32, 34};
 
     @Override
@@ -42,11 +43,11 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
     }
 
     private void openCategoryGui(Player player) {
-        Inventory gui = Bukkit.createInventory(new GUIHolder(null), 27, MAIN_GUI_TITLE);
+        Inventory gui = Bukkit.createInventory(new GUIHolder(null), 9 * 5, MAIN_GUI_TITLE);
 
-        CustomItems.CustomItemType[] types = Arrays.stream(CustomItems.CustomItemType.values())
-                .filter(t -> !t.equals(CustomItems.CustomItemType.OTHER))
-                .toArray(CustomItems.CustomItemType[]::new);
+        CustomItem.CustomItemType[] types = Arrays.stream(CustomItem.CustomItemType.values())
+                .filter(t -> !t.equals(CustomItem.CustomItemType.OTHER))
+                .toArray(CustomItem.CustomItemType[]::new);
 
         ItemStack filler = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta fm = filler.getItemMeta();
@@ -61,10 +62,11 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         }
 
         for (int i = 0; i < types.length; i++) {
-            CustomItems.CustomItemType type = types[i];
+            CustomItem.CustomItemType type = types[i];
             Material iconMaterial = switch (type) {
                 case TOOL -> Material.GOLDEN_PICKAXE;
                 case WEAPON -> Material.GOLDEN_SWORD;
+                case ARMOR -> Material.GOLDEN_CHESTPLATE;
                 case MISC -> Material.ENCHANTED_GOLDEN_APPLE;
                 case INGREDIENT -> Material.RAW_GOLD;
                 default -> Material.BARRIER;
@@ -76,20 +78,20 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
             meta.getPersistentDataContainer().set(new NamespacedKey(FlareonEvents.getPlugin(), CATEGORY_GUI_KEY), PersistentDataType.STRING, type.name());
             icon.setItemMeta(meta);
 
-            gui.setItem(ITEM_GUI_POSITIONS[i], icon);
+            gui.setItem(CATEGORY_GUI_POSITIONS[i], icon);
         }
 
         player.openInventory(gui);
     }
 
-    private void openItemsOfCategory(Player player, CustomItems.CustomItemType type, Inventory previusInventory) {
-        List<CustomItems> items = Arrays.stream(CustomItems.values())
+    private void openItemsOfCategory(Player player, CustomItem.CustomItemType type, Inventory previusInventory) {
+        List<CustomItem> items = Arrays.stream(CustomItem.values())
                 .filter(i -> i.getCustomItemType() == type)
                 .toList();
 
         int itemCount = items.size();
         int totalSlots = ((itemCount * 2 + 1 + 8) / 9) * 9; // +1 für Zurück, auf nächste 9 aufrunden
-        totalSlots = Math.max( 9 * (type.equals(CustomItems.CustomItemType.INGREDIENT) ? 5 : 3), Math.min(totalSlots, 9 * 6)); // mindestens 3 Reihen, max 6
+        totalSlots = Math.max(9 * (type.equals(CustomItem.CustomItemType.INGREDIENT) ? 5 : 3), Math.min(totalSlots, 9 * 6)); // mindestens 3 Reihen, max 6
 
         Inventory gui = Bukkit.createInventory(new GUIHolder(previusInventory), totalSlots, Component.text("Rezepte: " + type.getDisplayName(), NamedTextColor.GOLD).decorate(TextDecoration.BOLD, TextDecoration.ITALIC));
 
@@ -107,7 +109,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         }
 
         int index = 0;
-        for (CustomItems item : items) {
+        for (CustomItem item : items) {
             int itemPos = ITEM_GUI_POSITIONS[index];
             if (itemPos >= totalSlots - 1) break;
             gui.setItem(itemPos, item.getItem());
@@ -124,9 +126,9 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         String[] shape = recipe.getShape();
         Map<Character, RecipeChoice> keyMap = recipe.getChoiceMap();
         Set<Integer> centerSlots = Set.of(
-                3,4,5,
-                12,13,14,
-                21,22,23
+                3, 4, 5,
+                12, 13, 14,
+                21, 22, 23
         );
 
         for (int row = 0; row < shape.length; row++) {
@@ -177,13 +179,13 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         ItemStack clicked = e.getCurrentItem();
         InventoryHolder holder = e.getClickedInventory().getHolder();
 
-        if(!(holder instanceof GUIHolder(Inventory previousInventory))) {
+        if (!(holder instanceof GUIHolder(Inventory previousInventory))) {
             return;
         }
 
         e.setCancelled(true);
 
-        if(clicked.getType() == Material.BARRIER || clicked.getType() ==  Material.GRAY_STAINED_GLASS_PANE) {
+        if (clicked.getType() == Material.BARRIER || clicked.getType() == Material.GRAY_STAINED_GLASS_PANE) {
             return;
         }
 
@@ -195,7 +197,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
 
         // 2) show Recipe GUI
         if (title.startsWith("Rezept: ")) {
-            Optional<CustomItems> opt = Arrays.stream(CustomItems.values())
+            Optional<CustomItem> opt = Arrays.stream(CustomItem.values())
                     .filter(ci -> clicked.isSimilar(ci.getItem()))
                     .findFirst();
 
@@ -213,7 +215,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         if (e.getView().title().equals(MAIN_GUI_TITLE)) {
             try {
                 String cat = clicked.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(FlareonEvents.getPlugin(), CATEGORY_GUI_KEY), PersistentDataType.STRING);
-                openItemsOfCategory(player, CustomItems.CustomItemType.valueOf(cat), e.getClickedInventory());
+                openItemsOfCategory(player, CustomItem.CustomItemType.valueOf(cat), e.getClickedInventory());
             } catch (IllegalArgumentException | NullPointerException ex) {
                 FlareonEvents.getLogManager().error(ex.getMessage(), ex);
             }
@@ -221,7 +223,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         }
 
         // 4) Items einer Kategorie
-        Arrays.stream(CustomItems.values())
+        Arrays.stream(CustomItem.values())
                 .filter(ci -> clicked.isSimilar(ci.getItem())).findFirst().ifPresent(
                         items -> showRecipeGUI(player, getCustomRecipeFor(items), items.getItem().effectiveName(), e.getClickedInventory()));
     }
@@ -234,7 +236,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
                 .orElse(ItemUtils.getNotFoundRecipe());
     }
 
-    private ShapedRecipe getCustomRecipeFor(CustomItems item) {
+    private ShapedRecipe getCustomRecipeFor(CustomItem item) {
         Recipe r = Bukkit.getRecipe(item.getNamespacedKey());
         return (r instanceof ShapedRecipe s) ? s : ItemUtils.getNotFoundRecipe();
     }

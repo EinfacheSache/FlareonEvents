@@ -1,6 +1,7 @@
 package de.einfachesache.flareonevents.item.tool;
 
 import de.einfachesache.flareonevents.WorldUtils;
+import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.ingredient.ReinforcedStick;
 import net.kyori.adventure.text.Component;
@@ -49,12 +50,6 @@ public class ReinforcedPickaxe implements Listener {
         return recipe;
     }
 
-    public static boolean isReinforcedPickaxeItem(ItemStack item) {
-        if (item == null || item.getType() != MATERIAL) return false;
-        if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return false;
-        return DISPLAY_NAME.equalsIgnoreCase(ItemUtils.legacyString(item.getItemMeta().displayName()));
-    }
-
     public static ItemStack createReinforcedPickaxe() {
         ItemStack item = ItemUtils.createCustomItem(MATERIAL, DISPLAY_NAME, NAMESPACED_KEY);
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
@@ -100,7 +95,7 @@ public class ReinforcedPickaxe implements Listener {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (!isReinforcedPickaxeItem(item)) return;
+        if (!ItemUtils.isCustomItem(item, CustomItem.REINFORCED_PICKAXE)) return;
 
         Material blockType = event.getBlock().getType();
 

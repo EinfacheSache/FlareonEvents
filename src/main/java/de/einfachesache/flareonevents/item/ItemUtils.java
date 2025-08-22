@@ -14,8 +14,10 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -39,6 +41,18 @@ public class ItemUtils {
         item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         return item;
+    }
+
+    public static boolean isCustomItem(ItemStack item, CustomItem customItem) {
+        if (item == null || customItem == null) return false;
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return false;
+
+        NamespacedKey key = customItem.getNamespacedKey();
+        if (key == null) return false;
+
+        return meta.getPersistentDataContainer().has(key, PersistentDataType.BYTE);
     }
 
     public static ItemStack createGuiBackButton() {
@@ -122,16 +136,7 @@ public class ItemUtils {
         return item.getItemMeta().getCustomModelData();
     }
 
-    public static UUID stringToUUID(String attribut) {
-        String combined = FlareonEvents.getPlugin().getName() + ":" + attribut;
-        return UUID.nameUUIDFromBytes(combined.getBytes(StandardCharsets.UTF_8));
-    }
-
     public static Component deserialize(String string) {
         return LegacyComponentSerializer.legacySection().deserialize(string);
-    }
-
-    public static String legacyString(Component component) {
-        return LegacyComponentSerializer.legacySection().serialize(component);
     }
 }

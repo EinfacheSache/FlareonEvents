@@ -2,11 +2,6 @@ package de.einfachesache.flareonevents.item;
 
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.WorldUtils;
-import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
-import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
-import de.einfachesache.flareonevents.item.weapon.FireSword;
-import de.einfachesache.flareonevents.item.weapon.NyxBow;
-import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -45,13 +40,13 @@ public final class PassiveItemEffects {
 
             List<PotionEffect> add = new ArrayList<>(3);
 
-            if (FireSword.isFireSwordItem(item)) {
+            if (ItemUtils.isCustomItem(item, CustomItem.FIRE_SWORD)) {
                 maybeAdd(add, p, PotionEffectType.FIRE_RESISTANCE, 0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
                 maybeAdd(add, p, PotionEffectType.STRENGTH,       0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
-            } else if (PoseidonsTrident.isPoseidonsTridentItem(item)) {
+            } else if (ItemUtils.isCustomItem(item, CustomItem.POSEIDONS_TRIDENT)) {
                 maybeAdd(add, p, PotionEffectType.DOLPHINS_GRACE,  0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
                 maybeAdd(add, p, PotionEffectType.WATER_BREATHING, 0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
-            } else if (NyxBow.isNyxBowItem(item)) {
+            } else if (ItemUtils.isCustomItem(item, CustomItem.NYX_BOW)) {
                 maybeAdd(add, p, PotionEffectType.SPEED, 0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
             }
 
@@ -66,9 +61,8 @@ public final class PassiveItemEffects {
             ItemStack item = p.getInventory().getItemInMainHand();
             if (item.getType().isAir()) continue;
 
-            boolean isPick = ReinforcedPickaxe.isReinforcedPickaxeItem(item)
-                    || SuperiorPickaxe.isSuperiorPickaxeItem(item);
-            if (!isPick) continue;
+            boolean isPickaxe = ItemUtils.isCustomItem(item, CustomItem.REINFORCED_PICKAXE) || ItemUtils.isCustomItem(item, CustomItem.SUPERIOR_PICKAXE);
+            if (!isPickaxe) continue;
 
             PotionEffect cur = p.getPotionEffect(PotionEffectType.NIGHT_VISION);
             if (cur != null && cur.getDuration() >= SLOW_REFRESH_TICKS) continue;
