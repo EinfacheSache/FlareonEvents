@@ -85,7 +85,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
     }
 
     private void openItemsOfCategory(Player player, CustomItem.CustomItemType type, Inventory previusInventory) {
-        List<CustomItem> items = Arrays.stream(CustomItem.values())
+        List<CustomItem> items = Arrays.stream(CustomItem.getEnabledItems())
                 .filter(i -> i.getCustomItemType() == type)
                 .toList();
 

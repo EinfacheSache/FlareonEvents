@@ -23,11 +23,11 @@ import java.util.*;
 @SuppressWarnings("deprecation")
 public class AssassinsChestplate implements Listener {
 
-    public static NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "assassinsChestplate");
-    public static Material MATERIAL =  Material.LEATHER_CHESTPLATE;
-    public static String DISPLAY_NAME  = "CHESTPLATE";
+    public static NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "assassins_chestplate");
+    public static Material MATERIAL = Material.LEATHER_CHESTPLATE;
+    public static String DISPLAY_NAME = "§6§lAssassins Chestplate";
 
-    public static ItemFlag[] ITEM_FLAGS = new ItemFlag[]{};
+    public static ItemFlag[] ITEM_FLAGS = new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS};
     public static Map<Enchantment, Integer> ENCHANTMENTS = new HashMap<>();
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS = new HashMap<>();
 
@@ -61,6 +61,7 @@ public class AssassinsChestplate implements Listener {
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Besonderheit: ..."));
+        lore.add(serializer.deserialize("§f"));
 
         // Dynamisch aus ENCHANTMENTS-Map
         if (!ENCHANTMENTS.isEmpty()) {

@@ -20,6 +20,8 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Arrays;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public enum CustomItem {
@@ -46,6 +48,8 @@ public enum CustomItem {
     SOUL_HEART_CRYSTAL(SoulHeartCrystal.DISPLAY_NAME, SoulHeartCrystal.NAMESPACED_KEY, CustomItemType.MISC, null, SoulHeartCrystal::createSoulHeartCrystal),
 
     EVENT_INFO_BOOK(EventInfoBook.DISPLAY_NAME, EventInfoBook.NAMESPACED_KEY, CustomItemType.OTHER, null, EventInfoBook::createEventInfoBook);
+
+    private static final Set<CustomItem> disabledWeapons = Set.of();
 
     private final String displayName;
     private final NamespacedKey namespacedKey;
@@ -84,6 +88,12 @@ public enum CustomItem {
 
     public ShapedRecipe getRecipe() {
         return recipe;
+    }
+
+    public static CustomItem[] getEnabledItems() {
+        return Arrays.stream(values())
+                .filter(item -> !disabledWeapons.contains(item))
+                .toArray(CustomItem[]::new);
     }
 
     public enum CustomItemType {

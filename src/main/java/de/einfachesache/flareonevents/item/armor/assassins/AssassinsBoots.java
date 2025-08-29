@@ -26,11 +26,11 @@ import java.util.Map;
 @SuppressWarnings("deprecation")
 public class AssassinsBoots implements Listener {
 
-    public static NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "assassinsBoots");
+    public static NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "assassins_boots");
     public static Material MATERIAL = Material.LEATHER_BOOTS;
-    public static String DISPLAY_NAME = "BOOTS";
+    public static String DISPLAY_NAME = "§6§lAssassins Boots";
 
-    public static ItemFlag[] ITEM_FLAGS = new ItemFlag[]{};
+    public static ItemFlag[] ITEM_FLAGS = new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS};
     public static Map<Enchantment, Integer> ENCHANTMENTS = new HashMap<>();
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS = new HashMap<>();
 
@@ -64,6 +64,7 @@ public class AssassinsBoots implements Listener {
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Besonderheit: ..."));
+        lore.add(serializer.deserialize("§f"));
 
         // Dynamisch aus ENCHANTMENTS-Map
         if (!ENCHANTMENTS.isEmpty()) {

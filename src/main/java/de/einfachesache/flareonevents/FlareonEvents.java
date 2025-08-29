@@ -8,6 +8,10 @@ import de.einfachesache.flareonevents.handler.ScoreboardHandler;
 import de.einfachesache.flareonevents.handler.SpectatorHandler;
 import de.einfachesache.flareonevents.item.ItemRecipe;
 import de.einfachesache.flareonevents.item.PassiveItemEffects;
+import de.einfachesache.flareonevents.item.armor.assassins.AssassinsBoots;
+import de.einfachesache.flareonevents.item.armor.assassins.AssassinsChestplate;
+import de.einfachesache.flareonevents.item.armor.assassins.AssassinsHelmet;
+import de.einfachesache.flareonevents.item.armor.assassins.AssassinsLeggings;
 import de.einfachesache.flareonevents.item.misc.EventInfoBook;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
@@ -15,6 +19,7 @@ import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.FireSword;
 import de.einfachesache.flareonevents.item.weapon.NyxBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
+import de.einfachesache.flareonevents.item.weapon.SoulEaterAxe;
 import de.einfachesache.flareonevents.listener.*;
 import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
 import net.kyori.adventure.text.Component;
@@ -111,11 +116,17 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new AnvilListener(), this);
 
         Bukkit.getPluginManager().registerEvents(new PoseidonsTrident(), this);
+        Bukkit.getPluginManager().registerEvents(new SoulEaterAxe(), this);
         Bukkit.getPluginManager().registerEvents(new FireSword(), this);
         Bukkit.getPluginManager().registerEvents(new NyxBow(), this);
 
-        Bukkit.getPluginManager().registerEvents(new SuperiorPickaxe(), this);
         Bukkit.getPluginManager().registerEvents(new ReinforcedPickaxe(), this);
+        Bukkit.getPluginManager().registerEvents(new SuperiorPickaxe(), this);
+
+        Bukkit.getPluginManager().registerEvents(new AssassinsHelmet(), this);
+        Bukkit.getPluginManager().registerEvents(new AssassinsChestplate(), this);
+        Bukkit.getPluginManager().registerEvents(new AssassinsLeggings(), this);
+        Bukkit.getPluginManager().registerEvents(new AssassinsBoots(), this);
 
         Bukkit.getPluginManager().registerEvents(new ScoreboardHandler(), this);
         Bukkit.getPluginManager().registerEvents(new SpectatorHandler(), this);

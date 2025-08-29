@@ -13,12 +13,12 @@ import java.util.Iterator;
 public class ItemRecipe {
 
     public static void loadRecipes() {
-        Arrays.stream(CustomItem.values()).toList().forEach(customItem ->
+        Arrays.stream(CustomItem.getEnabledItems()).forEach(customItem ->
                 Bukkit.addRecipe(customItem.getRecipe(), true));
     }
 
     public static void discoverRecipe(Player player) {
-        Arrays.stream(CustomItem.values()).toList().forEach(customItem ->
+        Arrays.stream(CustomItem.getEnabledItems()).forEach(customItem ->
                 player.discoverRecipe(customItem.getNamespacedKey()));
     }
 

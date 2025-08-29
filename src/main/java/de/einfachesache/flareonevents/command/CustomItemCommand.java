@@ -1,17 +1,8 @@
 package de.einfachesache.flareonevents.command;
 
+import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.ItemUtils;
-import de.einfachesache.flareonevents.item.armor.assassins.AssassinsBoots;
-import de.einfachesache.flareonevents.item.armor.assassins.AssassinsChestplate;
-import de.einfachesache.flareonevents.item.armor.assassins.AssassinsHelmet;
-import de.einfachesache.flareonevents.item.armor.assassins.AssassinsLeggings;
-import de.einfachesache.flareonevents.item.ingredient.*;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
-import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
-import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
-import de.einfachesache.flareonevents.item.weapon.FireSword;
-import de.einfachesache.flareonevents.item.weapon.NyxBow;
-import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
@@ -24,11 +15,30 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CustomItemCommand implements CommandExecutor, TabCompleter {
 
-    private static final List<String> SUB_COMMANDS = Arrays.asList("FIRE_SWORD", "POSEIDONS_TRIDENT", "NYX_BOW", "REINFORCED_PICKAXE", "SUPERIOR_PICKAXE", "INGREDIENT", "MISC", "ALL_GEAR", "ALL_ARMOR", "ALL");
+    private static final List<String> SUB_COMMANDS;
+
+    static {
+        List<String> items = Arrays.stream(CustomItem.values())
+                .filter(customItem ->
+                        customItem.getCustomItemType() != CustomItem.CustomItemType.ARMOR
+                        && customItem.getCustomItemType() != CustomItem.CustomItemType.INGREDIENT
+                        && customItem.getCustomItemType() != CustomItem.CustomItemType.OTHER)
+                .map(customItem -> customItem.getNamespacedKey().getKey().toUpperCase())
+                .collect(Collectors.toList());
+
+        items.add("INGREDIENTS");
+        items.add("ALL_GEAR");
+        items.add("ALL_ARMOR");
+        items.add("ALL");
+
+        SUB_COMMANDS = Collections.unmodifiableList(items);
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String alias, @NotNull String @NotNull [] args) {
@@ -43,21 +53,19 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-
         switch (args[0].toLowerCase()) {
-            case "fire_sword" -> giveItem(player, FireSword.createFireSword());
-            case "poseidons_trident" -> giveItem(player, PoseidonsTrident.createPoseidonsTrident());
-            case "nyx_bow" -> giveItem(player, NyxBow.createNyxBow());
-            case "reinforced_pickaxe" -> giveItem(player, ReinforcedPickaxe.createReinforcedPickaxe());
-            case "superior_pickaxe" -> giveItem(player, SuperiorPickaxe.createSuperiorPickaxe());
             case "ingredient" -> giveAllIngredients(player);
-            case "misc" -> giveItem(player, SoulHeartCrystal.createSoulHeartCrystal());
             case "all_gear" -> giveAllGear(player);
             case "all_armor" -> giveAllArmor(player);
             case "all" -> giveAllItems(player);
             default -> {
-                player.sendMessage(Component.text("Unbekannter Item-Key. ", NamedTextColor.RED));
-                sendUsage(player, alias);
+                try {
+                    CustomItem item = CustomItem.valueOf(args[0].toUpperCase());
+                    giveItem(player, item.getItem());
+                } catch (IllegalArgumentException e) {
+                    player.sendMessage(Component.text("Unbekannter Item-Key. ", NamedTextColor.RED));
+                    sendUsage(player, alias);
+                }
             }
         }
 
@@ -94,28 +102,22 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
     }
 
     private void giveAllGear(Player player) {
-        giveItem(player, FireSword.createFireSword());
-        giveItem(player, PoseidonsTrident.createPoseidonsTrident());
-        giveItem(player, NyxBow.createNyxBow());
-        giveItem(player, SuperiorPickaxe.createSuperiorPickaxe());
-        giveItem(player, ReinforcedPickaxe.createReinforcedPickaxe());
+        Arrays.stream(CustomItem.values()).filter(customItem ->
+                customItem.getCustomItemType().equals(CustomItem.CustomItemType.WEAPON)
+                        || customItem.getCustomItemType().equals(CustomItem.CustomItemType.TOOL)).forEach(gear ->
+                giveItem(player, gear.getItem()));
     }
 
     private void giveAllArmor(Player player) {
-        giveItem(player, AssassinsHelmet.createAssassinsAmor());
-        giveItem(player, AssassinsChestplate.createAssassinsAmor());
-        giveItem(player, AssassinsLeggings.createAssassinsAmor());
-        giveItem(player, AssassinsBoots.createAssassinsAmor());
+        Arrays.stream(CustomItem.values()).filter(customItem ->
+                customItem.getCustomItemType().equals(CustomItem.CustomItemType.ARMOR)).forEach(armor ->
+                giveItem(player, armor.getItem()));
     }
 
     private void giveAllIngredients(Player player) {
-        player.getInventory().addItem(GoldShard.ITEM);
-        player.getInventory().addItem(MagmaShard.ITEM);
-        player.getInventory().addItem(TridentSpikes.ITEM);
-        player.getInventory().addItem(TridentStick.ITEM);
-        player.getInventory().addItem(ReinforcedStick.ITEM);
-
-        player.sendMessage(Component.text("Ingredient items created!", NamedTextColor.GREEN));
+        Arrays.stream(CustomItem.values()).filter(customItem ->
+                customItem.getCustomItemType().equals(CustomItem.CustomItemType.INGREDIENT)).forEach(ingredient ->
+                giveItem(player, ingredient.getItem()));
     }
 
     private void giveAllItems(Player player) {

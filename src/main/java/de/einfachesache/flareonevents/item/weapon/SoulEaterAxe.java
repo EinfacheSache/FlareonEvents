@@ -11,6 +11,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -20,11 +21,11 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
-public class SoulEaterAxe {
+public class SoulEaterAxe implements Listener {
 
     public static NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "soul_eater_axe");
     public static Material MATERIAL = Material.IRON_AXE;
-    public static String DISPLAY_NAME = "SOUL EATER AXE";
+    public static String DISPLAY_NAME = "§5§lSoul Eater Axe";
 
     public static ItemFlag[] ITEM_FLAGS = new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS};
     public static Map<Enchantment, Integer> ENCHANTMENTS = new HashMap<>();
