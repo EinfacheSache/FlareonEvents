@@ -53,6 +53,33 @@ items:
 
     shoot_cooldown: 1200                 # Cooldown in Millisekunden
 
+  soul_eater_axe:
+    # NamespacedKey in Java
+    key: flareonevents:soul_eater_axe
+
+    # Material & Anzeige-Name
+    material: IRON_AXE
+    display_name: "§5§lSoul Eater Axe"
+
+    # Attribute-Modifikatoren
+    attributes:
+      - attribute: attack_damage
+        amount: 10
+        operation: ADD_NUMBER
+        slot: HAND
+      - attribute: attack_speed
+        amount: -3.1
+        operation: ADD_NUMBER
+        slot: HAND
+
+    # Perks
+    perks:
+      1: "Regeneration I"
+      3: "Stärke I"
+      5: "Tempo I"
+      7: "Lebensraub"
+      10: "Seelenschnitter"
+
   poseidons_trident:
     # NamespacedKey in Java
     key: flareonevents:poseidons_trident

@@ -6,6 +6,7 @@ import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.FireSword;
 import de.einfachesache.flareonevents.item.weapon.NyxBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
+import de.einfachesache.flareonevents.item.weapon.SoulEaterAxe;
 import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
@@ -235,6 +236,7 @@ public class Config {
 
         loadFireSword();
         loadNyxBow();
+        loadSoulEaterAxe();
         loadPoseidonsTrident();
         loadReinforcedPickaxe();
         loadSuperiorPickaxe();
@@ -282,6 +284,24 @@ public class Config {
         NyxBow.ATTRIBUTE_MODIFIERS = loadAttributes("nyx_bow");
         // ItemFlags einlesen
         NyxBow.ITEM_FLAGS = itemFlags;
+    }
+
+    private static void loadSoulEaterAxe() {
+        // NamespacedKey, Material & Display-Name
+        String nbKeyString = itemsFile.get("items.soul_eater_axe.key");
+        SoulEaterAxe.NAMESPACED_KEY = NamespacedKey.fromString(nbKeyString, FlareonEvents.getPlugin());
+        SoulEaterAxe.MATERIAL = Material.valueOf(itemsFile.get("items.soul_eater_axe.material"));
+        SoulEaterAxe.DISPLAY_NAME = itemsFile.get("items.soul_eater_axe.display_name");
+
+        // Perks
+        //NyxBow.WITHER_EFFECT_CHANCE = itemsFile.getDouble("items.soul_eater_axe.wither_effect_chance");
+
+        // Verzauberungen einlesen
+        SoulEaterAxe.ENCHANTMENTS = loadEnchantments("soul_eater_axe");
+        // Attribute-Modifier einlesen (falls in config definiert)
+        SoulEaterAxe.ATTRIBUTE_MODIFIERS = loadAttributes("soul_eater_axe");
+        // ItemFlags einlesen
+        SoulEaterAxe.ITEM_FLAGS = itemFlags;
     }
 
     private static void loadPoseidonsTrident() {

@@ -1,15 +1,20 @@
 package de.einfachesache.flareonevents.item;
 
 import de.einfachesache.flareonevents.FlareonEvents;
+import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
+import de.einfachesache.flareonevents.item.weapon.SoulEaterAxe;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -53,6 +58,42 @@ public class ItemUtils {
         if (key == null) return false;
 
         return meta.getPersistentDataContainer().has(key, PersistentDataType.BYTE);
+    }
+
+    public static void updateInventorys(CustomItem... customItems) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+
+            PlayerInventory inventory = player.getInventory();
+
+            for (int i = 0; i < inventory.getSize(); i++) {
+                inventory.setItem(i, replaceInSlot(inventory.getItem(i), customItems));
+            }
+
+            ItemStack[] armor = inventory.getArmorContents();
+            for (int i = 0; i < armor.length; i++) {
+                armor[i] = replaceInSlot(armor[i], customItems);
+            }
+
+            inventory.setArmorContents(armor);
+            inventory.setItemInOffHand(replaceInSlot(inventory.getItemInOffHand(), customItems));
+        }
+    }
+
+    public static ItemStack replaceInSlot(ItemStack oldItem, CustomItem... customItems) {
+        if (oldItem == null || !oldItem.hasItemMeta()) return oldItem;
+        for (CustomItem customItem : customItems) {
+            if (customItem.matches(oldItem)) {
+                ItemStack newItem = customItem.getItem();
+                newItem.setAmount(oldItem.getAmount());
+
+                return switch (customItem) {
+                    case SOUL_HEART_CRYSTAL -> SoulHeartCrystal.createSoulHeartCrystal(SoulHeartCrystal.getDroppedByPlayer(oldItem));
+                    case SOUL_EATER_AXE -> SoulEaterAxe.createSoulEaterAxe(SoulEaterAxe.getKillCount(oldItem));
+                    default -> newItem;
+                };
+            }
+        }
+        return oldItem;
     }
 
     public static ItemStack createGuiBackButton() {

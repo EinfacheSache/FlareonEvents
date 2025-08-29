@@ -1,6 +1,7 @@
 package de.einfachesache.flareonevents.item.weapon;
 
 import de.einfachesache.flareonevents.FlareonEvents;
+import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.ingredient.MagmaShard;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
@@ -11,25 +12,44 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
+import org.bukkit.persistence.PersistentDataType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
 public class SoulEaterAxe implements Listener {
 
-    public static NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "soul_eater_axe");
-    public static Material MATERIAL = Material.IRON_AXE;
-    public static String DISPLAY_NAME = "§5§lSoul Eater Axe";
+    public static NamespacedKey NAMESPACED_KEY;
+    public static Material MATERIAL;
+    public static String DISPLAY_NAME;
+    public static ItemFlag[] ITEM_FLAGS;
+    public static Map<Enchantment, Integer> ENCHANTMENTS;
+    public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS;
 
-    public static ItemFlag[] ITEM_FLAGS = new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS};
-    public static Map<Enchantment, Integer> ENCHANTMENTS = new HashMap<>();
-    public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS = new HashMap<>();
+    public static NamespacedKey KILLS_COUNT = new NamespacedKey(FlareonEvents.getPlugin(), "soul_kills");
+
+    record Perk(String id, int threshold, String display) {
+    }
+
+    private static final List<Perk> SOUL_EATER_PERKS = List.of(
+            new Perk("REGEN", 1, "Regeneration I"),
+            new Perk("STRENGTH", 3, "Stärke I"),
+            new Perk("SPEED", 5, "Tempo I"),
+            new Perk("LIFESTEAL", 7, "Lebensraub"),
+            new Perk("REAPER", 10, "Seelenschnitter")
+    );
 
     public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createSoulEaterAxe());
@@ -46,8 +66,11 @@ public class SoulEaterAxe implements Listener {
     }
 
     public static ItemStack createSoulEaterAxe() {
+        return createSoulEaterAxe(0);
+    }
+
+    public static ItemStack createSoulEaterAxe(int killCount) {
         ItemStack item = ItemUtils.createCustomItem(MATERIAL, DISPLAY_NAME, NAMESPACED_KEY);
-        LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         ItemMeta meta = item.getItemMeta();
 
         for (var entry : ATTRIBUTE_MODIFIERS.entrySet()) {
@@ -58,33 +81,89 @@ public class SoulEaterAxe implements Listener {
             meta.addEnchant(entry.getKey(), entry.getValue(), true);
         }
 
-        var modifiers = meta.getAttributeModifiers();
-        double attackDamage = ((modifiers == null)
-                ? Collections.<AttributeModifier>emptyList()
-                : modifiers.get(Attribute.ATTACK_DAMAGE))
-                .stream().filter(Objects::nonNull)
-                .mapToDouble(AttributeModifier::getAmount)
-                .sum();
-
-        List<Component> lore = new ArrayList<>();
-        lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7Besonderheit: ..."));
-        lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7Schaden: §4" + attackDamage));
-        lore.add(serializer.deserialize("§f"));
-
-        // Dynamisch aus ENCHANTMENTS-Map
-        if (!ENCHANTMENTS.isEmpty()) {
-            lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
-            lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
-        }
-
-        meta.lore(lore);
+        meta.lore(buildSoulEaterLore(killCount));
         meta.setCustomModelData(69);
+        meta.getPersistentDataContainer().set(KILLS_COUNT, PersistentDataType.INTEGER, killCount);
 
         item.setItemMeta(meta);
         item.addItemFlags(ITEM_FLAGS);
 
         return item;
+    }
+
+
+    public static List<Component> buildSoulEaterLore(int killCount) {
+        LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
+        List<Component> lore = new ArrayList<>();
+
+        double attackDamage = (ATTRIBUTE_MODIFIERS == null
+                ? Stream.<AttributeModifier>empty()
+                : Stream.ofNullable(ATTRIBUTE_MODIFIERS.get(Attribute.ATTACK_DAMAGE)))
+                .mapToDouble(AttributeModifier::getAmount)
+                .sum();
+
+        lore.add(serializer.deserialize("§f"));
+        lore.add(serializer.deserialize("§7§oKills mit dieser Axt erhöhen den Zähler und schalten Fähigkeiten frei."));
+        lore.add(serializer.deserialize("§f"));
+        lore.add(serializer.deserialize("§7Schaden: §4" + attackDamage));
+        lore.add(serializer.deserialize("§f"));
+
+        Integer nextThreshold = null;
+        for (Perk p : SOUL_EATER_PERKS) {
+            if (killCount < p.threshold) {
+                nextThreshold = p.threshold;
+                break;
+            }
+        }
+        String progress = (nextThreshold == null) ? "§c(Max)" : "§6(" + killCount + "/" + nextThreshold + ")";
+        lore.add(serializer.deserialize("§7Soul Counter: " + progress));
+        lore.add(serializer.deserialize("§f"));
+
+        lore.add(serializer.deserialize("§7Perks:"));
+        for (Perk p : SOUL_EATER_PERKS) {
+            boolean unlocked = killCount >= p.threshold;
+            String color = unlocked ? "§6" : "§8";
+            lore.add(serializer.deserialize(
+                    "§7➤ " + color + p.display + " §8(" + p.threshold + (p.threshold == 1 ? " Kill" : " Kills") + ")"
+            ));
+        }
+
+        lore.add(serializer.deserialize("§f"));
+
+        if (!ENCHANTMENTS.isEmpty()) {
+            lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
+            lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
+        }
+
+        return lore;
+    }
+
+    @EventHandler
+    public void onPlayerKill(EntityDeathEvent event) {
+        Player killer = event.getEntity().getKiller();
+        if (killer == null) return;
+
+        ItemStack item = killer.getInventory().getItemInMainHand();
+        if (!ItemUtils.isCustomItem(item, CustomItem.SOUL_EATER_AXE)) return;
+
+        ItemMeta itemMeta = item.getItemMeta();
+        int oldKills = itemMeta.getPersistentDataContainer().getOrDefault(KILLS_COUNT, PersistentDataType.INTEGER, 0);
+
+        itemMeta.getPersistentDataContainer().set(KILLS_COUNT, PersistentDataType.INTEGER, oldKills + 1);
+        itemMeta.lore(buildSoulEaterLore(oldKills + 1));
+        item.setItemMeta(itemMeta);
+    }
+
+    public static int getKillCount(ItemStack soulHeartCrystal) {
+        if (soulHeartCrystal == null || !soulHeartCrystal.hasItemMeta()) {
+            return 0;
+        }
+
+        ItemMeta meta = soulHeartCrystal.getItemMeta();
+        if (meta == null) {
+            return 0;
+        }
+
+        return meta.getPersistentDataContainer().getOrDefault(KILLS_COUNT, PersistentDataType.INTEGER, 0);
     }
 }
