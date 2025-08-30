@@ -27,19 +27,24 @@ import java.util.concurrent.CompletableFuture;
 
 public class PlayerJoinListener implements Listener {
 
-    private static final UUID PACK_UUID = UUID.nameUUIDFromBytes("FLAREON_EVENTS_RESOURCE_PACK".getBytes(StandardCharsets.UTF_8 ));
-    private static final String PACK_URL = "https://einfachesache.de/texturepack/Flareon-Events-V2.zip";
+    private static final String PACK_URL_BASE = "https://einfachesache.de/texturepack/Flareon-Events-V3.zip";
     private static final Component PACK_PROMPT =
             Component.text("Benötigtes Texturepack für ", NamedTextColor.GRAY)
-                    .append(Component.text("Flareon Events", NamedTextColor.GOLD, TextDecoration.BOLD)
-                    .append(Component.text(" laden?", NamedTextColor.GRAY)));
+                    .append(Component.text("Flareon Events", NamedTextColor.GOLD, TextDecoration.BOLD))
+                    .append(Component.text(" laden?", NamedTextColor.GRAY));
 
     private final CompletableFuture<byte[]> packHash = new CompletableFuture<>();
+    private volatile String sha1Hex = null;
 
     public PlayerJoinListener() {
         AsyncExecutor.getService().submit(() -> {
             try {
-                packHash.complete(sha1(URI.create(PACK_URL).toURL()));
+                byte[] hash = sha1(URI.create(PACK_URL_BASE).toURL());
+                this.sha1Hex = toHex(hash);
+                packHash.complete(hash);
+                if(sha1Hex == null){
+                    FlareonEvents.getLogManager().warn("sha1Hex is null");
+                }
             } catch (Throwable t) {
                 FlareonEvents.getLogManager().error("Pack-Hash fehlgeschlagen", t);
                 packHash.completeExceptionally(t);
@@ -56,11 +61,17 @@ public class PlayerJoinListener implements Listener {
         packHash.handle((hash, ex) -> {
             player.getServer().getScheduler().runTask(FlareonEvents.getPlugin(), () -> {
                 try {
+                    String packUrl = (sha1Hex == null) ? PACK_URL_BASE : PACK_URL_BASE + "?v=" + sha1Hex;
+                    UUID packUuid = (sha1Hex != null)
+                            ? UUID.nameUUIDFromBytes((PACK_URL_BASE + sha1Hex).getBytes(StandardCharsets.UTF_8))
+                            : UUID.nameUUIDFromBytes(PACK_URL_BASE.getBytes(StandardCharsets.UTF_8));
+
                     if (ex == null && hash != null) {
-                        player.setResourcePack(PACK_UUID, PACK_URL, hash, PACK_PROMPT, forced);
+                        player.setResourcePack(packUuid, packUrl, hash, PACK_PROMPT, forced);
                     } else {
-                        player.setResourcePack(PACK_UUID, PACK_URL, (byte[]) null, PACK_PROMPT, forced);
+                        player.setResourcePack(packUuid, packUrl, (byte[]) null, PACK_PROMPT, forced);
                     }
+
                 } catch (Throwable t) {
                     FlareonEvents.getLogManager().error("setResourcePack fehlgeschlagen", t);
                 }
@@ -68,7 +79,7 @@ public class PlayerJoinListener implements Listener {
             return null;
         });
 
-        event.joinMessage(player.displayName().append(Component.text(" ist dem server beigetreten", NamedTextColor.GRAY)));
+        event.joinMessage(player.displayName().append(Component.text(" ist dem Server beigetreten", NamedTextColor.GRAY)));
 
         ItemRecipe.discoverRecipe(player);
         int stateId = Config.getEventState().getId();
@@ -77,9 +88,12 @@ public class PlayerJoinListener implements Listener {
         if (!Config.isEventIsRunning()) {
             player.setGameMode(GameMode.ADVENTURE);
             player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
-            player.teleportAsync(Config.getEventState() == EventState.STARTING
-                    ? GameHandler.getPlayerAssignedSpawn(player)
-                    : Config.getMainSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            player.teleportAsync(
+                    Config.getEventState() == EventState.STARTING
+                            ? GameHandler.getPlayerAssignedSpawn(player)
+                            : Config.getMainSpawnLocation(),
+                    PlayerTeleportEvent.TeleportCause.PLUGIN
+            );
         }
     }
 
@@ -87,11 +101,18 @@ public class PlayerJoinListener implements Listener {
         var conn = url.openConnection();
         conn.setConnectTimeout(8000);
         conn.setReadTimeout(15000);
+        conn.setRequestProperty("User-Agent", "FlareonEvents-ResourcePack-Loader");
         try (InputStream in = conn.getInputStream()) {
             var md = MessageDigest.getInstance("SHA-1");
             byte[] buf = new byte[16384];
             for (int r; (r = in.read(buf)) != -1; ) md.update(buf, 0, r);
             return md.digest();
         }
+    }
+
+    private static String toHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder(bytes.length * 2);
+        for (byte b : bytes) sb.append(String.format("%02x", b));
+        return sb.toString();
     }
 }
