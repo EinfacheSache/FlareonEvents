@@ -19,7 +19,7 @@ import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.FireSword;
 import de.einfachesache.flareonevents.item.weapon.NyxBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
-import de.einfachesache.flareonevents.item.weapon.SoulEaterAxe;
+import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
 import de.einfachesache.flareonevents.listener.*;
 import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
 import net.kyori.adventure.text.Component;
@@ -69,13 +69,13 @@ public final class FlareonEvents extends JavaPlugin {
     }
 
     private void initializeFiles() {
-        itemsFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/items.yml"), "plugins/FlareonEvents", "items.yml");
-        teamsFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/teams.yml"), "plugins/FlareonEvents", "teams.yml");
-        configFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/config.yml"), "plugins/FlareonEvents", "config.yml");
-        infoBookFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/infoBook.yml"), "plugins/FlareonEvents", "infoBook.yml");
-        locationsFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/locations.yml"), "plugins/FlareonEvents", "locations.yml");
-        participantsFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/participants.yml"), "plugins/FlareonEvents", "participants.yml");
-        deathParticipantsFile = new FileUtils(FlareonEvents.class.getResourceAsStream("/deathParticipants.yml"), "plugins/FlareonEvents", "deathParticipants.yml");
+        itemsFile = new FileUtils(FlareonEvents.class.getResource("/items.yml"), "plugins/FlareonEvents", "items.yml");
+        teamsFile = new FileUtils(FlareonEvents.class.getResource("/teams.yml"), "plugins/FlareonEvents", "teams.yml");
+        configFile = new FileUtils(FlareonEvents.class.getResource("/config.yml"), "plugins/FlareonEvents", "config.yml");
+        infoBookFile = new FileUtils(FlareonEvents.class.getResource("/infoBook.yml"), "plugins/FlareonEvents", "infoBook.yml");
+        locationsFile = new FileUtils(FlareonEvents.class.getResource("/locations.yml"), "plugins/FlareonEvents", "locations.yml");
+        participantsFile = new FileUtils(FlareonEvents.class.getResource("/participants.yml"), "plugins/FlareonEvents", "participants.yml");
+        deathParticipantsFile = new FileUtils(FlareonEvents.class.getResource("/deathParticipants.yml"), "plugins/FlareonEvents", "deathParticipants.yml");
 
         Config.loadFiles();
     }
@@ -116,7 +116,7 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new AnvilListener(), this);
 
         Bukkit.getPluginManager().registerEvents(new PoseidonsTrident(), this);
-        Bukkit.getPluginManager().registerEvents(new SoulEaterAxe(), this);
+        Bukkit.getPluginManager().registerEvents(new SoulEaterScythe(), this);
         Bukkit.getPluginManager().registerEvents(new FireSword(), this);
         Bukkit.getPluginManager().registerEvents(new NyxBow(), this);
 
