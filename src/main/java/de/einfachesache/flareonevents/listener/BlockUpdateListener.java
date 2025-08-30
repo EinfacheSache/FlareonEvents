@@ -20,10 +20,9 @@ public class BlockUpdateListener implements Listener {
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
 
-        if(!Config.isEventIsRunning()){
-            event.setCancelled(true);
-        }
+        if (Config.isEventIsRunning()) return;
 
+        event.setCancelled(true);
         event.blockList().removeIf(b -> isProtected(b.getLocation()));
     }
 
