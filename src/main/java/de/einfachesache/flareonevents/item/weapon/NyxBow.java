@@ -1,5 +1,6 @@
 package de.einfachesache.flareonevents.item.weapon;
 
+import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.ItemUtils;
 import de.einfachesache.flareonevents.item.ingredient.MagmaShard;
@@ -31,9 +32,11 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @SuppressWarnings("deprecation")
@@ -42,10 +45,10 @@ public class NyxBow implements Listener {
     public static NamespacedKey NAMESPACED_KEY;
     public static Material MATERIAL;
     public static String DISPLAY_NAME;
-    public static double SLOW_BLIND_EFFECT_CHANCE;
-    public static double WITHER_EFFECT_CHANCE;
-    public static int SLOW_BLIND_EFFECT_TIME;
-    public static int WITHER_EFFECT_TIME;
+    public static double FREEZE_CHANCE;
+    public static double CRIT_FREEZE_CHANCE;
+    public static int FREEZE_TIME;
+    public static int DARKNESS_TIME;
     public static int SHOOT_COOLDOWN;
     public static int DASH_COOLDOWN;
     public static double DASH_STRENGTH;
@@ -57,6 +60,7 @@ public class NyxBow implements Listener {
     private static final Map<UUID, Long> dashCooldownMap = new HashMap<>();
     private static final Map<UUID, Long> shootCooldownMap = new HashMap<>();
     private static final Map<UUID, Long> preparedCooldownMap = new HashMap<>();
+    private static final Map<UUID, BukkitTask> freezeTimers = new ConcurrentHashMap<>();
 
     public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createNyxBow());
@@ -88,8 +92,9 @@ public class NyxBow implements Listener {
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§e" + (int) (WITHER_EFFECT_CHANCE * 100) + "%§7 Chance: §8Wither§7 für §e" + WITHER_EFFECT_TIME + "s"));
-        lore.add(serializer.deserialize("§e" + (int) (SLOW_BLIND_EFFECT_CHANCE * 100) + "%§7 Chance: §8Slowness§7 & §8Blindness§7 für §e" + SLOW_BLIND_EFFECT_TIME + "s"));
+        lore.add(serializer.deserialize("§7Jeder Treffer: §bFriert das Ziel ein"));
+        lore.add(serializer.deserialize("§e" + (int) (FREEZE_CHANCE * 100) + "%§7 Chance: §bFrostschock"));
+        lore.add(serializer.deserialize("§e" + (int) (CRIT_FREEZE_CHANCE * 100) + "%§7 Chance: §bkritischer Frostschock§7 & §8Darkness"));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7§oBesonderheit: §bSpeed I§7 in Hand"));
         lore.add(serializer.deserialize("§f"));
@@ -142,9 +147,10 @@ public class NyxBow implements Listener {
         Player player = event.getPlayer();
 
         long now = System.currentTimeMillis();
+        int cooldown = (player.getGameMode() == GameMode.CREATIVE ||  player.getGameMode() == GameMode.SPECTATOR) ? 0 : DASH_COOLDOWN;
         long lastUse = dashCooldownMap.getOrDefault(player.getUniqueId(), 0L);
-        if (now - lastUse < DASH_COOLDOWN * 1000L) {
-            long remaining = ((DASH_COOLDOWN * 1000L) - (now - lastUse));
+        if (now - lastUse < cooldown * 1000L) {
+            long remaining = ((cooldown * 1000L) - (now - lastUse));
             player.sendMessage("§cBitte warte noch " + remaining / 1000 + "s, bevor du erneut Dashed!");
             return;
         }
@@ -157,7 +163,7 @@ public class NyxBow implements Listener {
 
         dashCooldownMap.put(player.getUniqueId(), now);
 
-        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1.2f);
+        player.playSound(player.getLocation(), Sound.ENTITY_BREEZE_WIND_BURST, 1f, 1.2f);
         player.spawnParticle(Particle.SWEEP_ATTACK, player.getLocation().add(0, 1, 0), 8, 0.3, 0.2, 0.3, 0.01);
     }
 
@@ -188,7 +194,7 @@ public class NyxBow implements Listener {
         if (!(arrow.getShooter() instanceof Player shooter)) return;
         if (!ItemUtils.isCustomItem(shooter.getInventory().getItemInMainHand(), CustomItem.NYX_BOW)) return;
 
-        arrow.setColor(Color.BLACK);
+        arrow.setColor(Color.AQUA);
         arrow.setGlowing(true);
 
         long preparedCooldown = preparedCooldownMap.get(shooter.getUniqueId());
@@ -203,18 +209,26 @@ public class NyxBow implements Listener {
         if (!(arrow.getShooter() instanceof Player shooter)) return;
         if (!arrow.getPersistentDataContainer().has(NAMESPACED_KEY, PersistentDataType.BYTE)) return;
         if (!(event.getEntity() instanceof LivingEntity livingEntity)) return;
+        if (livingEntity instanceof Player player && player.getGameMode() == GameMode.CREATIVE) return;
 
         double roll = Math.random();
-        boolean applyWither = roll < WITHER_EFFECT_CHANCE;
-        boolean applySlowBlind = roll < (WITHER_EFFECT_CHANCE * SLOW_BLIND_EFFECT_CHANCE);
+        boolean applyFreeze = roll < FREEZE_CHANCE;
+        boolean applyCritFreeze = roll < CRIT_FREEZE_CHANCE;
 
-        if (!applyWither) return;
-
-        livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 20 * WITHER_EFFECT_TIME, 0));
-        if (applySlowBlind) {
-            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20 * SLOW_BLIND_EFFECT_TIME, 0));
-            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * SLOW_BLIND_EFFECT_TIME, 0));
+        if (!applyFreeze) {
+            livingEntity.setFreezeTicks(livingEntity.getMaxFreezeTicks() - 70);
+            return;
         }
+
+        if (applyCritFreeze) {
+            livingEntity.setFreezeTicks(livingEntity.getMaxFreezeTicks());
+            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 20 * DARKNESS_TIME, 0));
+        } else {
+            livingEntity.setFreezeTicks(livingEntity.getMaxFreezeTicks() - 1);
+        }
+
+        livingEntity.lockFreezeTicks(true);
+        removeFreezeTimer(livingEntity);
 
         String targetName = livingEntity.getName();
         Component prefix = Component.text("✦ ", NamedTextColor.DARK_PURPLE)
@@ -222,22 +236,37 @@ public class NyxBow implements Listener {
                 .append(Component.text(": ", NamedTextColor.GRAY));
 
         Component msg;
-        if (applySlowBlind) {
-            msg = prefix.append(Component.text(targetName, NamedTextColor.GOLD))
+        if (applyCritFreeze) {
+            msg = prefix
+                    .append(Component.text(targetName, NamedTextColor.GOLD))
                     .append(Component.text(" erleidet ", NamedTextColor.GRAY))
-                    .append(Component.text("Wither", NamedTextColor.DARK_PURPLE, TextDecoration.BOLD))
-                    .append(Component.text(", ", NamedTextColor.GRAY))
-                    .append(Component.text("Slowness", NamedTextColor.DARK_GRAY, TextDecoration.BOLD))
+                    .append(Component.text("kritischen Frostschock", NamedTextColor.AQUA, TextDecoration.BOLD))
                     .append(Component.text(" & ", NamedTextColor.GRAY))
-                    .append(Component.text("Blindness", NamedTextColor.DARK_GRAY, TextDecoration.BOLD))
+                    .append(Component.text("Darkness", NamedTextColor.DARK_GRAY, TextDecoration.BOLD))
                     .append(Component.text(".", NamedTextColor.GRAY));
         } else {
-            msg = prefix.append(Component.text(targetName, NamedTextColor.GOLD))
+            msg = prefix
+                    .append(Component.text(targetName, NamedTextColor.GOLD))
                     .append(Component.text(" erleidet ", NamedTextColor.GRAY))
-                    .append(Component.text("Wither", NamedTextColor.DARK_PURPLE, TextDecoration.BOLD))
+                    .append(Component.text("Frostschock", NamedTextColor.AQUA, TextDecoration.BOLD))
                     .append(Component.text(".", NamedTextColor.GRAY));
         }
 
         shooter.sendMessage(msg);
+    }
+
+    private void removeFreezeTimer(LivingEntity livingEntity) {
+        UUID uuid = livingEntity.getUniqueId();
+        BukkitTask task = Bukkit.getScheduler().runTaskLater(FlareonEvents.getPlugin(), () -> {
+            if (!livingEntity.isValid() || livingEntity.isDead()) return;
+            livingEntity.lockFreezeTicks(false);
+            freezeTimers.remove(uuid);
+        }, 20L * FREEZE_TIME);
+
+        BukkitTask old = freezeTimers.remove(uuid);
+        if (old != null) {
+            old.cancel();
+        }
+        freezeTimers.put(uuid, task);
     }
 }

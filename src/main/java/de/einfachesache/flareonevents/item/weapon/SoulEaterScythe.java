@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
-public class SoulEaterAxe implements Listener {
+public class SoulEaterScythe implements Listener {
 
     public static NamespacedKey NAMESPACED_KEY;
     public static Material MATERIAL;
@@ -52,7 +52,7 @@ public class SoulEaterAxe implements Listener {
     );
 
     public static ShapedRecipe getShapedRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createSoulEaterAxe());
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createSoulEaterScythe());
         recipe.shape(" Z ", "HPH", "DBD");
         recipe.setIngredient('Z', MagmaShard.ITEM);
         recipe.setIngredient('H', SoulHeartCrystal.createSoulHeartCrystal());
@@ -65,11 +65,11 @@ public class SoulEaterAxe implements Listener {
         return recipe;
     }
 
-    public static ItemStack createSoulEaterAxe() {
-        return createSoulEaterAxe(0);
+    public static ItemStack createSoulEaterScythe() {
+        return createSoulEaterScythe(0);
     }
 
-    public static ItemStack createSoulEaterAxe(int killCount) {
+    public static ItemStack createSoulEaterScythe(int killCount) {
         ItemStack item = ItemUtils.createCustomItem(MATERIAL, DISPLAY_NAME, NAMESPACED_KEY);
         ItemMeta meta = item.getItemMeta();
 
@@ -144,7 +144,7 @@ public class SoulEaterAxe implements Listener {
         if (killer == null) return;
 
         ItemStack item = killer.getInventory().getItemInMainHand();
-        if (!ItemUtils.isCustomItem(item, CustomItem.SOUL_EATER_AXE)) return;
+        if (!ItemUtils.isCustomItem(item, CustomItem.SOUL_EATER_SCYTHE)) return;
 
         ItemMeta itemMeta = item.getItemMeta();
         int oldKills = itemMeta.getPersistentDataContainer().getOrDefault(KILLS_COUNT, PersistentDataType.INTEGER, 0);

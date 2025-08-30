@@ -6,7 +6,7 @@ import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.FireSword;
 import de.einfachesache.flareonevents.item.weapon.NyxBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
-import de.einfachesache.flareonevents.item.weapon.SoulEaterAxe;
+import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
 import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
@@ -236,7 +236,7 @@ public class Config {
 
         loadFireSword();
         loadNyxBow();
-        loadSoulEaterAxe();
+        loadSoulEaterScythe();
         loadPoseidonsTrident();
         loadReinforcedPickaxe();
         loadSuperiorPickaxe();
@@ -269,13 +269,15 @@ public class Config {
         NyxBow.DISPLAY_NAME = itemsFile.get("items.nyx_bow.display_name");
 
         // Effekte & Cooldown
-        NyxBow.WITHER_EFFECT_CHANCE = itemsFile.getDouble("items.nyx_bow.wither_effect_chance");
-        NyxBow.WITHER_EFFECT_TIME = itemsFile.getInt("items.nyx_bow.wither_effect_time");
-        NyxBow.SLOW_BLIND_EFFECT_CHANCE = itemsFile.getDouble("items.nyx_bow.slow_blind_effect_chance");
-        NyxBow.SLOW_BLIND_EFFECT_TIME = itemsFile.getInt("items.nyx_bow.slow_blind_effect_time");
+        NyxBow.FREEZE_TIME = itemsFile.getInt("items.nyx_bow.freeze_time");
+        NyxBow.FREEZE_CHANCE = itemsFile.getDouble("items.nyx_bow.freeze_chance");
+        NyxBow.CRIT_FREEZE_CHANCE = itemsFile.getDouble("items.nyx_bow.crit_freeze_chance");
+        NyxBow.DARKNESS_TIME = itemsFile.getInt("items.nyx_bow.darkness_effect_time");
+
         NyxBow.DASH_COOLDOWN = itemsFile.getInt("items.nyx_bow.dash_cooldown");
         NyxBow.DASH_STRENGTH = itemsFile.getDouble("items.nyx_bow.dash_strength");
         NyxBow.DASH_LIFT = itemsFile.getDouble("items.nyx_bow.dash_lift");
+
         NyxBow.SHOOT_COOLDOWN = itemsFile.getInt("items.nyx_bow.shoot_cooldown");
 
         // Verzauberungen einlesen
@@ -286,22 +288,22 @@ public class Config {
         NyxBow.ITEM_FLAGS = itemFlags;
     }
 
-    private static void loadSoulEaterAxe() {
+    private static void loadSoulEaterScythe() {
         // NamespacedKey, Material & Display-Name
-        String nbKeyString = itemsFile.get("items.soul_eater_axe.key");
-        SoulEaterAxe.NAMESPACED_KEY = NamespacedKey.fromString(nbKeyString, FlareonEvents.getPlugin());
-        SoulEaterAxe.MATERIAL = Material.valueOf(itemsFile.get("items.soul_eater_axe.material"));
-        SoulEaterAxe.DISPLAY_NAME = itemsFile.get("items.soul_eater_axe.display_name");
+        String nbKeyString = itemsFile.get("items.soul_eater_scythe.key");
+        SoulEaterScythe.NAMESPACED_KEY = NamespacedKey.fromString(nbKeyString, FlareonEvents.getPlugin());
+        SoulEaterScythe.MATERIAL = Material.valueOf(itemsFile.get("items.soul_eater_scythe.material"));
+        SoulEaterScythe.DISPLAY_NAME = itemsFile.get("items.soul_eater_scythe.display_name");
 
         // Perks
-        //NyxBow.WITHER_EFFECT_CHANCE = itemsFile.getDouble("items.soul_eater_axe.wither_effect_chance");
+        //NyxBow.WITHER_EFFECT_CHANCE = itemsFile.getDouble("items.soul_eater_scythe.wither_effect_chance");
 
         // Verzauberungen einlesen
-        SoulEaterAxe.ENCHANTMENTS = loadEnchantments("soul_eater_axe");
+        SoulEaterScythe.ENCHANTMENTS = loadEnchantments("soul_eater_scythe");
         // Attribute-Modifier einlesen (falls in config definiert)
-        SoulEaterAxe.ATTRIBUTE_MODIFIERS = loadAttributes("soul_eater_axe");
+        SoulEaterScythe.ATTRIBUTE_MODIFIERS = loadAttributes("soul_eater_scythe");
         // ItemFlags einlesen
-        SoulEaterAxe.ITEM_FLAGS = itemFlags;
+        SoulEaterScythe.ITEM_FLAGS = itemFlags;
     }
 
     private static void loadPoseidonsTrident() {

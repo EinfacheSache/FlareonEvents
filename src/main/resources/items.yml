@@ -34,18 +34,17 @@ items:
 
     # Material & Anzeige-Name
     material: BOW
-    display_name: "§4§lNyx's Bow"
+    display_name: "§b§lNyx's Bow"
 
     # Verzauberungen
     enchantments:
       power: 2
 
     # Effekte & cooldown
-    wither_effect_chance: 0.5      # Chance, Wither-Effekt zu vergeben
-    wither_effect_time: 3          # Dauer in Sekunden
-
-    slow_blind_effect_chance: 0.33 # Chance, Slowness + Blindness zu vergeben
-    slow_blind_effect_time: 2      # Dauer in Sekunden
+    freeze_time: 3            # Dauer in Sekunden
+    freeze_chance: 0.5        # Chance, Freeze zu vergeben
+    crit_freeze_chance: 0.25  # Chance, Kritischen Freeze + Darkness zu vergeben
+    darkness_effect_time: 4   # Dauer in Sekunden
 
     dash_cooldown: 7
     dash_strength: 1.9
@@ -53,13 +52,13 @@ items:
 
     shoot_cooldown: 1200                 # Cooldown in Millisekunden
 
-  soul_eater_axe:
+  soul_eater_scythe:
     # NamespacedKey in Java
-    key: flareonevents:soul_eater_axe
+    key: flareonevents:soul_eater_scythe
 
     # Material & Anzeige-Name
     material: IRON_AXE
-    display_name: "§5§lSoul Eater Axe"
+    display_name: "§5§lSoul Eater Scythe"
 
     # Attribute-Modifikatoren
     attributes:
@@ -86,7 +85,7 @@ items:
 
     # Material & Anzeige-Name
     material: TRIDENT
-    display_name: "§b§lPoseidon's Trident"
+    display_name: "§1§lPoseidon's Trident"
 
     # Verzauberungen
     enchantments:

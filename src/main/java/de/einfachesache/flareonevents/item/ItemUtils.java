@@ -2,7 +2,7 @@ package de.einfachesache.flareonevents.item;
 
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
-import de.einfachesache.flareonevents.item.weapon.SoulEaterAxe;
+import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -88,7 +88,7 @@ public class ItemUtils {
 
                 return switch (customItem) {
                     case SOUL_HEART_CRYSTAL -> SoulHeartCrystal.createSoulHeartCrystal(SoulHeartCrystal.getDroppedByPlayer(oldItem));
-                    case SOUL_EATER_AXE -> SoulEaterAxe.createSoulEaterAxe(SoulEaterAxe.getKillCount(oldItem));
+                    case SOUL_EATER_SCYTHE -> SoulEaterScythe.createSoulEaterScythe(SoulEaterScythe.getKillCount(oldItem));
                     default -> newItem;
                 };
             }

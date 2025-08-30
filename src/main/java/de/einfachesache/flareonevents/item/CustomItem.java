@@ -12,7 +12,7 @@ import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.FireSword;
 import de.einfachesache.flareonevents.item.weapon.NyxBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
-import de.einfachesache.flareonevents.item.weapon.SoulEaterAxe;
+import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +28,7 @@ public enum CustomItem {
 
     FIRE_SWORD(FireSword.DISPLAY_NAME, FireSword.NAMESPACED_KEY, CustomItemType.WEAPON, FireSword.getShapedRecipe(), FireSword::createFireSword),
     NYX_BOW(NyxBow.DISPLAY_NAME, NyxBow.NAMESPACED_KEY, CustomItemType.WEAPON, NyxBow.getShapedRecipe(), NyxBow::createNyxBow),
-    SOUL_EATER_AXE(SoulEaterAxe.DISPLAY_NAME, SoulEaterAxe.NAMESPACED_KEY, CustomItemType.WEAPON, SoulEaterAxe.getShapedRecipe(), SoulEaterAxe::createSoulEaterAxe),
+    SOUL_EATER_SCYTHE(SoulEaterScythe.DISPLAY_NAME, SoulEaterScythe.NAMESPACED_KEY, CustomItemType.WEAPON, SoulEaterScythe.getShapedRecipe(), SoulEaterScythe::createSoulEaterScythe),
     POSEIDONS_TRIDENT(PoseidonsTrident.DISPLAY_NAME, PoseidonsTrident.NAMESPACED_KEY, CustomItemType.WEAPON, PoseidonsTrident.getShapedRecipe(), PoseidonsTrident::createPoseidonsTrident),
 
     REINFORCED_PICKAXE(ReinforcedPickaxe.DISPLAY_NAME, ReinforcedPickaxe.NAMESPACED_KEY, CustomItemType.TOOL, ReinforcedPickaxe.getShapedRecipe(), ReinforcedPickaxe::createReinforcedPickaxe),

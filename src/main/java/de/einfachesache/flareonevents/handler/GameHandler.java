@@ -461,6 +461,7 @@ public class GameHandler {
 
     public static void resetPlayer(Player player, boolean potionReset, boolean completeReset) {
         if (potionReset) {
+            player.lockFreezeTicks(false);
             player.clearActivePotionEffects();
         }
 
@@ -473,6 +474,7 @@ public class GameHandler {
             player.setHealth(20);
             player.setFoodLevel(20);
             player.setSaturation(10);
+            player.setFreezeTicks(0);
             player.setExperienceLevelAndProgress(0);
 
             AttributeInstance attr = player.getAttribute(Attribute.MAX_HEALTH);
