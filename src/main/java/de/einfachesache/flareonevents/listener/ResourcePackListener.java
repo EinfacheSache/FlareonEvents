@@ -28,11 +28,23 @@ public class ResourcePackListener implements Listener {
             );
 
             case FAILED_DOWNLOAD -> e.getPlayer().sendMessage(
-                    FlareonEvents.PLUGIN_PREFIX.append(Component.text("Download fehlgeschlagen. Bitte neu verbinden. Bleibt es bestehen, melde dich beim Team.", NamedTextColor.RED))
+                    FlareonEvents.PLUGIN_PREFIX.append(Component.text("Download fehlgeschlagen. Bitte neu verbinden. Bitte verbinde dich erneut oder wende dich an ein Teammitglied.", NamedTextColor.RED))
+            );
+
+            case FAILED_RELOAD -> e.getPlayer().sendMessage(
+                    FlareonEvents.PLUGIN_PREFIX.append(Component.text("Das Resource Pack konnte nicht angewendet werden. Bitte verbinde dich erneut oder wende dich an ein Teammitglied.", NamedTextColor.RED))
+            );
+
+            case DISCARDED -> e.getPlayer().sendMessage(
+                    FlareonEvents.PLUGIN_PREFIX.append(Component.text("Das Resource Pack wurde vom Client verworfen. Bitte verbinde dich erneut oder wende dich an ein Teammitglied.", NamedTextColor.RED))
+            );
+
+            case INVALID_URL -> e.getPlayer().sendMessage(
+                    FlareonEvents.PLUGIN_PREFIX.append(Component.text("Ungültiger Resource Pack-Link. Bitte wende dich an ein Teammitglied.", NamedTextColor.RED))
             );
 
             default -> e.getPlayer().sendMessage(
-                    FlareonEvents.PLUGIN_PREFIX.append(Component.text("Status: " + e.getStatus().name(), NamedTextColor.GRAY))
+                    FlareonEvents.PLUGIN_PREFIX.append(Component.text("Status: " + e.getStatus().name(), NamedTextColor.RED))
             );
         }
     }
