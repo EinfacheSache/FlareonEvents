@@ -43,14 +43,14 @@ items:
     # Effekte & cooldown
     freeze_time: 3            # Dauer in Sekunden
     freeze_chance: 0.5        # Chance, Freeze zu vergeben
-    crit_freeze_chance: 0.25  # Chance, Kritischen Freeze + Darkness zu vergeben
+    crit_freeze_chance: 0.25  # Chance, kritischen Freeze + Darkness zu vergeben
     darkness_effect_time: 4   # Dauer in Sekunden
 
     dash_cooldown: 7
     dash_strength: 1.9
     dash_lift: 0.25
 
-    shoot_cooldown: 1200                 # Cooldown in Millisekunden
+    shoot_cooldown: 1200      # Cooldown in Millisekunden
 
   soul_eater_scythe:
     # NamespacedKey in Java
