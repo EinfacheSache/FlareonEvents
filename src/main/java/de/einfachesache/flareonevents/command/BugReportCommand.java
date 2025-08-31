@@ -13,28 +13,17 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
 public class BugReportCommand implements CommandExecutor, TabCompleter {
 
-    private static final List<String> BUG_TYPES = Arrays.asList(
-            "ITEM",
-            "PLAYER",
-            "COMMAND",
-            "GUI",
-            "CHAT",
-            "PERMISSION",
-            "EVENT",
-            "OTHER"
-    );
-
+    private static final List<String> BUG_TYPES = Arrays.asList("ITEM", "PLAYER", "COMMAND", "GUI", "CHAT", "PERMISSION", "EVENT", "OTHER");
+    private static final int COOLDOWN_TIME_SEC = 60;
     private static final int MAX_MSG = 200;
 
+    private final Map<UUID, Long> commandCooldown = new HashMap<>();
     private final Gson gson = new Gson();
     private final FlareonEvents plugin;
 
@@ -60,6 +49,13 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
             player.sendMessage("§7Ungültiger BugType. Bitte verwenden: " + BUG_TYPES);
             return true;
         }
+
+        long timeLeft = (commandCooldown.getOrDefault(player.getUniqueId(), 0L) + COOLDOWN_TIME_SEC * 1000) - System.currentTimeMillis();
+        if (timeLeft > 0) {
+            player.sendMessage("§eBitte warte noch " + timeLeft / 1000 + "s bevor du einen neuen Report erstellst");
+            return true;
+        }
+        commandCooldown.put(player.getUniqueId(), System.currentTimeMillis());
 
         var payload = new TicketPayload();
         payload.category = bugType;
