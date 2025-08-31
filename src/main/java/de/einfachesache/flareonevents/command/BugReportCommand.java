@@ -21,7 +21,6 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
 
     private static final List<String> BUG_TYPES = Arrays.asList("ITEM", "PLAYER", "COMMAND", "GUI", "CHAT", "PERMISSION", "EVENT", "OTHER");
     private static final int COOLDOWN_TIME_SEC = 60;
-    private static final int MAX_MSG = 250;
 
     private final Map<UUID, Long> commandCooldown = new HashMap<>();
     private final Gson gson = new Gson();
@@ -59,7 +58,7 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
 
         var payload = new TicketPayload();
         payload.category = bugType;
-        payload.message = trim(String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
+        payload.message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
         payload.reporter = new TicketPayload.Reporter();
         payload.reporter.uuid = player.getUniqueId().toString();
@@ -92,10 +91,6 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
 
         player.sendMessage("§aDanke! Dein Bug-Report wurde gesendet.");
         return true;
-    }
-
-    private static String trim(String s) {
-        return (s.length() > BugReportCommand.MAX_MSG) ? s.substring(0, BugReportCommand.MAX_MSG) : s;
     }
 
     @Override
