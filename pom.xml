@@ -69,18 +69,18 @@
     <dependency>
       <groupId>com.github.EinfacheSache</groupId>
       <artifactId>easyapi</artifactId>
-      <version>364f3d175b</version>
+      <version>719c164f88</version>
     </dependency>
     <dependency>
       <groupId>de.maxhenkel.voicechat</groupId>
       <artifactId>voicechat-api</artifactId>
-      <version>2.5.31</version>
+      <version>2.5.36</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.papermc.paper</groupId>
       <artifactId>paper-api</artifactId>
-      <version>1.21.6-R0.1-SNAPSHOT</version>
+      <version>1.21.8-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
