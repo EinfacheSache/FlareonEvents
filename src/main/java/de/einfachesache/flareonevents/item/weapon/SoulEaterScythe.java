@@ -103,7 +103,7 @@ public class SoulEaterScythe implements Listener {
                 .sum();
 
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7§oKills mit dieser Axt erhöhen den Zähler und schalten Fähigkeiten frei."));
+        lore.add(serializer.deserialize("§7§oKills mit dieser Scythe schalten Perks frei und erhöhen den §5Soul Counter"));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Schaden: §4" + attackDamage));
         lore.add(serializer.deserialize("§f"));
@@ -116,7 +116,7 @@ public class SoulEaterScythe implements Listener {
             }
         }
         String progress = (nextThreshold == null) ? "§c(Max)" : "§6(" + killCount + "/" + nextThreshold + ")";
-        lore.add(serializer.deserialize("§7Soul Counter: " + progress));
+        lore.add(serializer.deserialize("§5Soul Counter: " + progress));
         lore.add(serializer.deserialize("§f"));
 
         lore.add(serializer.deserialize("§7Perks:"));
