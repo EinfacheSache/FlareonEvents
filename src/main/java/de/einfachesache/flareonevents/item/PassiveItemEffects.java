@@ -69,7 +69,7 @@ public final class PassiveItemEffects {
 
             if (WorldUtils.isPlayerInCave(p)) {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION,
-                        SLOW_EFFECT_TICKS, 0, true, false));
+                        SLOW_EFFECT_TICKS, 0, true, false ,true));
             }
         }
     }
@@ -82,7 +82,7 @@ public final class PassiveItemEffects {
     private static void maybeAdd(List<PotionEffect> list, Player p, PotionEffectType type, int amplifier, int duration, int refreshThreshold) {
         PotionEffect cur = p.getPotionEffect(type);
         if (cur == null || cur.getAmplifier() < amplifier || cur.getDuration() < refreshThreshold) {
-            list.add(new PotionEffect(type, duration, amplifier, true, false));
+            list.add(new PotionEffect(type, duration, amplifier, true, false, true));
         }
     }
 }
