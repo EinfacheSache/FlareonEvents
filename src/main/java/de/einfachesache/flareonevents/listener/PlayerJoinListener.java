@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 public class PlayerJoinListener implements Listener {
 
     private static final String PACK_URL_BASE = "https://einfachesache.de/texturepack/Flareon-Events-V3.zip";
+    private static final UUID SESSION_UUID = UUID.randomUUID();
     private static final Component PACK_PROMPT =
             Component.text("Benötigtes Texturepack für ", NamedTextColor.GRAY)
                     .append(Component.text("Flareon Events", NamedTextColor.GOLD, TextDecoration.BOLD))
@@ -42,7 +43,7 @@ public class PlayerJoinListener implements Listener {
                 byte[] hash = sha1(URI.create(PACK_URL_BASE).toURL());
                 this.sha1Hex = toHex(hash);
                 packHash.complete(hash);
-                if(sha1Hex == null){
+                if (sha1Hex == null) {
                     FlareonEvents.getLogManager().warn("sha1Hex is null");
                 }
             } catch (Throwable t) {
@@ -63,8 +64,8 @@ public class PlayerJoinListener implements Listener {
                 try {
                     String packUrl = (sha1Hex == null) ? PACK_URL_BASE : PACK_URL_BASE + "?v=" + sha1Hex;
                     UUID packUuid = (sha1Hex != null)
-                            ? UUID.nameUUIDFromBytes((PACK_URL_BASE + sha1Hex).getBytes(StandardCharsets.UTF_8))
-                            : UUID.nameUUIDFromBytes(PACK_URL_BASE.getBytes(StandardCharsets.UTF_8));
+                            ? UUID.nameUUIDFromBytes((SESSION_UUID + sha1Hex).getBytes(StandardCharsets.UTF_8))
+                            : UUID.nameUUIDFromBytes(SESSION_UUID.toString().getBytes(StandardCharsets.UTF_8));
 
                     if (ex == null && hash != null) {
                         player.setResourcePack(packUuid, packUrl, hash, PACK_PROMPT, forced);
