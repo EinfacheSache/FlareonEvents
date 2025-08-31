@@ -21,7 +21,7 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
 
     private static final List<String> BUG_TYPES = Arrays.asList("ITEM", "PLAYER", "COMMAND", "GUI", "CHAT", "PERMISSION", "EVENT", "OTHER");
     private static final int COOLDOWN_TIME_SEC = 60;
-    private static final int MAX_MSG = 200;
+    private static final int MAX_MSG = 250;
 
     private final Map<UUID, Long> commandCooldown = new HashMap<>();
     private final Gson gson = new Gson();
@@ -74,7 +74,7 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
         ctx.gamemode = player.getGameMode().name();
 
         ItemStack held = player.getInventory().getItemInMainHand();
-        ctx.heldType = held.getItemMeta() != null ? held.getItemMeta().getDisplayName() : held.getType().name();
+        ctx.heldItem = held.getItemMeta() != null ? held.getItemMeta().getDisplayName() : held.getType().name();
 
         ctx.phase = Config.getEventState().getName();
         ctx.team = Config.getPlayerTeams().getOrDefault(player.getUniqueId(), null);
@@ -128,7 +128,7 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
         public static final class Context {
             public String world;
             public double x, y, z;
-            public String gamemode, heldType;
+            public String gamemode, heldItem;
             public Integer team;
             public String phase, client;
         }
