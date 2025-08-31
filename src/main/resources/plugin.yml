@@ -18,6 +18,10 @@ commands:
     description: 'Open the custom item recipe GUI'
     aliases: [ rg, recipegui ]
 
+  report:
+    description: Meldet einen Bug als Discord Ticket
+    aliases: [ bug, bugreport ]
+
   event:
     description: 'Administrative event management commands'
     permission: 'event.op'

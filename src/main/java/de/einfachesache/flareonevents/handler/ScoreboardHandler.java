@@ -80,11 +80,11 @@ public class ScoreboardHandler implements Listener {
 
         int teams = Config.getTeams().size();
         Component eventPhase = switch (Config.getEventState()) {
-            case NOT_RUNNING -> Component.text("NICHT GESTARTET", NamedTextColor.RED);
-            case PREPARING -> Component.text("VORBEREITUNG", NamedTextColor.YELLOW);
-            case STARTING -> Component.text("STARTET", NamedTextColor.GOLD);
-            case RUNNING -> Component.text("LÄUFT", NamedTextColor.GREEN);
-            case ENDED -> Component.text("BEENDET", NamedTextColor.RED);
+            case NOT_RUNNING -> Component.text(EventState.NOT_RUNNING.getName(), NamedTextColor.RED);
+            case PREPARING -> Component.text(EventState.PREPARING.getName(), NamedTextColor.YELLOW);
+            case STARTING -> Component.text(EventState.STARTING.getName(), NamedTextColor.GOLD);
+            case RUNNING -> Component.text(EventState.RUNNING.getName(), NamedTextColor.GREEN);
+            case ENDED -> Component.text(EventState.ENDED.getName(), NamedTextColor.RED);
         };
 
         Component header = Component.text()

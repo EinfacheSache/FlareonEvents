@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class CommandListener implements Listener {
 
-    private static final Set<String> BASE_COMMAND_WHITELIST = Set.of("help", "team", "recipe", "msg");
+    private static final Set<String> BASE_COMMAND_WHITELIST = Set.of("help", "team", "recipe", "report", "msg");
     private static final Set<String> COMMAND_WHITELIST = new HashSet<>();
 
     public CommandListener() {

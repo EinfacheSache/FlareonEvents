@@ -46,6 +46,7 @@ public final class FlareonEvents extends JavaPlugin {
 
     private static final LogManager logger = LogManager.getLogger();
 
+    public static final String CH_TICKET = "proxymanager:ticket";
     public static final UUID DEV_UUID = UUID.fromString("201e5046-24df-4830-8b4a-82b635eb7cc7");
     public static final UUID OWNER_UUID = UUID.fromString("66d27373-3e65-4549-bbf2-39e1d5dc8631");
     public static final Component PLUGIN_PREFIX = Component.text("[FLAREON] ", NamedTextColor.GOLD);
@@ -81,20 +82,23 @@ public final class FlareonEvents extends JavaPlugin {
     }
 
     private void registerCommands() {
-        Objects.requireNonNull(this.getCommand("help")).setExecutor(new HelpCommand());
+        Objects.requireNonNull(getCommand("help")).setExecutor(new HelpCommand());
 
-        Objects.requireNonNull(this.getCommand("recipe")).setExecutor(new RecipeGuiCommand());
+        Objects.requireNonNull(getCommand("recipe")).setExecutor(new RecipeGuiCommand());
 
-        Objects.requireNonNull(this.getCommand("customitem")).setExecutor(new CustomItemCommand());
+        Objects.requireNonNull(getCommand("customitem")).setExecutor(new CustomItemCommand());
 
-        Objects.requireNonNull(this.getCommand("team")).setExecutor(new TeamCommand());
-        Objects.requireNonNull(this.getCommand("team")).setTabCompleter(new TeamCommand());
+        Objects.requireNonNull(getCommand("team")).setExecutor(new TeamCommand());
+        Objects.requireNonNull(getCommand("team")).setTabCompleter(new TeamCommand());
 
-        Objects.requireNonNull(this.getCommand("event")).setExecutor(new EventCommand());
-        Objects.requireNonNull(this.getCommand("event")).setTabCompleter(new EventCommand());
+        Objects.requireNonNull(getCommand("event")).setExecutor(new EventCommand());
+        Objects.requireNonNull(getCommand("event")).setTabCompleter(new EventCommand());
 
-        Objects.requireNonNull(this.getCommand("update")).setExecutor(new UpdateCommand());
-        Objects.requireNonNull(this.getCommand("update")).setTabCompleter(new UpdateCommand());
+        Objects.requireNonNull(getCommand("update")).setExecutor(new UpdateCommand());
+        Objects.requireNonNull(getCommand("update")).setTabCompleter(new UpdateCommand());
+
+        Objects.requireNonNull(getCommand("report")).setExecutor(new BugReportCommand(this));
+        Objects.requireNonNull(getCommand("report")).setTabCompleter(new BugReportCommand(this));
     }
 
     private void registerListener() {
@@ -134,6 +138,8 @@ public final class FlareonEvents extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EventInfoBook(), this);
 
         Bukkit.getPluginManager().registerEvents(new RecipeGuiCommand(), this);
+
+        getServer().getMessenger().registerOutgoingPluginChannel(this, CH_TICKET);
 
         if (isVoiceChatEnabled()){
             VoiceModPlugin.registerVoiceChatListener(this);
