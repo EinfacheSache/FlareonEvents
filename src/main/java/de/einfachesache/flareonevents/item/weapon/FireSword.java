@@ -40,7 +40,7 @@ public class FireSword implements Listener {
     public static double FIRE_TICKS_CHANCE;
     public static int FIRE_TICKS_TIME, COOLDOWN;
 
-    private static final float POWER = 250f;
+    private static final float POWER = 2f;
     private static final int RANGE = 20;
     private static final int FIREBALL_COUNT = 5;
     private static final double HEIGHT_ABOVE = 7.5;

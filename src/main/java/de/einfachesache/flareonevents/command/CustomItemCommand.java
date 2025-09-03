@@ -54,7 +54,7 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
         }
 
         switch (args[0].toLowerCase()) {
-            case "ingredient" -> giveAllIngredients(player);
+            case "ingredients" -> giveAllIngredients(player);
             case "all_gear" -> giveAllGear(player);
             case "all_armor" -> giveAllArmor(player);
             case "all" -> giveAllItems(player);

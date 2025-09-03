@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
@@ -47,6 +48,15 @@ public class ItemUtils {
 
         return item;
     }
+
+    public static boolean isInvulnerable(ItemStack item) {
+        if (!item.hasItemMeta()) return false;
+
+        PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+        NamespacedKey key = new NamespacedKey(FlareonEvents.getPlugin(), "invulnerable");
+        return container.has(key, PersistentDataType.BYTE);
+    }
+
 
     public static boolean isCustomItem(ItemStack item, CustomItem customItem) {
         if (item == null || customItem == null) return false;
@@ -87,8 +97,10 @@ public class ItemUtils {
                 newItem.setAmount(oldItem.getAmount());
 
                 return switch (customItem) {
-                    case SOUL_HEART_CRYSTAL -> SoulHeartCrystal.createSoulHeartCrystal(SoulHeartCrystal.getDroppedByPlayer(oldItem));
-                    case SOUL_EATER_SCYTHE -> SoulEaterScythe.createSoulEaterScythe(SoulEaterScythe.getKillCount(oldItem));
+                    case SOUL_HEART_CRYSTAL ->
+                            SoulHeartCrystal.createSoulHeartCrystal(SoulHeartCrystal.getDroppedByPlayer(oldItem));
+                    case SOUL_EATER_SCYTHE ->
+                            SoulEaterScythe.createSoulEaterScythe(SoulEaterScythe.getKillCount(oldItem));
                     default -> newItem;
                 };
             }
@@ -121,9 +133,7 @@ public class ItemUtils {
 
         for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
             String key = entry.getKey().getKey().getKey();
-            String name = Arrays.stream(key.split("_"))
-                    .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase())
-                    .collect(Collectors.joining(" "));
+            String name = Arrays.stream(key.split("_")).map(s -> s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase()).collect(Collectors.joining(" "));
             String roman = ItemUtils.toRoman(entry.getValue());
             lore.add(deserialize("§7➤ §4" + name + " " + roman));
         }
@@ -134,10 +144,7 @@ public class ItemUtils {
     }
 
     public static Material getRandomDrop(Map<Material, Integer> chances) {
-        int sumWeights = chances.values()
-                .stream()
-                .mapToInt(Integer::intValue)
-                .sum();
+        int sumWeights = chances.values().stream().mapToInt(Integer::intValue).sum();
         int roll = ThreadLocalRandom.current().nextInt(100) + 1;
 
         if (roll > sumWeights) {
