@@ -21,12 +21,16 @@ import de.einfachesache.flareonevents.item.weapon.NyxBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
 import de.einfachesache.flareonevents.listener.*;
+import de.einfachesache.flareonevents.util.WorldUtils;
 import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.WorldBorder;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -61,12 +65,25 @@ public final class FlareonEvents extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        registerPluginChannels();
         initializeFiles();
 
         setupEvent();
 
         registerCommands();
         registerListener();
+    }
+
+    @Override
+    public void onDisable() {
+        var msgr = getServer().getMessenger();
+        msgr.unregisterOutgoingPluginChannel(this);
+    }
+
+
+    private void registerPluginChannels() {
+        var msgr = getServer().getMessenger();
+        msgr.registerOutgoingPluginChannel(this, CH_TICKET);
     }
 
     private void initializeFiles() {
@@ -82,67 +99,68 @@ public final class FlareonEvents extends JavaPlugin {
     }
 
     private void registerCommands() {
-        Objects.requireNonNull(getCommand("help")).setExecutor(new HelpCommand());
-
-        Objects.requireNonNull(getCommand("recipe")).setExecutor(new RecipeGuiCommand());
-
-        Objects.requireNonNull(getCommand("customitem")).setExecutor(new CustomItemCommand());
-
-        Objects.requireNonNull(getCommand("team")).setExecutor(new TeamCommand());
-        Objects.requireNonNull(getCommand("team")).setTabCompleter(new TeamCommand());
-
-        Objects.requireNonNull(getCommand("event")).setExecutor(new EventCommand());
-        Objects.requireNonNull(getCommand("event")).setTabCompleter(new EventCommand());
-
-        Objects.requireNonNull(getCommand("update")).setExecutor(new UpdateCommand());
-        Objects.requireNonNull(getCommand("update")).setTabCompleter(new UpdateCommand());
-
-        Objects.requireNonNull(getCommand("report")).setExecutor(new BugReportCommand(this));
-        Objects.requireNonNull(getCommand("report")).setTabCompleter(new BugReportCommand(this));
+        registerCommand("help",       new HelpCommand());
+        registerCommand("recipe",     new RecipeGuiCommand());
+        registerCommand("customitem", new CustomItemCommand());
+        registerCommand("team",       new TeamCommand());
+        registerCommand("event",      new EventCommand());
+        registerCommand("update",     new UpdateCommand());
+        registerCommand("report",     new BugReportCommand(this));
     }
 
     private void registerListener() {
-        Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(), this);
-        Bukkit.getPluginManager().registerEvents(new EntityDamageListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PortalCreateListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ResourcePackListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
-        Bukkit.getPluginManager().registerEvents(new BlockUpdateListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerLoginListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerQuitListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerChatListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerFoodListener(), this);
-        Bukkit.getPluginManager().registerEvents(new CustomItemHandler(), this);
-        Bukkit.getPluginManager().registerEvents(new CraftingListener(), this);
-        Bukkit.getPluginManager().registerEvents(new CommandListener(), this);
-        Bukkit.getPluginManager().registerEvents(new AnvilListener(), this);
+        var pm = Bukkit.getPluginManager();
+        pm.registerEvents(new PlayerInteractListener(), this);
+        pm.registerEvents(new EntityDamageListener(), this);
+        pm.registerEvents(new PortalCreateListener(), this);
+        pm.registerEvents(new ResourcePackListener(), this);
+        pm.registerEvents(new PlayerDeathListener(), this);
+        pm.registerEvents(new BlockUpdateListener(), this);
+        pm.registerEvents(new PlayerLoginListener(), this);
+        pm.registerEvents(new PlayerJoinListener(), this);
+        pm.registerEvents(new PlayerMoveListener(), this);
+        pm.registerEvents(new PlayerQuitListener(), this);
+        pm.registerEvents(new PlayerChatListener(), this);
+        pm.registerEvents(new PlayerFoodListener(), this);
+        pm.registerEvents(new CustomItemHandler(), this);
+        pm.registerEvents(new CraftingListener(), this);
+        pm.registerEvents(new CommandListener(), this);
+        pm.registerEvents(new AnvilListener(), this);
 
-        Bukkit.getPluginManager().registerEvents(new PoseidonsTrident(), this);
-        Bukkit.getPluginManager().registerEvents(new SoulEaterScythe(), this);
-        Bukkit.getPluginManager().registerEvents(new FireSword(), this);
-        Bukkit.getPluginManager().registerEvents(new NyxBow(), this);
+        pm.registerEvents(new PoseidonsTrident(), this);
+        pm.registerEvents(new SoulEaterScythe(), this);
+        pm.registerEvents(new FireSword(), this);
+        pm.registerEvents(new NyxBow(), this);
 
-        Bukkit.getPluginManager().registerEvents(new ReinforcedPickaxe(), this);
-        Bukkit.getPluginManager().registerEvents(new SuperiorPickaxe(), this);
+        pm.registerEvents(new ReinforcedPickaxe(), this);
+        pm.registerEvents(new SuperiorPickaxe(), this);
 
-        Bukkit.getPluginManager().registerEvents(new AssassinsHelmet(), this);
-        Bukkit.getPluginManager().registerEvents(new AssassinsChestplate(), this);
-        Bukkit.getPluginManager().registerEvents(new AssassinsLeggings(), this);
-        Bukkit.getPluginManager().registerEvents(new AssassinsBoots(), this);
+        pm.registerEvents(new AssassinsHelmet(), this);
+        pm.registerEvents(new AssassinsChestplate(), this);
+        pm.registerEvents(new AssassinsLeggings(), this);
+        pm.registerEvents(new AssassinsBoots(), this);
 
-        Bukkit.getPluginManager().registerEvents(new ScoreboardHandler(), this);
-        Bukkit.getPluginManager().registerEvents(new SpectatorHandler(), this);
-        Bukkit.getPluginManager().registerEvents(new SoulHeartCrystal(), this);
-        Bukkit.getPluginManager().registerEvents(new EventInfoBook(), this);
-
-        Bukkit.getPluginManager().registerEvents(new RecipeGuiCommand(), this);
-
-        getServer().getMessenger().registerOutgoingPluginChannel(this, CH_TICKET);
+        pm.registerEvents(new ScoreboardHandler(), this);
+        pm.registerEvents(new SpectatorHandler(), this);
+        pm.registerEvents(new SoulHeartCrystal(), this);
+        pm.registerEvents(new EventInfoBook(), this);
 
         if (isVoiceChatEnabled()){
             VoiceModPlugin.registerVoiceChatListener(this);
+        }
+    }
+
+    private <T> void registerCommand(String name, T handler) {
+        var cmd = Objects.requireNonNull(getCommand(name), "Missing command: " + name);
+
+        if (handler instanceof CommandExecutor exec) {
+            cmd.setExecutor(exec);
+        }
+        if (handler instanceof TabCompleter tab) {
+            cmd.setTabCompleter(tab);
+        }
+        if (handler instanceof Listener listener) {
+            getServer().getPluginManager().registerEvents(listener, this);
         }
     }
 

@@ -1,7 +1,7 @@
 package de.einfachesache.flareonevents.item.misc;
 
 import de.einfachesache.flareonevents.FlareonEvents;
-import de.einfachesache.flareonevents.item.ItemUtils;
+import de.einfachesache.flareonevents.util.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;

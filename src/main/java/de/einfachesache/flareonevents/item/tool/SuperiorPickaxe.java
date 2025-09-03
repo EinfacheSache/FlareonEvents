@@ -1,9 +1,9 @@
 package de.einfachesache.flareonevents.item.tool;
 
 import de.einfachesache.flareonevents.FlareonEvents;
-import de.einfachesache.flareonevents.WorldUtils;
+import de.einfachesache.flareonevents.util.WorldUtils;
 import de.einfachesache.flareonevents.item.CustomItem;
-import de.einfachesache.flareonevents.item.ItemUtils;
+import de.einfachesache.flareonevents.util.ItemUtils;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;

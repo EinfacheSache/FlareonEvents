@@ -1,6 +1,7 @@
-package de.einfachesache.flareonevents.item;
+package de.einfachesache.flareonevents.util;
 
 import de.einfachesache.flareonevents.FlareonEvents;
+import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
 import net.kyori.adventure.text.Component;

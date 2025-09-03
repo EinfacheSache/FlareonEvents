@@ -1,4 +1,4 @@
-package de.einfachesache.flareonevents;
+package de.einfachesache.flareonevents.event;
 
 public enum EventState {
 

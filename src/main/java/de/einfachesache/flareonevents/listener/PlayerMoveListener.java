@@ -1,7 +1,7 @@
 package de.einfachesache.flareonevents.listener;
 
 import de.einfachesache.flareonevents.Config;
-import de.einfachesache.flareonevents.EventState;
+import de.einfachesache.flareonevents.event.EventState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;

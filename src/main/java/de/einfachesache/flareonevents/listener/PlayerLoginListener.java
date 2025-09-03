@@ -1,7 +1,7 @@
 package de.einfachesache.flareonevents.listener;
 
 import de.einfachesache.flareonevents.Config;
-import de.einfachesache.flareonevents.EventState;
+import de.einfachesache.flareonevents.event.EventState;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

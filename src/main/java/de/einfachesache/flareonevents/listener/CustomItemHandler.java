@@ -1,6 +1,6 @@
 package de.einfachesache.flareonevents.listener;
 
-import de.einfachesache.flareonevents.item.ItemUtils;
+import de.einfachesache.flareonevents.util.ItemUtils;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

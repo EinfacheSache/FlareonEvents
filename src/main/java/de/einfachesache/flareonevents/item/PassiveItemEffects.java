@@ -1,7 +1,8 @@
 package de.einfachesache.flareonevents.item;
 
 import de.einfachesache.flareonevents.FlareonEvents;
-import de.einfachesache.flareonevents.WorldUtils;
+import de.einfachesache.flareonevents.util.ItemUtils;
+import de.einfachesache.flareonevents.util.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;

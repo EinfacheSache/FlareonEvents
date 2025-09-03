@@ -1,7 +1,7 @@
 package de.einfachesache.flareonevents.handler;
 
 import de.einfachesache.flareonevents.Config;
-import de.einfachesache.flareonevents.EventState;
+import de.einfachesache.flareonevents.event.EventState;
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.listener.PlayerDeathListener;
 import net.kyori.adventure.text.Component;

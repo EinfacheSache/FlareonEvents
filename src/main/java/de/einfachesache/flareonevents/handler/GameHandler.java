@@ -1,12 +1,12 @@
 package de.einfachesache.flareonevents.handler;
 
 import de.einfachesache.flareonevents.Config;
-import de.einfachesache.flareonevents.EventState;
 import de.einfachesache.flareonevents.FlareonEvents;
+import de.einfachesache.flareonevents.event.EventSound;
+import de.einfachesache.flareonevents.event.EventState;
 import de.einfachesache.flareonevents.item.misc.EventInfoBook;
 import de.einfachesache.flareonevents.listener.PlayerDeathListener;
 import de.einfachesache.flareonevents.listener.PortalCreateListener;
-import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
@@ -51,18 +51,6 @@ public class GameHandler {
             Duration.ofMillis(3000),  // 60 Ticks = 3 Sekunden (stay)
             Duration.ofMillis(1000)   // 20 Ticks = 1 Sekunde (fadeOut)
     );
-    static final Sound startAndEndSound = Sound.sound(
-            org.bukkit.Sound.ENTITY_ENDER_DRAGON_AMBIENT,  // Sound-Key
-            net.kyori.adventure.sound.Sound.Source.MASTER, // Sound-Quelle
-            1.0f,                                          // Lautstärke
-            1.0f                                           // Tonhöhe
-    );
-    static final Sound notifySound = Sound.sound(
-            org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING,       // Sound-Key
-            Sound.Source.MASTER,                           // Sound-Quelle
-            1.0f,                                          // Lautstärke
-            1.0f                                           // Tonhöhe
-    );
 
     public static void prepareEvent(boolean forceStart) {
 
@@ -93,7 +81,7 @@ public class GameHandler {
                     Component.text("BEREIT?", NamedTextColor.GREEN),
                     Component.text("Das Event startet in " + minStartTime + " " + minuteWord(minStartTime) + "!", NamedTextColor.YELLOW),
                     times));
-            player.playSound(notifySound);
+            player.playSound(EventSound.NOTIFY.adventure());
 
             if(player.getGameMode() == GameMode.SPECTATOR) {
                 SpectatorHandler.stopSpectating(player);
@@ -138,7 +126,7 @@ public class GameHandler {
                                         Component.text("ACHTUNG!", NamedTextColor.GREEN),
                                         Component.text("Event Start in Kürze!", NamedTextColor.YELLOW),
                                         times));
-                                player.playSound(notifySound);
+                                player.playSound(EventSound.NOTIFY.adventure());
 
                             } else {
                                 player.kick(Component.text("§4❌ Kein Spawnpunkt mehr verfügbar. \n ❌ Du bist leider nicht dabei"));
@@ -188,7 +176,7 @@ public class GameHandler {
             player.showTitle(Title.title(
                     Component.text("STOP!", NamedTextColor.RED),
                     Component.text("Das Event wurde gestoppt!", NamedTextColor.YELLOW), times));
-            player.playSound(notifySound);
+            player.playSound(EventSound.NOTIFY.adventure());
             player.teleportAsync(Config.getMainSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
 
@@ -207,7 +195,7 @@ public class GameHandler {
                 player.showTitle(Title.title(
                         Component.text("Pause!", NamedTextColor.YELLOW),
                         Component.text("Das Event wurde pausiert!", NamedTextColor.YELLOW), times));
-                player.playSound(notifySound);
+                player.playSound(EventSound.NOTIFY.adventure());
 
                 if (!player.isOp()) {
                     Objects.requireNonNull(player.getAttribute(Attribute.JUMP_STRENGTH)).setBaseValue(0);
@@ -232,7 +220,7 @@ public class GameHandler {
             player.showTitle(Title.title(
                     Component.text("Event Beendet!", NamedTextColor.RED),
                     Component.text( winner + " hat gewonnen!", NamedTextColor.GOLD), times));
-            player.playSound(startAndEndSound);
+            player.playSound(EventSound.START_END.adventure());
         });
         plugin.getServer().broadcast(Component.text("Das Event ist beendet. Vielen Dank für eure Teilnahme!", NamedTextColor.GOLD));
     }
@@ -290,7 +278,7 @@ public class GameHandler {
                                 .formatted(Config.getMaxTeamSize(), noPvPTimeMin, minuteWord(noPvPTimeMin), netherOpenTimeMin, minuteWord(netherOpenTimeMin))
                         ));
 
-                        player.playSound(startAndEndSound);
+                        player.playSound(EventSound.START_END.adventure());
                     });
 
                     this.cancel();
@@ -307,7 +295,7 @@ public class GameHandler {
                                 Component.text(secondsLeft <= 60 ? String.format("§eNoch §a%d §e%s", secondsLeft, secondWord(secondsLeft)) : String.format("§eNoch §a%d §e%s", minutes, minuteWord(minutes)), NamedTextColor.RED),
                                 Component.text(secondsLeft == 120 ? "Mache dich bereit!" : "", NamedTextColor.YELLOW),
                                 times));
-                        player.playSound(notifySound);
+                        player.playSound(EventSound.NOTIFY.adventure());
                     }
 
                     player.sendActionBar(Component.text(timeFormatted));
@@ -336,7 +324,7 @@ public class GameHandler {
                                 Component.text("ACHTUNG", NamedTextColor.RED),
                                 Component.text("PVP ist ab jetzt möglich", NamedTextColor.YELLOW),
                                 times));
-                        player.playSound(notifySound);
+                        player.playSound(EventSound.NOTIFY.adventure());
                     });
 
                     this.cancel();
@@ -368,7 +356,7 @@ public class GameHandler {
 
                     plugin.getServer().getOnlinePlayers().forEach(player -> {
                         player.sendActionBar(Component.text("Nether ist nun geöffnet", NamedTextColor.DARK_RED));
-                        player.playSound(notifySound);
+                        player.playSound(EventSound.NOTIFY.adventure());
                     });
 
                     this.cancel();
@@ -452,7 +440,7 @@ public class GameHandler {
 
         plugin.getServer().getOnlinePlayers().forEach(player -> {
             player.showTitle(title);
-            player.playSound(notifySound);
+            player.playSound(EventSound.NOTIFY.adventure());
             player.sendMessage(Component.text("Pass auf! Die Border hat sich in Bewegung gesetzt. Das Gebiet wird nun auf " + size + "x" + size + " Blöcke begrenzt!", NamedTextColor.YELLOW));
         });
 

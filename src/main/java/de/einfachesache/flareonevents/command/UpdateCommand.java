@@ -4,7 +4,7 @@ import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.ItemRecipe;
-import de.einfachesache.flareonevents.item.ItemUtils;
+import de.einfachesache.flareonevents.util.ItemUtils;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

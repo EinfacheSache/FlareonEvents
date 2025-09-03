@@ -1,7 +1,7 @@
 package de.einfachesache.flareonevents.listener;
 
 import de.einfachesache.flareonevents.item.CustomItem;
-import de.einfachesache.flareonevents.item.ItemUtils;
+import de.einfachesache.flareonevents.util.ItemUtils;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.FireSword;
 import de.einfachesache.flareonevents.item.weapon.NyxBow;

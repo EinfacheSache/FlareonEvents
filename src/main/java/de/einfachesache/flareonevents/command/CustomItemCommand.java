@@ -1,7 +1,7 @@
 package de.einfachesache.flareonevents.command;
 
 import de.einfachesache.flareonevents.item.CustomItem;
-import de.einfachesache.flareonevents.item.ItemUtils;
+import de.einfachesache.flareonevents.util.ItemUtils;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
