@@ -1,16 +1,18 @@
 package de.einfachesache.flareonevents.command;
 
 import de.einfachesache.flareonevents.item.CustomItem;
-import de.einfachesache.flareonevents.util.ItemUtils;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
+import de.einfachesache.flareonevents.util.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -111,7 +113,7 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
     private void giveAllArmor(Player player) {
         Arrays.stream(CustomItem.values()).filter(customItem ->
                 customItem.getCustomItemType().equals(CustomItem.CustomItemType.ARMOR)).forEach(armor ->
-                giveItem(player, armor.getItem()));
+                equipOrAdd(player, armor.getItem()));
     }
 
     private void giveAllIngredients(Player player) {
@@ -121,11 +123,41 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
     }
 
     private void giveAllItems(Player player) {
-
         giveAllGear(player);
         giveAllArmor(player);
-        giveAllIngredients(player);
-
         giveItem(player, SoulHeartCrystal.create());
+        giveAllIngredients(player);
+    }
+
+    public static void equipOrAdd(Player player, ItemStack item) {
+        if (player == null || item == null || item.getType() == Material.AIR) return;
+
+        PlayerInventory inv = player.getInventory();
+        String name = item.getType().name();
+        String suffix = name.contains("_") ? name.substring(name.lastIndexOf('_') + 1) : name;
+
+        switch (suffix) {
+            case "HELMET" -> {
+                ItemStack cur = inv.getHelmet();
+                if (cur == null || cur.getType() == Material.AIR) inv.setHelmet(item);
+                else inv.addItem(item);
+            }
+            case "CHESTPLATE" -> {
+                ItemStack cur = inv.getChestplate();
+                if (cur == null || cur.getType() == Material.AIR) inv.setChestplate(item);
+                else inv.addItem(item);
+            }
+            case "LEGGINGS" -> {
+                ItemStack cur = inv.getLeggings();
+                if (cur == null || cur.getType() == Material.AIR) inv.setLeggings(item);
+                else inv.addItem(item);
+            }
+            case "BOOTS" -> {
+                ItemStack cur = inv.getBoots();
+                if (cur == null || cur.getType() == Material.AIR) inv.setBoots(item);
+                else inv.addItem(item);
+            }
+            default -> inv.addItem(item);
+        }
     }
 }

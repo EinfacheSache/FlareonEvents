@@ -2,7 +2,7 @@ package de.einfachesache.flareonevents.item.weapon;
 
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.item.CustomItem;
-import de.einfachesache.flareonevents.item.ingredient.IceTear;
+import de.einfachesache.flareonevents.item.ingredient.IceCrystal;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonevents.util.ItemUtils;
 import net.kyori.adventure.text.Component;
@@ -74,7 +74,7 @@ public class NyxBow implements Listener {
         recipe.setIngredient('E', Material.ENDER_EYE);
         recipe.setIngredient('B', Material.BOW);
         recipe.setIngredient('H', SoulHeartCrystal.create());
-        recipe.setIngredient('I', IceTear.ITEM);
+        recipe.setIngredient('I', IceCrystal.ITEM);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 

@@ -3,7 +3,7 @@ package de.einfachesache.flareonevents.item.weapon;
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.util.ItemUtils;
-import de.einfachesache.flareonevents.item.ingredient.SpearCrystal;
+import de.einfachesache.flareonevents.item.ingredient.SpearHead;
 import de.einfachesache.flareonevents.item.ingredient.SpearStick;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -51,7 +51,7 @@ public class PoseidonsTrident implements Listener {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, create());
         recipe.shape(" AC", " SA", "S  ");
         recipe.setIngredient('A', Material.DIAMOND_BLOCK);
-        recipe.setIngredient('C', SpearCrystal.ITEM);
+        recipe.setIngredient('C', SpearHead.ITEM);
         recipe.setIngredient('S', SpearStick.ITEM);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);

@@ -39,9 +39,9 @@ public enum CustomItem {
     ASSASSINS_LEGGINGS(AssassinsLeggings.DISPLAY_NAME, AssassinsLeggings.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsLeggings.getShapedRecipe(), AssassinsLeggings::create),
     ASSASSINS_BOOTS(AssassinsBoots.DISPLAY_NAME, AssassinsBoots.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsBoots.getShapedRecipe(), AssassinsBoots::create),
 
-    ICE_TEAR(IceTear.DISPLAY_NAME, IceTear.NAMESPACED_KEY, CustomItemType.INGREDIENT, IceTear.getShapedRecipe(), IceTear.ITEM::clone),
+    ICE_CRYSTAL(IceCrystal.DISPLAY_NAME, IceCrystal.NAMESPACED_KEY, CustomItemType.INGREDIENT, IceCrystal.getShapedRecipe(), IceCrystal.ITEM::clone),
     BLOOD_SHARD(BloodShard.DISPLAY_NAME, BloodShard.NAMESPACED_KEY, CustomItemType.INGREDIENT, BloodShard.getShapedRecipe(), BloodShard.ITEM::clone),
-    SPEAR_CRYSTAL(SpearCrystal.DISPLAY_NAME, SpearCrystal.NAMESPACED_KEY, CustomItemType.INGREDIENT, SpearCrystal.getShapedRecipe(), SpearCrystal.ITEM::clone),
+    SPEAR_HEAD(SpearHead.DISPLAY_NAME, SpearHead.NAMESPACED_KEY, CustomItemType.INGREDIENT, SpearHead.getShapedRecipe(), SpearHead.ITEM::clone),
     SPEAR_STICK(SpearStick.DISPLAY_NAME, SpearStick.NAMESPACED_KEY, CustomItemType.INGREDIENT, SpearStick.getShapedRecipe(), SpearStick.ITEM::clone),
     DEMON_SOUL(DemonSoul.DISPLAY_NAME, DemonSoul.NAMESPACED_KEY, CustomItemType.INGREDIENT, DemonSoul.getShapedRecipe(), DemonSoul.ITEM::clone),
     REINFORCED_STICK(ReinforcedStick.DISPLAY_NAME, ReinforcedStick.NAMESPACED_KEY, CustomItemType.INGREDIENT, ReinforcedStick.getShapedRecipe(), ReinforcedStick.ITEM::clone),
