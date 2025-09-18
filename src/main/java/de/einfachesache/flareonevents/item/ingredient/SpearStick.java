@@ -5,6 +5,7 @@ import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonevents.util.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,6 +31,7 @@ public class SpearStick {
 
     private static ItemStack create() {
         ItemStack itemStack = ItemUtils.createCustomItem(Material.LIGHTNING_ROD, DISPLAY_NAME, NAMESPACED_KEY);
+        itemStack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setCustomModelData(69);
         itemStack.setItemMeta(meta);
