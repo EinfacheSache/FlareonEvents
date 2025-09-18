@@ -12,6 +12,7 @@ pages:
 
     §cDie Zone §7startet bei §63000x3000§7
     → §cBewegt§7 sich schrittweise zu §65 | 5§7
+
   2: |-
     §4§lRegeln§7
 
@@ -25,7 +26,21 @@ pages:
     §cMax Teamgröße§7 ist §c3§7
 
     §cTrapping§7 ist §6erlaubt§7
+
   3: |-
+    §4§lCommands§7
+
+    §7- /help
+    
+    §7- /recipe
+    
+    §7- /team <Args>
+    
+    §7- /msg <Spieler> <Nachricht>
+    
+    §7- /bugreport <Type> <Kurze Beschreibung>
+
+  4: |-
     §6Custom Items §7Liste
 
     §7- §4Blutmond
@@ -40,7 +55,7 @@ pages:
     
     §7- Ingridients
 
-  4: |-
+  5: |-
     §6Custom Items §7Info
 
     §71. Alle §6Custom Items §7sind Unzerstörbar.
@@ -49,7 +64,7 @@ pages:
 
     §73. Änderungen bleiben vorbehalten.
 
-  5: |-
+  6: |-
     §6Custom Items §7Weapons
 
     §74. Jede §6Custom Weapon §7kann nur einmal gecraftet werden.
@@ -58,7 +73,7 @@ pages:
 
     §76. Jede §6Custom Weapon §7besitzt besondere Fähigkeiten.
 
-  6: |-
+  7: |-
     §6Custom Items §7Extras
 
     §77. Alle §6Ingredients §7können beliebig oft gecraftet werden.
@@ -67,7 +82,7 @@ pages:
 
     §79. Jedes §6Rüstungsteil §7kann nur einmal gecraftet werden.
 
-  7: |-
+  8: |-
     §cGebannte Items§7:
     - Mace
     - Potion
