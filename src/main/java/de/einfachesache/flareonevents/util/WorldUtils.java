@@ -68,6 +68,7 @@ public class WorldUtils {
                  DIRT,
                  DIRT_PATH,
                  COARSE_DIRT,
+                 PODZOL,
                  PACKED_MUD,
                  ANDESITE,
                  POLISHED_ANDESITE,
