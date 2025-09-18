@@ -66,7 +66,9 @@ public class WorldUtils {
             // Stone, dirt and variants
             case STONE,
                  DIRT,
+                 DIRT_PATH,
                  COARSE_DIRT,
+                 PACKED_MUD,
                  ANDESITE,
                  POLISHED_ANDESITE,
                  DIORITE,
