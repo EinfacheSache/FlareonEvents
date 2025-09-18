@@ -4,7 +4,7 @@ pages:
 
     §cSpawn§7 bei §60 | 0§7
 
-    §cPvP §7nach §62m§7
+    §cPvP §7nach §65m§7
 
     §cNether §7nach §61h§7
 
@@ -22,27 +22,55 @@ pages:
     §cNur Voicechat§7 erlaubt
     → externe Kommunikation ist §cverboten§7
 
-    §cMax Teamgröße§7 ist §c5§7
+    §cMax Teamgröße§7 ist §c3§7
 
     §cTrapping§7 ist §6erlaubt§7
   3: |-
-    §6Custom Items §7Part-1
+    §6Custom Items §7Liste
 
-    §7- FireSword
-    §7- PoseidonsTrident
-    §7- NyxBow
-    §7- ReinforcedPickaxe
+    §7- §4Blutmond
+    §7- §bEiswind
+    §7- §5Seelenschnitter
+    §7- §1Himmelsspieß
+    
+    §7- §6Reinforced Pickaxe
+    §7- §6Superior Pickaxe
+    
+    §7- §5Soul Heart Crystal
+    
+    §7- Ingridients
+
   4: |-
-    §6Custom Items §7Part-2
+    §6Custom Items §7Info
 
-    §71. Jedes §6Custom Item §7kann nur einmal gecraftet werden.
+    §71. Alle §6Custom Items §7sind Unzerstörbar.
 
-    §72. Jeder Spieler kann nur ein §6Custom Weapon   §7craften.
+    §72. Crafting-Rezepte können seltene Zutaten verlangen.
 
-    §73. Alle §6Custom Items §7sind Unzerstörbar.
+    §73. Änderungen bleiben vorbehalten.
+
   5: |-
+    §6Custom Items §7Weapons
+
+    §74. Jede §6Custom Weapon §7kann nur einmal gecraftet werden.
+
+    §75. Jeder Spieler kann nur ein §6Custom Weapon §7craften.
+
+    §76. Jede §6Custom Weapon §7besitzt besondere Fähigkeiten.
+
+  6: |-
+    §6Custom Items §7Extras
+
+    §77. Alle §6Ingredients §7können beliebig oft gecraftet werden.
+
+    §78. §6Soul Heart Crystals §7werden beim killen von Spielern erlangt.
+
+    §79. Jedes §6Rüstungsteil §7kann nur einmal gecraftet werden.
+
+  7: |-
     §cGebannte Items§7:
     - Mace
+    - Potion
 
     §cGebannte Funktionen§7:
     - TNT-Bed im Nether
