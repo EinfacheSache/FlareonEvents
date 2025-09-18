@@ -44,11 +44,11 @@ public class SoulEaterScythe implements Listener {
     }
 
     private static final List<Perk> SOUL_EATER_PERKS = List.of(
-            new Perk("DAMAGE", 1, "Schade +1"),
-            new Perk("REGEN", 3, "Regeneration I"),
-            new Perk("STRENGTH", 5, "Stärke I"),
-            new Perk("SPEED", 7, "Tempo I"),
-            new Perk("LIFESTEAL", 10, "Lebensraub")
+            new Perk("DAMAGE",   1,  "Schaden +1"),
+            new Perk("REGEN",    3,  "Regeneration II (3 s) nach Kill"),
+            new Perk("WITHER",   5,  "15 %: Wither (3 s) bei Treffer"),
+            new Perk("SLOWNESS", 7,  "15 %: Slowness (3 s) bei Treffer"),
+            new Perk("LIFESTEAL",10, "20 %: +1❤ bei Treffer")
     );
 
     public static ShapedRecipe getShapedRecipe() {
