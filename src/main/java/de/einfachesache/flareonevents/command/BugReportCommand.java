@@ -40,7 +40,7 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length <= 1) {
-            player.sendMessage("§7Nutzung: §e/" + alias + " <type> <kurze Beschreibung>");
+            player.sendMessage("§7Nutzung: §e/" + alias + " <Type> <Kurze Beschreibung>");
             return true;
         }
 
