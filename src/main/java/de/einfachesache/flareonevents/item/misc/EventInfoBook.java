@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+@SuppressWarnings("deprecation")
 public class EventInfoBook implements Listener {
 
     public static final String DISPLAY_NAME = "§6100-Spieler-Event Info";
@@ -24,6 +25,7 @@ public class EventInfoBook implements Listener {
         ItemStack book = ItemUtils.createCustomItem(Material.WRITTEN_BOOK, DISPLAY_NAME, NAMESPACED_KEY);
         BookMeta meta = (BookMeta) book.getItemMeta();
         meta.setAuthor("§eFlareonDev-Team");
+        meta.setCustomModelData(69);
 
         book.setItemMeta((ItemMeta) meta.pages(Config.getInfoBookSorted().values().stream().toList()));
 
