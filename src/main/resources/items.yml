@@ -63,7 +63,7 @@ items:
     # Attribute-Modifikatoren
     attributes:
       - attribute: attack_damage
-        amount: 10
+        amount: 9
         operation: ADD_NUMBER
         slot: HAND
       - attribute: attack_speed
