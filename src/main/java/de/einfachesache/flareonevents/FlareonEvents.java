@@ -6,6 +6,7 @@ import de.einfachesache.api.util.FileUtils;
 import de.einfachesache.flareonevents.command.*;
 import de.einfachesache.flareonevents.handler.ScoreboardHandler;
 import de.einfachesache.flareonevents.handler.SpectatorHandler;
+import de.einfachesache.flareonevents.handler.TexturepackHandler;
 import de.einfachesache.flareonevents.item.ItemRecipe;
 import de.einfachesache.flareonevents.item.PassiveItemEffects;
 import de.einfachesache.flareonevents.item.armor.assassins.AssassinsBoots;
@@ -65,6 +66,7 @@ public final class FlareonEvents extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        TexturepackHandler.init();
         registerPluginChannels();
         initializeFiles();
 

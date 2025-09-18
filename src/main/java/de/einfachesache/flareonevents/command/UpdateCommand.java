@@ -2,6 +2,7 @@ package de.einfachesache.flareonevents.command;
 
 import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.FlareonEvents;
+import de.einfachesache.flareonevents.handler.TexturepackHandler;
 import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.ItemRecipe;
 import de.einfachesache.flareonevents.util.ItemUtils;
@@ -18,15 +19,24 @@ public class UpdateCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String alias, @NotNull String @NotNull [] args) {
 
-        if (args.length == 1 && args[0].equalsIgnoreCase("book")) {
+        if (args.length == 1) {
+            if(args[0].equalsIgnoreCase("book")){
+                Config.reloadBook();
 
-            Config.reloadBook();
+                ItemUtils.updateInventorys(CustomItem.EVENT_INFO_BOOK);
 
-            ItemUtils.updateInventorys(CustomItem.EVENT_INFO_BOOK);
+                sender.sendMessage("§aDas Event-Buch wurden aktualisiert!");
 
-            sender.sendMessage("§aDas Event-Buch wurden aktualisiert!");
+                return true;
+            }
 
-            return true;
+            if(args[0].equalsIgnoreCase("texturepack")){
+                TexturepackHandler.reloadAndPushAsync();
+
+                sender.sendMessage("§aDas Texturepack wurden aktualisiert!");
+
+                return true;
+            }
         }
 
 
@@ -51,6 +61,10 @@ public class UpdateCommand implements CommandExecutor, TabCompleter {
 
             if ("book".startsWith(input)) {
                 completions.add("book");
+            }
+
+            if ("texturepack".startsWith(input)) {
+                completions.add("texturepack");
             }
 
             return completions;
