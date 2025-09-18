@@ -18,8 +18,9 @@ public class DemonSoul {
 
     public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, ITEM);
-        recipe.shape("AAA", "ABA", "AAA");
-        recipe.setIngredient('A', Material.REDSTONE_BLOCK);
+        recipe.shape("AGA", "ABA", "AAA");
+        recipe.setIngredient('A', Material.DIAMOND);
+        recipe.setIngredient('G', Material.GHAST_TEAR);
         recipe.setIngredient('B', Material.NETHERITE_SCRAP);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);

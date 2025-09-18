@@ -1,6 +1,7 @@
 package de.einfachesache.flareonevents.item.ingredient;
 
 import de.einfachesache.flareonevents.FlareonEvents;
+import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonevents.util.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -18,10 +19,9 @@ public class SpearStick {
 
     public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, ITEM);
-        recipe.shape("ABA", "C C", "ABA");
-        recipe.setIngredient('A', Material.PRISMARINE_CRYSTALS);
-        recipe.setIngredient('B', Material.NETHERITE_SCRAP);
-        recipe.setIngredient('C', Material.PRISMARINE_SHARD);
+        recipe.shape(" I ", " H ", " I ");
+        recipe.setIngredient('H', SoulHeartCrystal.create());
+        recipe.setIngredient('I', Material.IRON_BLOCK);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 

@@ -18,9 +18,9 @@ public class IceCrystal {
 
     public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, ITEM);
-        recipe.shape("AAA", "BAB", "AAA");
-        recipe.setIngredient('A', Material.GOLD_INGOT);
-        recipe.setIngredient('B', Material.NETHERITE_SCRAP);
+        recipe.shape("SSS", "SDS", "SSS");
+        recipe.setIngredient('S', Material.SNOW_BLOCK);
+        recipe.setIngredient('D', Material.DIAMOND_BLOCK);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 

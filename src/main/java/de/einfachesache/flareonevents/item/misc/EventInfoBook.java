@@ -17,7 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 @SuppressWarnings("deprecation")
 public class EventInfoBook implements Listener {
 
-    public static final String DISPLAY_NAME = "§6100-Spieler-Event Info";
+    public static final String DISPLAY_NAME = "§6Event Information";
     public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "event_info_book");
 
     public static ItemStack create() {

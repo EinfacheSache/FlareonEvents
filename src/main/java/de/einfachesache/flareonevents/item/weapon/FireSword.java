@@ -54,7 +54,7 @@ public class FireSword implements Listener {
 
     public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, create());
-        recipe.shape(" Z ", " D ", "HBH");
+        recipe.shape(" D ", "ZDZ", "HBH");
         recipe.setIngredient('Z', BloodShard.ITEM);
         recipe.setIngredient('D', Material.DIAMOND_BLOCK);
         recipe.setIngredient('H', SoulHeartCrystal.create());

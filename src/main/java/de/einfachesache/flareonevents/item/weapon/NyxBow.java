@@ -68,10 +68,9 @@ public class NyxBow implements Listener {
 
     public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, create());
-        recipe.shape("SWS", "EBE", "HIH");
+        recipe.shape(" E ", "SBS", "HIH");
+        recipe.setIngredient('E', Material.ENDER_PEARL);
         recipe.setIngredient('S', Material.SUGAR);
-        recipe.setIngredient('W', Material.WITHER_SKELETON_SKULL);
-        recipe.setIngredient('E', Material.ENDER_EYE);
         recipe.setIngredient('B', Material.BOW);
         recipe.setIngredient('H', SoulHeartCrystal.create());
         recipe.setIngredient('I', IceCrystal.ITEM);

@@ -56,8 +56,8 @@ public class SoulEaterScythe implements Listener {
         recipe.shape(" S ", "HPH", "DBD");
         recipe.setIngredient('S', DemonSoul.ITEM);
         recipe.setIngredient('H', SoulHeartCrystal.create());
-        recipe.setIngredient('P', MATERIAL);
-        recipe.setIngredient('D', Material.DIAMOND_BLOCK);
+        recipe.setIngredient('P', Material.DIAMOND_AXE);
+        recipe.setIngredient('D', Material.COAL_BLOCK);
         recipe.setIngredient('B', Material.BLAZE_ROD);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);

@@ -50,7 +50,7 @@ public class PoseidonsTrident implements Listener {
     public static ShapedRecipe getShapedRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, create());
         recipe.shape(" AC", " SA", "S  ");
-        recipe.setIngredient('A', Material.DIAMOND_BLOCK);
+        recipe.setIngredient('A', Material.DIAMOND);
         recipe.setIngredient('C', SpearHead.ITEM);
         recipe.setIngredient('S', SpearStick.ITEM);
 
