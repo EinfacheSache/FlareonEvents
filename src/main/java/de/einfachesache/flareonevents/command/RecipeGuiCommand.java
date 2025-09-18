@@ -90,8 +90,8 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
                 .toList();
 
         int itemCount = items.size();
-        int totalSlots = ((itemCount * 2 + 1 + 8) / 9) * 9; // +1 für Zurück, auf nächste 9 aufrunden
-        totalSlots = Math.max(9 * (type.equals(CustomItem.CustomItemType.INGREDIENT) ? 5 : 3), Math.min(totalSlots, 9 * 6)); // mindestens 3 Reihen, max 6
+        int totalSlots = ((itemCount * 2 + 1 + 8) / 9) * 9;
+        totalSlots = Math.max(9 * (type.equals(CustomItem.CustomItemType.INGREDIENT) ? 5 : 3), Math.min(totalSlots, 9 * 6));
 
         Inventory gui = Bukkit.createInventory(new GUIHolder(previusInventory), totalSlots, Component.text("Rezepte: " + type.getDisplayName(), NamedTextColor.GOLD).decorate(TextDecoration.BOLD, TextDecoration.ITALIC));
 
@@ -120,50 +120,73 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         player.openInventory(gui);
     }
 
-    private void showRecipeGUI(Player player, ShapedRecipe recipe, Component title, Inventory previusInventory) {
-
-        Inventory inv = Bukkit.createInventory(new GUIHolder(previusInventory), 27, Component.text("Rezept: ", NamedTextColor.GOLD).decorate(TextDecoration.ITALIC, TextDecoration.BOLD).append(title).decoration(TextDecoration.BOLD, false));
-        String[] shape = recipe.getShape();
-        Map<Character, RecipeChoice> keyMap = recipe.getChoiceMap();
-        Set<Integer> centerSlots = Set.of(
-                3, 4, 5,
-                12, 13, 14,
-                21, 22, 23
+    private void showRecipeGUI(Player player, ShapedRecipe recipe, Component title, Inventory previousInventory) {
+        Inventory inv = Bukkit.createInventory(
+                new GUIHolder(previousInventory),
+                27,
+                Component.text("Rezept: ", NamedTextColor.GOLD)
+                        .decorate(TextDecoration.ITALIC, TextDecoration.BOLD)
+                        .append(title)
+                        .decoration(TextDecoration.BOLD, false)
         );
 
-        for (int row = 0; row < shape.length; row++) {
-            String line = shape[row];
-            for (int col = 0; col < line.length(); col++) {
-                char c = line.charAt(col);
-                if (c == ' ') continue;
+        Set<Integer> centerSlots = Set.of(3, 4, 5, 12, 13, 14, 21, 22, 23);
+        String[] shape = recipe.getShape();
+        Map<Character, RecipeChoice> keyMap = recipe.getChoiceMap();
 
-                RecipeChoice choice = keyMap.get(c);
-                ItemStack guiItem;
-                if (choice instanceof RecipeChoice.MaterialChoice mc) {
-                    guiItem = new ItemStack(mc.getChoices().getFirst());
-                } else if (choice instanceof RecipeChoice.ExactChoice ec) {
-                    guiItem = ec.getChoices().getFirst();
-                } else {
-                    continue;
-                }
-
-                int slot = row * 9 + col + 3;
-                inv.setItem(slot, guiItem);
+        int minCol = 3, maxCol = -1, patternHeight = 0;
+        for (String line : shape) {
+            if (line == null) continue;
+            int len = line.length(), first = -1, last = -1;
+            for (int i = 0; i < len; i++) if (line.charAt(i) != ' ') { first = i; break; }
+            for (int i = len - 1; i >= 0; i--) if (line.charAt(i) != ' ') { last = i; break; }
+            if (first != -1) {
+                minCol = Math.min(minCol, first);
+                maxCol = Math.max(maxCol, last);
+                patternHeight++;
             }
         }
 
-        // Glas-Pane als Filler
+        int patternWidth = (maxCol >= 0) ? (maxCol - minCol + 1) : 0;
+        int topPad = Math.max(0, (3 - patternHeight) / 2);
+        int leftPad = Math.max(0, (3 - patternWidth) / 2);
+
+        int dstRow = 0;
+        for (String srcLine : shape) {
+            String line = srcLine == null ? "" : srcLine;
+            boolean rowHasContent = false;
+
+            for (int srcCol = minCol; srcCol <= maxCol; srcCol++) {
+                char c = (srcCol < line.length()) ? line.charAt(srcCol) : ' ';
+                if (c == ' ') continue;
+
+                RecipeChoice choice = keyMap.get(c);
+                if (choice == null) continue;
+
+                ItemStack guiItem = null;
+                if (choice instanceof RecipeChoice.MaterialChoice mc && !mc.getChoices().isEmpty()) {
+                    guiItem = new ItemStack(mc.getChoices().getFirst());
+                } else if (choice instanceof RecipeChoice.ExactChoice ec && !ec.getChoices().isEmpty()) {
+                    guiItem = ec.getChoices().getFirst().clone();
+                }
+                if (guiItem == null) continue;
+
+                rowHasContent = true;
+                int dstCol = (srcCol - minCol) + leftPad;
+                int slot = (topPad + dstRow) * 9 + (dstCol + 3);
+                inv.setItem(slot, guiItem);
+            }
+            if (rowHasContent) dstRow++;
+        }
+
         ItemStack filler = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta fm = filler.getItemMeta();
         fm.displayName(Component.text(" "));
         filler.setItemMeta(fm);
 
-        int size = inv.getSize();
-        for (int i = 0; i < size; i++) {
-            if (centerSlots.contains(i) || i == size - 1) continue;
-            if (inv.getItem(i) == null) {
-                inv.setItem(i, filler);
-            }
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (centerSlots.contains(i) || i == inv.getSize() - 1) continue;
+            if (inv.getItem(i) == null) inv.setItem(i, filler);
         }
 
         inv.setItem(inv.getSize() - 1, ItemUtils.createGuiBackButton());
