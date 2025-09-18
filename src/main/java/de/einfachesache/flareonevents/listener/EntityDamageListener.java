@@ -21,7 +21,10 @@ public class EntityDamageListener implements Listener {
 
         Entity damager = event.getDamager();
 
-        if (damager instanceof LightningStrike && (event.getEntity() instanceof Item || damager.getPersistentDataContainer().has(namespacedKey) || damager.getPersistentDataContainer().has(new NamespacedKey(FlareonEvents.getPlugin(), "trident_lightning_" + event.getEntity().getName().toLowerCase().replace(" ", "")), PersistentDataType.BYTE))) {
+        if (damager instanceof LightningStrike &&
+                (event.getEntity() instanceof Item
+                        || damager.getPersistentDataContainer().has(namespacedKey)
+                        || damager.getPersistentDataContainer().has(new NamespacedKey(FlareonEvents.getPlugin(), "lightning_trident_" + event.getEntity().getName().toLowerCase().replaceAll("[^a-z0-9_.\\-/]", "")), PersistentDataType.BYTE))) {
             event.setCancelled(true);
         }
 

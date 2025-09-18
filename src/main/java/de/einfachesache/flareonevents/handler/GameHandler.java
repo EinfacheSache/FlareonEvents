@@ -178,7 +178,7 @@ public class GameHandler {
                     Component.text("Das Event wurde gestoppt!", NamedTextColor.YELLOW), times));
             player.playSound(EventSound.NOTIFY.adventure());
             player.teleportAsync(Config.getMainSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-            player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
+            player.getInventory().setItem(8, EventInfoBook.create());
 
         });
         plugin.getServer().broadcast(Component.text("Das Event wurde kurzzeitig gestoppt. Das Event startet in Kürze erneut!", NamedTextColor.RED));

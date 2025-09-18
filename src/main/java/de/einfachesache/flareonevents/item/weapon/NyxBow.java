@@ -2,9 +2,9 @@ package de.einfachesache.flareonevents.item.weapon;
 
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.item.CustomItem;
-import de.einfachesache.flareonevents.util.ItemUtils;
-import de.einfachesache.flareonevents.item.ingredient.MagmaShard;
+import de.einfachesache.flareonevents.item.ingredient.IceTear;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
+import de.einfachesache.flareonevents.util.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -18,11 +18,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -57,27 +60,28 @@ public class NyxBow implements Listener {
     public static Map<Enchantment, Integer> ENCHANTMENTS;
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS;
 
+    private final Set<UUID> noFallNextLanding = ConcurrentHashMap.newKeySet();
     private static final Map<UUID, Long> dashCooldownMap = new HashMap<>();
     private static final Map<UUID, Long> shootCooldownMap = new HashMap<>();
     private static final Map<UUID, Long> preparedCooldownMap = new HashMap<>();
     private static final Map<UUID, BukkitTask> freezeTimers = new ConcurrentHashMap<>();
 
     public static ShapedRecipe getShapedRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createNyxBow());
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, create());
         recipe.shape("SWS", "EBE", "HIH");
         recipe.setIngredient('S', Material.SUGAR);
         recipe.setIngredient('W', Material.WITHER_SKELETON_SKULL);
         recipe.setIngredient('E', Material.ENDER_EYE);
         recipe.setIngredient('B', Material.BOW);
-        recipe.setIngredient('H', SoulHeartCrystal.createSoulHeartCrystal());
-        recipe.setIngredient('I', MagmaShard.ITEM);
+        recipe.setIngredient('H', SoulHeartCrystal.create());
+        recipe.setIngredient('I', IceTear.ITEM);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 
         return recipe;
     }
 
-    public static ItemStack createNyxBow() {
+    public static ItemStack create() {
         ItemStack item = ItemUtils.createCustomItem(MATERIAL, DISPLAY_NAME, NAMESPACED_KEY);
         ItemMeta meta = item.getItemMeta();
 
@@ -98,7 +102,7 @@ public class NyxBow implements Listener {
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7§oBesonderheit: §bSpeed I§7 in Hand"));
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7Left-Click: §eDash nach vorne"));
+        lore.add(serializer.deserialize("§7Left-Click: §eDash nach vorne §8(ohne Fallschaden)"));
         lore.add(serializer.deserialize("§7Cooldown: §e" + DASH_COOLDOWN + "s"));
         lore.add(serializer.deserialize("§f"));
 
@@ -118,6 +122,17 @@ public class NyxBow implements Listener {
 
         return item;
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onFallDamage(EntityDamageEvent e) {
+        if (e.getCause() != EntityDamageEvent.DamageCause.FALL) return;
+        if (!(e.getEntity() instanceof Player p)) return;
+
+        if (noFallNextLanding.remove(p.getUniqueId())) {
+            e.setCancelled(true);
+        }
+    }
+
 
     @EventHandler
     public void onShoot(EntityShootBowEvent event) {
@@ -140,14 +155,15 @@ public class NyxBow implements Listener {
     }
 
     @EventHandler
-    public void onLeftClick(PlayerInteractEvent event) {
+    public void onDash(PlayerInteractEvent event) {
         if (!ItemUtils.isCustomItem(event.getItem(), CustomItem.NYX_BOW)) return;
         if (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK) return;
+        if (event.getPlayer().getOpenInventory().getTopInventory().getType() != InventoryType.CRAFTING) return;
 
         Player player = event.getPlayer();
 
         long now = System.currentTimeMillis();
-        int cooldown = (player.getGameMode() == GameMode.CREATIVE ||  player.getGameMode() == GameMode.SPECTATOR) ? 0 : DASH_COOLDOWN;
+        int cooldown = (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) ? 0 : DASH_COOLDOWN;
         long lastUse = dashCooldownMap.getOrDefault(player.getUniqueId(), 0L);
         if (now - lastUse < cooldown * 1000L) {
             long remaining = ((cooldown * 1000L) - (now - lastUse));
@@ -160,6 +176,7 @@ public class NyxBow implements Listener {
         dash.setY(Math.max(dash.getY(), DASH_LIFT));
 
         player.setVelocity(dash);
+        noFallNextLanding.add(player.getUniqueId());
 
         dashCooldownMap.put(player.getUniqueId(), now);
 

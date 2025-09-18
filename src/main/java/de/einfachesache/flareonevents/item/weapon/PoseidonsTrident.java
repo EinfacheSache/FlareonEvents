@@ -3,8 +3,8 @@ package de.einfachesache.flareonevents.item.weapon;
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.util.ItemUtils;
-import de.einfachesache.flareonevents.item.ingredient.TridentSpikes;
-import de.einfachesache.flareonevents.item.ingredient.TridentStick;
+import de.einfachesache.flareonevents.item.ingredient.SpearCrystal;
+import de.einfachesache.flareonevents.item.ingredient.SpearStick;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.util.TriState;
@@ -48,18 +48,18 @@ public class PoseidonsTrident implements Listener {
     private static final Map<UUID, Long> cooldownMap = new HashMap<>();
 
     public static ShapedRecipe getShapedRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createPoseidonsTrident());
-        recipe.shape(" AB", " CA", "C  ");
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, create());
+        recipe.shape(" AC", " SA", "S  ");
         recipe.setIngredient('A', Material.DIAMOND_BLOCK);
-        recipe.setIngredient('B', TridentSpikes.ITEM);
-        recipe.setIngredient('C', TridentStick.ITEM);
+        recipe.setIngredient('C', SpearCrystal.ITEM);
+        recipe.setIngredient('S', SpearStick.ITEM);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 
         return recipe;
     }
 
-    public static ItemStack createPoseidonsTrident() {
+    public static ItemStack create() {
         ItemStack trident = ItemUtils.createCustomItem(Material.TRIDENT, DISPLAY_NAME, NAMESPACED_KEY);
         ItemMeta meta = trident.getItemMeta();
 

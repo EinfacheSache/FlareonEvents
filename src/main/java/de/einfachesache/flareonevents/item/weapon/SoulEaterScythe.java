@@ -2,9 +2,9 @@ package de.einfachesache.flareonevents.item.weapon;
 
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.item.CustomItem;
-import de.einfachesache.flareonevents.util.ItemUtils;
-import de.einfachesache.flareonevents.item.ingredient.MagmaShard;
+import de.einfachesache.flareonevents.item.ingredient.DemonSoul;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
+import de.einfachesache.flareonevents.util.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
@@ -15,7 +15,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -44,18 +44,18 @@ public class SoulEaterScythe implements Listener {
     }
 
     private static final List<Perk> SOUL_EATER_PERKS = List.of(
-            new Perk("REGEN", 1, "Regeneration I"),
-            new Perk("STRENGTH", 3, "Stärke I"),
-            new Perk("SPEED", 5, "Tempo I"),
-            new Perk("LIFESTEAL", 7, "Lebensraub"),
-            new Perk("REAPER", 10, "Seelenschnitter")
+            new Perk("DAMAGE", 1, "Schade +1"),
+            new Perk("REGEN", 3, "Regeneration I"),
+            new Perk("STRENGTH", 5, "Stärke I"),
+            new Perk("SPEED", 7, "Tempo I"),
+            new Perk("LIFESTEAL", 10, "Lebensraub")
     );
 
     public static ShapedRecipe getShapedRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createSoulEaterScythe());
-        recipe.shape(" Z ", "HPH", "DBD");
-        recipe.setIngredient('Z', MagmaShard.ITEM);
-        recipe.setIngredient('H', SoulHeartCrystal.createSoulHeartCrystal());
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, create());
+        recipe.shape(" S ", "HPH", "DBD");
+        recipe.setIngredient('S', DemonSoul.ITEM);
+        recipe.setIngredient('H', SoulHeartCrystal.create());
         recipe.setIngredient('P', MATERIAL);
         recipe.setIngredient('D', Material.DIAMOND_BLOCK);
         recipe.setIngredient('B', Material.BLAZE_ROD);
@@ -65,11 +65,11 @@ public class SoulEaterScythe implements Listener {
         return recipe;
     }
 
-    public static ItemStack createSoulEaterScythe() {
-        return createSoulEaterScythe(0);
+    public static ItemStack create() {
+        return create(0);
     }
 
-    public static ItemStack createSoulEaterScythe(int killCount) {
+    public static ItemStack create(int killCount) {
         ItemStack item = ItemUtils.createCustomItem(MATERIAL, DISPLAY_NAME, NAMESPACED_KEY);
         ItemMeta meta = item.getItemMeta();
 
@@ -139,7 +139,7 @@ public class SoulEaterScythe implements Listener {
     }
 
     @EventHandler
-    public void onPlayerKill(EntityDeathEvent event) {
+    public void onPlayerKill(PlayerDeathEvent event) {
         Player killer = event.getEntity().getKiller();
         if (killer == null) return;
 

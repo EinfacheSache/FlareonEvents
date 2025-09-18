@@ -48,7 +48,7 @@ public class PlayerDeathListener implements Listener {
                 deceased.spigot().respawn();
                 deceased.setGameMode(GameMode.ADVENTURE);
                 deceased.teleportAsync(Config.getMainSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                deceased.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
+                deceased.getInventory().setItem(8, EventInfoBook.create());
             });
             return;
         }
@@ -66,7 +66,7 @@ public class PlayerDeathListener implements Listener {
         }
 
         event.deathMessage(Component.text("§k22 §c§lAUSLÖSCHUNG! §fEin Spieler ist gestorben §k22"));
-        event.getDrops().add(SoulHeartCrystal.createSoulHeartCrystal());
+        event.getDrops().add(SoulHeartCrystal.create());
         Config.addDeathParticipant(event.getPlayer().getUniqueId());
         deceased.getWorld().strikeLightning(deceased.getLocation().add(0, 2.5, 0))
                 .getPersistentDataContainer().set(namespacedKey, PersistentDataType.BYTE, (byte) 1);

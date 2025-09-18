@@ -37,19 +37,19 @@ public class SuperiorPickaxe implements Listener {
     public static Map<Enchantment, Integer> ENCHANTMENTS;
 
     public static ShapedRecipe getShapedRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createSuperiorPickaxe());
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, create());
         recipe.shape("AAA", "HPH", "AAA");
         recipe.setIngredient('A', Material.AMETHYST_SHARD);
-        recipe.setIngredient('H', new RecipeChoice.ExactChoice(SoulHeartCrystal.createSoulHeartCrystal()));
-        recipe.setIngredient('P', new RecipeChoice.ExactChoice(ReinforcedPickaxe.createReinforcedPickaxe()));
+        recipe.setIngredient('H', new RecipeChoice.ExactChoice(SoulHeartCrystal.create()));
+        recipe.setIngredient('P', new RecipeChoice.ExactChoice(ReinforcedPickaxe.create()));
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
 
         return recipe;
     }
 
-    public static ItemStack createSuperiorPickaxe() {
-        ItemStack item = ReinforcedPickaxe.createReinforcedPickaxe();
+    public static ItemStack create() {
+        ItemStack item = ReinforcedPickaxe.create();
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         ItemMeta meta = item.getItemMeta();
 

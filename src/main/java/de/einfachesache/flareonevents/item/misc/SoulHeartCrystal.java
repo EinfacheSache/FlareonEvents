@@ -31,11 +31,11 @@ public class SoulHeartCrystal implements Listener {
     public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "soul_heart_crystal");
     public static final NamespacedKey DROPPED_BY_PLAYER = new NamespacedKey(FlareonEvents.getPlugin(), "dropped_by_player");
 
-    public static ItemStack createSoulHeartCrystal() {
-        return createSoulHeartCrystal(null);
+    public static ItemStack create() {
+        return create(null);
     }
 
-    public static ItemStack createSoulHeartCrystal(String droppedByPlayer) {
+    public static ItemStack create(String droppedByPlayer) {
 
         ItemStack soulHeartCrystal = ItemUtils.createCustomItem(Material.NETHER_STAR, DISPLAY_NAME, NAMESPACED_KEY);
         ItemMeta meta = soulHeartCrystal.getItemMeta();

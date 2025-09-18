@@ -99,9 +99,9 @@ public class ItemUtils {
 
                 return switch (customItem) {
                     case SOUL_HEART_CRYSTAL ->
-                            SoulHeartCrystal.createSoulHeartCrystal(SoulHeartCrystal.getDroppedByPlayer(oldItem));
+                            SoulHeartCrystal.create(SoulHeartCrystal.getDroppedByPlayer(oldItem));
                     case SOUL_EATER_SCYTHE ->
-                            SoulEaterScythe.createSoulEaterScythe(SoulEaterScythe.getKillCount(oldItem));
+                            SoulEaterScythe.create(SoulEaterScythe.getKillCount(oldItem));
                     default -> newItem;
                 };
             }

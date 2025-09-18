@@ -1,5 +1,6 @@
 package de.einfachesache.flareonevents.item.tool;
 
+import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonevents.util.WorldUtils;
 import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.util.ItemUtils;
@@ -38,11 +39,12 @@ public class ReinforcedPickaxe implements Listener {
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS;
 
     public static ShapedRecipe getShapedRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createReinforcedPickaxe());
-        recipe.shape("GBG", "DSD", " S ");
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, create());
+        recipe.shape("GBG", "DHD", " S ");
         recipe.setIngredient('G', Material.GOLD_INGOT);
         recipe.setIngredient('B', Material.GOLD_BLOCK);
         recipe.setIngredient('D', Material.DIAMOND);
+        recipe.setIngredient('H', SoulHeartCrystal.create());
         recipe.setIngredient('S', ReinforcedStick.ITEM);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
@@ -50,7 +52,7 @@ public class ReinforcedPickaxe implements Listener {
         return recipe;
     }
 
-    public static ItemStack createReinforcedPickaxe() {
+    public static ItemStack create() {
         ItemStack item = ItemUtils.createCustomItem(MATERIAL, DISPLAY_NAME, NAMESPACED_KEY);
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         ItemMeta meta = item.getItemMeta();

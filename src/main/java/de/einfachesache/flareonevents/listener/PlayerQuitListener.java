@@ -13,7 +13,7 @@ public class PlayerQuitListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        player.getInventory().remove(EventInfoBook.createEventInfoBook());
+        player.getInventory().remove(EventInfoBook.create());
 
         event.quitMessage(Component.text("§7" + player.getName() + " hat den Server verlassen"));
     }

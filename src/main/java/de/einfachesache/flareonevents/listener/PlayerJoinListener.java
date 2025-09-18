@@ -27,7 +27,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class PlayerJoinListener implements Listener {
 
-    private static final String PACK_URL_BASE = "https://einfachesache.de/texturepack/Flareon-Events-V3.zip";
+    private static final String PACK_URL_BASE = "https://einfachesache.de/texturepack/Flareon-Events-V4.zip";
     private static final UUID SESSION_UUID = UUID.randomUUID();
     private static final Component PACK_PROMPT =
             Component.text("Benötigtes Texturepack für ", NamedTextColor.GRAY)
@@ -57,7 +57,7 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        final boolean forced = !FlareonEvents.DEV_UUID.equals(player.getUniqueId()) && !player.isOp();
+        final boolean forced = !FlareonEvents.DEV_UUID.equals(player.getUniqueId());
 
         packHash.handle((hash, ex) -> {
             player.getServer().getScheduler().runTask(FlareonEvents.getPlugin(), () -> {
@@ -88,7 +88,7 @@ public class PlayerJoinListener implements Listener {
 
         if (!Config.isEventIsRunning()) {
             player.setGameMode(GameMode.ADVENTURE);
-            player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
+            player.getInventory().setItem(8, EventInfoBook.create());
             player.teleportAsync(
                     Config.getEventState() == EventState.STARTING
                             ? GameHandler.getPlayerAssignedSpawn(player)

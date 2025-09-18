@@ -26,28 +26,29 @@ import java.util.function.Supplier;
 
 public enum CustomItem {
 
-    FIRE_SWORD(FireSword.DISPLAY_NAME, FireSword.NAMESPACED_KEY, CustomItemType.WEAPON, FireSword.getShapedRecipe(), FireSword::createFireSword),
-    NYX_BOW(NyxBow.DISPLAY_NAME, NyxBow.NAMESPACED_KEY, CustomItemType.WEAPON, NyxBow.getShapedRecipe(), NyxBow::createNyxBow),
-    SOUL_EATER_SCYTHE(SoulEaterScythe.DISPLAY_NAME, SoulEaterScythe.NAMESPACED_KEY, CustomItemType.WEAPON, SoulEaterScythe.getShapedRecipe(), SoulEaterScythe::createSoulEaterScythe),
-    POSEIDONS_TRIDENT(PoseidonsTrident.DISPLAY_NAME, PoseidonsTrident.NAMESPACED_KEY, CustomItemType.WEAPON, PoseidonsTrident.getShapedRecipe(), PoseidonsTrident::createPoseidonsTrident),
+    FIRE_SWORD(FireSword.DISPLAY_NAME, FireSword.NAMESPACED_KEY, CustomItemType.WEAPON, FireSword.getShapedRecipe(), FireSword::create),
+    NYX_BOW(NyxBow.DISPLAY_NAME, NyxBow.NAMESPACED_KEY, CustomItemType.WEAPON, NyxBow.getShapedRecipe(), NyxBow::create),
+    SOUL_EATER_SCYTHE(SoulEaterScythe.DISPLAY_NAME, SoulEaterScythe.NAMESPACED_KEY, CustomItemType.WEAPON, SoulEaterScythe.getShapedRecipe(), SoulEaterScythe::create),
+    POSEIDONS_TRIDENT(PoseidonsTrident.DISPLAY_NAME, PoseidonsTrident.NAMESPACED_KEY, CustomItemType.WEAPON, PoseidonsTrident.getShapedRecipe(), PoseidonsTrident::create),
 
-    REINFORCED_PICKAXE(ReinforcedPickaxe.DISPLAY_NAME, ReinforcedPickaxe.NAMESPACED_KEY, CustomItemType.TOOL, ReinforcedPickaxe.getShapedRecipe(), ReinforcedPickaxe::createReinforcedPickaxe),
-    SUPERIOR_PICKAXE(SuperiorPickaxe.DISPLAY_NAME, SuperiorPickaxe.NAMESPACED_KEY, CustomItemType.TOOL, SuperiorPickaxe.getShapedRecipe(), SuperiorPickaxe::createSuperiorPickaxe),
+    REINFORCED_PICKAXE(ReinforcedPickaxe.DISPLAY_NAME, ReinforcedPickaxe.NAMESPACED_KEY, CustomItemType.TOOL, ReinforcedPickaxe.getShapedRecipe(), ReinforcedPickaxe::create),
+    SUPERIOR_PICKAXE(SuperiorPickaxe.DISPLAY_NAME, SuperiorPickaxe.NAMESPACED_KEY, CustomItemType.TOOL, SuperiorPickaxe.getShapedRecipe(), SuperiorPickaxe::create),
 
-    ASSASSINS_HELMET(AssassinsHelmet.DISPLAY_NAME, AssassinsHelmet.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsHelmet.getShapedRecipe(), AssassinsHelmet::createAssassinsAmor),
-    ASSASSINS_CHESTPLATE(AssassinsChestplate.DISPLAY_NAME, AssassinsChestplate.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsChestplate.getShapedRecipe(), AssassinsChestplate::createAssassinsAmor),
-    ASSASSINS_LEGGINGS(AssassinsLeggings.DISPLAY_NAME, AssassinsLeggings.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsLeggings.getShapedRecipe(), AssassinsLeggings::createAssassinsAmor),
-    ASSASSINS_BOOTS(AssassinsBoots.DISPLAY_NAME, AssassinsBoots.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsBoots.getShapedRecipe(), AssassinsBoots::createAssassinsAmor),
+    ASSASSINS_HELMET(AssassinsHelmet.DISPLAY_NAME, AssassinsHelmet.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsHelmet.getShapedRecipe(), AssassinsHelmet::create),
+    ASSASSINS_CHESTPLATE(AssassinsChestplate.DISPLAY_NAME, AssassinsChestplate.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsChestplate.getShapedRecipe(), AssassinsChestplate::create),
+    ASSASSINS_LEGGINGS(AssassinsLeggings.DISPLAY_NAME, AssassinsLeggings.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsLeggings.getShapedRecipe(), AssassinsLeggings::create),
+    ASSASSINS_BOOTS(AssassinsBoots.DISPLAY_NAME, AssassinsBoots.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsBoots.getShapedRecipe(), AssassinsBoots::create),
 
-    GOLD_SHARD(GoldShard.DISPLAY_NAME, GoldShard.NAMESPACED_KEY, CustomItemType.INGREDIENT, GoldShard.getShapedRecipe(), GoldShard.ITEM::clone),
-    MAGMA_SHARD(MagmaShard.DISPLAY_NAME, MagmaShard.NAMESPACED_KEY, CustomItemType.INGREDIENT, MagmaShard.getShapedRecipe(), MagmaShard.ITEM::clone),
-    TRIDENT_SPIKES(TridentSpikes.DISPLAY_NAME, TridentSpikes.NAMESPACED_KEY, CustomItemType.INGREDIENT, TridentSpikes.getShapedRecipe(), TridentSpikes.ITEM::clone),
-    TRIDENT_STICK(TridentStick.DISPLAY_NAME, TridentStick.NAMESPACED_KEY, CustomItemType.INGREDIENT, TridentStick.getShapedRecipe(), TridentStick.ITEM::clone),
+    ICE_TEAR(IceTear.DISPLAY_NAME, IceTear.NAMESPACED_KEY, CustomItemType.INGREDIENT, IceTear.getShapedRecipe(), IceTear.ITEM::clone),
+    BLOOD_SHARD(BloodShard.DISPLAY_NAME, BloodShard.NAMESPACED_KEY, CustomItemType.INGREDIENT, BloodShard.getShapedRecipe(), BloodShard.ITEM::clone),
+    SPEAR_CRYSTAL(SpearCrystal.DISPLAY_NAME, SpearCrystal.NAMESPACED_KEY, CustomItemType.INGREDIENT, SpearCrystal.getShapedRecipe(), SpearCrystal.ITEM::clone),
+    SPEAR_STICK(SpearStick.DISPLAY_NAME, SpearStick.NAMESPACED_KEY, CustomItemType.INGREDIENT, SpearStick.getShapedRecipe(), SpearStick.ITEM::clone),
+    DEMON_SOUL(DemonSoul.DISPLAY_NAME, DemonSoul.NAMESPACED_KEY, CustomItemType.INGREDIENT, DemonSoul.getShapedRecipe(), DemonSoul.ITEM::clone),
     REINFORCED_STICK(ReinforcedStick.DISPLAY_NAME, ReinforcedStick.NAMESPACED_KEY, CustomItemType.INGREDIENT, ReinforcedStick.getShapedRecipe(), ReinforcedStick.ITEM::clone),
 
-    SOUL_HEART_CRYSTAL(SoulHeartCrystal.DISPLAY_NAME, SoulHeartCrystal.NAMESPACED_KEY, CustomItemType.MISC, null, SoulHeartCrystal::createSoulHeartCrystal),
+    SOUL_HEART_CRYSTAL(SoulHeartCrystal.DISPLAY_NAME, SoulHeartCrystal.NAMESPACED_KEY, CustomItemType.MISC, null, SoulHeartCrystal::create),
 
-    EVENT_INFO_BOOK(EventInfoBook.DISPLAY_NAME, EventInfoBook.NAMESPACED_KEY, CustomItemType.OTHER, null, EventInfoBook::createEventInfoBook);
+    EVENT_INFO_BOOK(EventInfoBook.DISPLAY_NAME, EventInfoBook.NAMESPACED_KEY, CustomItemType.OTHER, null, EventInfoBook::create);
 
     private static final Set<CustomItem> disabledWeapons = Set.of();
 

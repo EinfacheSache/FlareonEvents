@@ -2,7 +2,7 @@ package de.einfachesache.flareonevents.item.armor.assassins;
 
 import de.einfachesache.flareonevents.FlareonEvents;
 import de.einfachesache.flareonevents.util.ItemUtils;
-import de.einfachesache.flareonevents.item.ingredient.MagmaShard;
+import de.einfachesache.flareonevents.item.ingredient.BloodShard;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -32,10 +32,10 @@ public class AssassinsChestplate implements Listener {
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS = new HashMap<>();
 
     public static ShapedRecipe getShapedRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createAssassinsAmor());
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, create());
         recipe.shape(" Z ", "HPH", "DBD");
-        recipe.setIngredient('Z', MagmaShard.ITEM);
-        recipe.setIngredient('H', SoulHeartCrystal.createSoulHeartCrystal());
+        recipe.setIngredient('Z', BloodShard.ITEM);
+        recipe.setIngredient('H', SoulHeartCrystal.create());
         recipe.setIngredient('P', MATERIAL);
         recipe.setIngredient('D', Material.DIAMOND_BLOCK);
         recipe.setIngredient('B', Material.BLAZE_ROD);
@@ -45,7 +45,7 @@ public class AssassinsChestplate implements Listener {
         return recipe;
     }
 
-    public static ItemStack createAssassinsAmor() {
+    public static ItemStack create() {
         ItemStack item = ItemUtils.createCustomItem(MATERIAL, DISPLAY_NAME, NAMESPACED_KEY);
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         ItemMeta meta = item.getItemMeta();

@@ -19,7 +19,7 @@ public class EventInfoBook implements Listener {
     public static final String DISPLAY_NAME = "§6100-Spieler-Event Info";
     public static final NamespacedKey NAMESPACED_KEY = new NamespacedKey(FlareonEvents.getPlugin(), "event_info_book");
 
-    public static ItemStack createEventInfoBook() {
+    public static ItemStack create() {
 
         ItemStack book = ItemUtils.createCustomItem(Material.WRITTEN_BOOK, DISPLAY_NAME, NAMESPACED_KEY);
         BookMeta meta = (BookMeta) book.getItemMeta();

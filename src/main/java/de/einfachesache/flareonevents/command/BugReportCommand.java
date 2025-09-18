@@ -4,6 +4,7 @@ import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.FlareonEvents;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -75,8 +76,11 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
         ItemStack held = player.getInventory().getItemInMainHand();
         ctx.heldItem = held.getItemMeta() != null ? held.getItemMeta().getDisplayName() : held.getType().name();
 
+        ctx.ping = player.getPing();
+        ctx.tps = Math.round(Math.max(20.0, Bukkit.getTPS()[0]) * 100.0) / 100.0;
+        ctx.mspt = Math.round(Bukkit.getAverageTickTime() * 100.0) / 100.0;
         ctx.phase = Config.getEventState().getName();
-        ctx.team = Config.getPlayerTeams().getOrDefault(player.getUniqueId(), null);
+        ctx.team = Objects.toString(Config.getPlayerTeams().get(player.getUniqueId()), null);
         try {
             ctx.client = player.getClientBrandName();
         } catch (Throwable ignored) {
@@ -123,9 +127,10 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
         public static final class Context {
             public String world;
             public double x, y, z;
-            public String gamemode, heldItem;
-            public Integer team;
+            public String gamemode, heldItem, team;
             public String phase, client;
+            public Integer ping;
+            public Double tps, mspt;
         }
     }
 }

@@ -126,6 +126,6 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
         giveAllArmor(player);
         giveAllIngredients(player);
 
-        giveItem(player, SoulHeartCrystal.createSoulHeartCrystal());
+        giveItem(player, SoulHeartCrystal.create());
     }
 }

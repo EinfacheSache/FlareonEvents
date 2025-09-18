@@ -172,7 +172,7 @@ public final class FlareonEvents extends JavaPlugin {
             ScoreboardHandler.addScoreboardToPlayer(player);
             if (!Config.isEventIsRunning()) {
                 ItemRecipe.discoverRecipe(player);
-                player.getInventory().setItem(8, EventInfoBook.createEventInfoBook());
+                player.getInventory().setItem(8, EventInfoBook.create());
             }
         });
 

@@ -1,10 +1,9 @@
 package de.einfachesache.flareonevents.item.weapon;
 
 import de.einfachesache.flareonevents.item.CustomItem;
-import de.einfachesache.flareonevents.util.ItemUtils;
-import de.einfachesache.flareonevents.item.ingredient.GoldShard;
-import de.einfachesache.flareonevents.item.ingredient.MagmaShard;
+import de.einfachesache.flareonevents.item.ingredient.BloodShard;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
+import de.einfachesache.flareonevents.util.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -54,12 +53,11 @@ public class FireSword implements Listener {
     public static final Map<UUID, Long> COOLDOWN_MAP = new HashMap<>();
 
     public static ShapedRecipe getShapedRecipe() {
-        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, createFireSword());
-        recipe.shape(" Z ", "HPH", "DBD");
-        recipe.setIngredient('Z', MagmaShard.ITEM);
-        recipe.setIngredient('H', SoulHeartCrystal.createSoulHeartCrystal());
-        recipe.setIngredient('P', GoldShard.ITEM);
+        ShapedRecipe recipe = new ShapedRecipe(NAMESPACED_KEY, create());
+        recipe.shape(" Z ", " D ", "HBH");
+        recipe.setIngredient('Z', BloodShard.ITEM);
         recipe.setIngredient('D', Material.DIAMOND_BLOCK);
+        recipe.setIngredient('H', SoulHeartCrystal.create());
         recipe.setIngredient('B', Material.BLAZE_ROD);
 
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
@@ -67,7 +65,7 @@ public class FireSword implements Listener {
         return recipe;
     }
 
-    public static ItemStack createFireSword() {
+    public static ItemStack create() {
         ItemStack item = ItemUtils.createCustomItem(MATERIAL, DISPLAY_NAME, NAMESPACED_KEY);
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         ItemMeta meta = item.getItemMeta();
