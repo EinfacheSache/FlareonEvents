@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -134,8 +135,8 @@ public class ScoreboardHandler implements Listener {
         if (FlareonEvents.DEV_UUID.equals(player.getUniqueId())) {
             prefix = "§4DEV | ";
             listOrder = Integer.MAX_VALUE;
-        } else if (player.getUniqueId().equals(FlareonEvents.OWNER_UUID)) {
-            prefix = "§4OWNER | ";
+        } else if (Arrays.stream(FlareonEvents.ORGA_UUID).anyMatch(orgaUUID -> orgaUUID.equals(player.getUniqueId()))) {
+            prefix = "§4ORGA | ";
             listOrder = Integer.MAX_VALUE - 1;
         } else if (player.isOp()) {
             prefix = "§cSTAFF | ";

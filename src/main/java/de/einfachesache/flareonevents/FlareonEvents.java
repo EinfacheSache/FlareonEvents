@@ -53,7 +53,10 @@ public final class FlareonEvents extends JavaPlugin {
 
     public static final String CH_TICKET = "proxymanager:ticket";
     public static final UUID DEV_UUID = UUID.fromString("201e5046-24df-4830-8b4a-82b635eb7cc7");
-    public static final UUID OWNER_UUID = UUID.fromString("66d27373-3e65-4549-bbf2-39e1d5dc8631");
+    public static final UUID[] ORGA_UUID = new UUID[]{
+            UUID.fromString("66d27373-3e65-4549-bbf2-39e1d5dc8631"),
+            UUID.fromString("47818d7b-5d4a-4077-8bd9-99bcc4105364")
+    };
     public static final Component PLUGIN_PREFIX = Component.text("[FLAREON] ", NamedTextColor.GOLD);
 
     private static boolean voiceChatEnabled;
@@ -101,13 +104,13 @@ public final class FlareonEvents extends JavaPlugin {
     }
 
     private void registerCommands() {
-        registerCommand("help",       new HelpCommand());
-        registerCommand("recipe",     new RecipeGuiCommand());
+        registerCommand("help", new HelpCommand());
+        registerCommand("recipe", new RecipeGuiCommand());
         registerCommand("customitem", new CustomItemCommand());
-        registerCommand("team",       new TeamCommand());
-        registerCommand("event",      new EventCommand());
-        registerCommand("update",     new UpdateCommand());
-        registerCommand("report",     new BugReportCommand(this));
+        registerCommand("team", new TeamCommand());
+        registerCommand("event", new EventCommand());
+        registerCommand("update", new UpdateCommand());
+        registerCommand("report", new BugReportCommand(this));
     }
 
     private void registerListener() {
@@ -147,7 +150,7 @@ public final class FlareonEvents extends JavaPlugin {
         pm.registerEvents(new SoulHeartCrystal(), this);
         pm.registerEvents(new EventInfoBook(), this);
 
-        if (isVoiceChatEnabled()){
+        if (isVoiceChatEnabled()) {
             VoiceModPlugin.registerVoiceChatListener(this);
         }
     }
