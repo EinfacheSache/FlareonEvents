@@ -3,7 +3,7 @@ package de.einfachesache.flareonevents.listener;
 import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.util.ItemUtils;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
-import de.einfachesache.flareonevents.item.weapon.FireSword;
+import de.einfachesache.flareonevents.item.weapon.BloodSword;
 import de.einfachesache.flareonevents.item.weapon.NyxBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import net.kyori.adventure.text.Component;
@@ -70,8 +70,8 @@ public class CraftingListener implements Listener {
 
         NamespacedKey key;
 
-        if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.FIRE_SWORD)) {
-            key = FireSword.getShapedRecipe().getKey();
+        if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.BLOOD_SWORD)) {
+            key = BloodSword.getShapedRecipe().getKey();
         } else if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.NYX_BOW)) {
             key = NyxBow.getShapedRecipe().getKey();
         } else if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.POSEIDONS_TRIDENT)) {
@@ -101,14 +101,11 @@ public class CraftingListener implements Listener {
 
     @EventHandler
     public void onAutoCraft(CrafterCraftEvent event) {
-        ItemStack result = event.getResult();
-        if (isOneTimeCraftableItem(result)) {
-            event.setCancelled(true);
-        }
+        event.setCancelled(true);
     }
 
     private boolean isOneTimeCraftableItem(ItemStack item) {
-        return ItemUtils.isCustomItem(item, CustomItem.FIRE_SWORD)
+        return ItemUtils.isCustomItem(item, CustomItem.BLOOD_SWORD)
                 || ItemUtils.isCustomItem(item, CustomItem.NYX_BOW)
                 || ItemUtils.isCustomItem(item, CustomItem.POSEIDONS_TRIDENT)
                 || ItemUtils.isCustomItem(item, CustomItem.SUPERIOR_PICKAXE);

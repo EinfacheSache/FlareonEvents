@@ -41,7 +41,7 @@ public final class PassiveItemEffects {
 
             List<PotionEffect> add = new ArrayList<>(3);
 
-            if (ItemUtils.isCustomItem(item, CustomItem.FIRE_SWORD)) {
+            if (ItemUtils.isCustomItem(item, CustomItem.BLOOD_SWORD)) {
                 maybeAdd(add, p, PotionEffectType.FIRE_RESISTANCE, 0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
                 maybeAdd(add, p, PotionEffectType.STRENGTH,       0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
             } else if (ItemUtils.isCustomItem(item, CustomItem.POSEIDONS_TRIDENT)) {

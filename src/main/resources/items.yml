@@ -24,9 +24,10 @@ items:
         slot: HAND
 
     # Effekte & Cooldown
-    fire_ticks_chance: 0.5    # Wahrscheinlichkeit, Ziel in Brand zu setzen
-    fire_ticks_time: 3        # Dauer in Sekunden
-    cooldown: 7
+    blood_hunger_duration: 12 # Dauer in Sekunden
+    blood_hunger_cooldown: 90 # Dauer in Sekunden
+    bleeding_duration: 3 # Dauer in Sekunden
+    bleeding_tick: 1 # Dauer in Sekunden
 
   nyx_bow:
     # NamespacedKey in Java

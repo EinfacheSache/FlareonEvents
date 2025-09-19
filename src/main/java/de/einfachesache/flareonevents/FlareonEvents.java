@@ -17,7 +17,7 @@ import de.einfachesache.flareonevents.item.misc.EventInfoBook;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
-import de.einfachesache.flareonevents.item.weapon.FireSword;
+import de.einfachesache.flareonevents.item.weapon.BloodSword;
 import de.einfachesache.flareonevents.item.weapon.NyxBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
@@ -135,7 +135,7 @@ public final class FlareonEvents extends JavaPlugin {
 
         pm.registerEvents(new PoseidonsTrident(), this);
         pm.registerEvents(new SoulEaterScythe(), this);
-        pm.registerEvents(new FireSword(), this);
+        pm.registerEvents(new BloodSword(), this);
         pm.registerEvents(new NyxBow(), this);
 
         pm.registerEvents(new ReinforcedPickaxe(), this);
@@ -172,12 +172,14 @@ public final class FlareonEvents extends JavaPlugin {
 
 
     private void setupEvent() {
-        ItemRecipe.loadRecipes();
+        ItemRecipe.loadCustomRecipes();
+        ItemRecipe.removeBannedRecipes();
+        BloodSword.startBleedTask();
         PassiveItemEffects.applyPassiveEffects();
         Bukkit.getOnlinePlayers().forEach(player -> {
             ScoreboardHandler.addScoreboardToPlayer(player);
             if (!Config.isEventIsRunning()) {
-                ItemRecipe.discoverRecipe(player);
+                ItemRecipe.discoverCustomRecipe(player);
                 player.getInventory().setItem(8, EventInfoBook.create());
             }
         });

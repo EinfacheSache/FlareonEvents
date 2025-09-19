@@ -4,7 +4,7 @@ import de.einfachesache.api.util.FileUtils;
 import de.einfachesache.flareonevents.event.EventState;
 import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
-import de.einfachesache.flareonevents.item.weapon.FireSword;
+import de.einfachesache.flareonevents.item.weapon.BloodSword;
 import de.einfachesache.flareonevents.item.weapon.NyxBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
@@ -245,22 +245,24 @@ public class Config {
     }
 
     private static void loadFireSword() {
+        // NamespacedKey, Material & Display-Name
         String fsKeyString = itemsFile.get("items.fire_sword.key");
-        FireSword.NAMESPACED_KEY = NamespacedKey.fromString(fsKeyString, FlareonEvents.getPlugin());
-        FireSword.MATERIAL = Material.valueOf(itemsFile.get("items.fire_sword.material"));
-        FireSword.DISPLAY_NAME = itemsFile.get("items.fire_sword.display_name");
+        BloodSword.NAMESPACED_KEY = NamespacedKey.fromString(fsKeyString, FlareonEvents.getPlugin());
+        BloodSword.MATERIAL = Material.valueOf(itemsFile.get("items.fire_sword.material"));
+        BloodSword.DISPLAY_NAME = itemsFile.get("items.fire_sword.display_name");
 
         // Effekte & Cooldown
-        FireSword.FIRE_TICKS_CHANCE = itemsFile.getDouble("items.fire_sword.fire_ticks_chance");
-        FireSword.FIRE_TICKS_TIME = itemsFile.getInt("items.fire_sword.fire_ticks_time");
-        FireSword.COOLDOWN = itemsFile.getInt("items.fire_sword.cooldown");
+        BloodSword.BLOOD_HUNGER_DURATION = itemsFile.getInt("items.fire_sword.blood_hunger_duration");
+        BloodSword.BLOOD_HUNGER_COOLDOWN = itemsFile.getInt("items.fire_sword.blood_hunger_cooldown");
+        BloodSword.BLEED_DURATION = itemsFile.getInt("items.fire_sword.bleeding_duration");
+        BloodSword.BLEED_TICK = itemsFile.getInt("items.fire_sword.bleeding_tick");
 
         // Enchantments einlesen
-        FireSword.ENCHANTMENTS = loadEnchantments("fire_sword");
+        BloodSword.ENCHANTMENTS = loadEnchantments("fire_sword");
         // Attribute-Modifier einlesen
-        FireSword.ATTRIBUTE_MODIFIERS = loadAttributes("fire_sword");
+        BloodSword.ATTRIBUTE_MODIFIERS = loadAttributes("fire_sword");
         // Item-Flags einlesen
-        FireSword.ITEM_FLAGS = itemFlags;
+        BloodSword.ITEM_FLAGS = itemFlags;
     }
 
     private static void loadNyxBow() {
@@ -298,7 +300,6 @@ public class Config {
         SoulEaterScythe.DISPLAY_NAME = itemsFile.get("items.soul_eater_scythe.display_name");
 
         // Perks
-        //NyxBow.WITHER_EFFECT_CHANCE = itemsFile.getDouble("items.soul_eater_scythe.wither_effect_chance");
 
         // Verzauberungen einlesen
         SoulEaterScythe.ENCHANTMENTS = loadEnchantments("soul_eater_scythe");
@@ -592,7 +593,7 @@ public class Config {
     public static int getNextTeamId() {
         nextTeamId++;
         save(teamsFile, "next-team-id", nextTeamId);
-        return nextTeamId-1;
+        return nextTeamId - 1;
     }
 
     public static Map<Integer, Set<UUID>> getTeams() {
