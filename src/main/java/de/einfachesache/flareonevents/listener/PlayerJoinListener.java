@@ -24,7 +24,7 @@ public class PlayerJoinListener implements Listener {
 
         event.joinMessage(player.displayName().append(Component.text(" ist dem Server beigetreten", NamedTextColor.GRAY)));
 
-        ItemRecipe.discoverRecipe(player);
+        ItemRecipe.discoverCustomRecipe(player);
         int stateId = Config.getEventState().getId();
         GameHandler.resetPlayer(player, stateId <= 2, stateId <= 1);
 

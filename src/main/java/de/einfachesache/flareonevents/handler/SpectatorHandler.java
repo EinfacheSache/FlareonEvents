@@ -89,6 +89,7 @@ public class SpectatorHandler implements Listener {
 
             if (target == null || !target.isOnline()) {
                 FlareonEvents.getLogManager().error("Can't find Spectator target for " + player.getName());
+                player.kick(Component.text("Can't find Spectator target"));
                 return;
             }
 
