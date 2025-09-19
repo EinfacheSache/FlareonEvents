@@ -1,7 +1,7 @@
 package de.einfachesache.flareonevents.listener;
 
 import de.einfachesache.flareonevents.handler.GameHandler;
-import net.kyori.adventure.text.Component;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,8 +15,8 @@ public class PlayerRespawnListener implements Listener {
         PlayerRespawnEvent.RespawnReason reason = e.getRespawnReason();
 
         if (reason == PlayerRespawnEvent.RespawnReason.DEATH) {
-            player.setHealth(0);
-            player.kick(Component.text("You are not allowed to respawn in this game."));
+            GameHandler.resetPlayer(player, true, true);
+            player.setGameMode(GameMode.SPECTATOR);
             return;
         }
 
