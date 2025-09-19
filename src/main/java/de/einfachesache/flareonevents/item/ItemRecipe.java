@@ -9,17 +9,25 @@ import org.bukkit.inventory.Recipe;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Set;
 
 public class ItemRecipe {
 
-    public static void loadRecipes() {
+    private static final Set<String> bannedRecipes = Set.of("mace", "crafter", "tnt_minecart", "end_crystal", "respawn_anchor");
+
+    public static void loadCustomRecipes() {
         Arrays.stream(CustomItem.getEnabledItems()).forEach(customItem ->
                 Bukkit.addRecipe(customItem.getRecipe(), true));
     }
 
-    public static void discoverRecipe(Player player) {
+    public static void discoverCustomRecipe(Player player) {
         Arrays.stream(CustomItem.getEnabledItems()).forEach(customItem ->
                 player.discoverRecipe(customItem.getNamespacedKey()));
+    }
+
+    public static void removeBannedRecipes() {
+        bannedRecipes.forEach(bannedRecipe ->
+                Bukkit.removeRecipe(NamespacedKey.minecraft(bannedRecipe), true));
     }
 
     public static void reloadAllPluginRecipes() {
@@ -35,6 +43,6 @@ public class ItemRecipe {
                 }
             }
         }
-        loadRecipes();
+        loadCustomRecipes();
     }
 }
