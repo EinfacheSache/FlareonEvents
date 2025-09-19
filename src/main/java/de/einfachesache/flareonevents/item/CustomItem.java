@@ -11,8 +11,8 @@ import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.BloodSword;
 import de.einfachesache.flareonevents.item.weapon.IceBow;
-import de.einfachesache.flareonevents.item.weapon.ThunderSpear;
 import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
+import de.einfachesache.flareonevents.item.weapon.ThunderSpear;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -26,8 +26,8 @@ import java.util.function.Supplier;
 
 public enum CustomItem {
 
-    ICE_BOW(IceBow.DISPLAY_NAME, IceBow.NAMESPACED_KEY, CustomItemType.WEAPON, IceBow.getShapedRecipe(), IceBow::create),
     BLOOD_SWORD(BloodSword.DISPLAY_NAME, BloodSword.NAMESPACED_KEY, CustomItemType.WEAPON, BloodSword.getShapedRecipe(), BloodSword::create),
+    ICE_BOW(IceBow.DISPLAY_NAME, IceBow.NAMESPACED_KEY, CustomItemType.WEAPON, IceBow.getShapedRecipe(), IceBow::create),
     SOUL_EATER_SCYTHE(SoulEaterScythe.DISPLAY_NAME, SoulEaterScythe.NAMESPACED_KEY, CustomItemType.WEAPON, SoulEaterScythe.getShapedRecipe(), SoulEaterScythe::create),
     THUNDER_SPEAR(ThunderSpear.DISPLAY_NAME, ThunderSpear.NAMESPACED_KEY, CustomItemType.WEAPON, ThunderSpear.getShapedRecipe(), ThunderSpear::create),
 

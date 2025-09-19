@@ -10,7 +10,7 @@ items:
 
     # Material & Anzeige-Name
     material: GOLDEN_SWORD
-    display_name: "§c§lBlood Sword"
+    display_name: "§c§lBlut Schwert"
 
     # Attribute-Modifikatoren
     attributes:
