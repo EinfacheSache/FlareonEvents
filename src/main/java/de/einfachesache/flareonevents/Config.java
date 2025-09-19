@@ -236,7 +236,7 @@ public class Config {
 
         itemFlags = itemsFile.getStringList("generell.item_flags").stream().map(ItemFlag::valueOf).toArray(ItemFlag[]::new);
 
-        loadFireSword();
+        loadBloodSword();
         loadIceBow();
         loadSoulEaterScythe();
         loadPoseidonsTrident();
@@ -244,23 +244,23 @@ public class Config {
         loadSuperiorPickaxe();
     }
 
-    private static void loadFireSword() {
+    private static void loadBloodSword() {
         // NamespacedKey, Material & Display-Name
-        String fsKeyString = itemsFile.get("items.fire_sword.key");
+        String fsKeyString = itemsFile.get("items.blood_sword.key");
         BloodSword.NAMESPACED_KEY = NamespacedKey.fromString(fsKeyString, FlareonEvents.getPlugin());
-        BloodSword.MATERIAL = Material.valueOf(itemsFile.get("items.fire_sword.material"));
-        BloodSword.DISPLAY_NAME = itemsFile.get("items.fire_sword.display_name");
+        BloodSword.MATERIAL = Material.valueOf(itemsFile.get("items.blood_sword.material"));
+        BloodSword.DISPLAY_NAME = itemsFile.get("items.blood_sword.display_name");
 
         // Effekte & Cooldown
-        BloodSword.BLOOD_HUNGER_DURATION = itemsFile.getInt("items.fire_sword.blood_hunger_duration");
-        BloodSword.BLOOD_HUNGER_COOLDOWN = itemsFile.getInt("items.fire_sword.blood_hunger_cooldown");
-        BloodSword.BLEED_DURATION = itemsFile.getInt("items.fire_sword.bleeding_duration");
-        BloodSword.BLEED_TICK = itemsFile.getInt("items.fire_sword.bleeding_tick");
+        BloodSword.BLOOD_HUNGER_DURATION = itemsFile.getInt("items.blood_sword.blood_hunger_duration");
+        BloodSword.BLOOD_HUNGER_COOLDOWN = itemsFile.getInt("items.blood_sword.blood_hunger_cooldown");
+        BloodSword.BLEED_DURATION = itemsFile.getInt("items.blood_sword.bleeding_duration");
+        BloodSword.BLEED_TICK = itemsFile.getInt("items.blood_sword.bleeding_tick");
 
         // Enchantments einlesen
-        BloodSword.ENCHANTMENTS = loadEnchantments("fire_sword");
+        BloodSword.ENCHANTMENTS = loadEnchantments("blood_sword");
         // Attribute-Modifier einlesen
-        BloodSword.ATTRIBUTE_MODIFIERS = loadAttributes("fire_sword");
+        BloodSword.ATTRIBUTE_MODIFIERS = loadAttributes("blood_sword");
         // Item-Flags einlesen
         BloodSword.ITEM_FLAGS = itemFlags;
     }

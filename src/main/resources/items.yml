@@ -4,13 +4,13 @@ generell:
     - HIDE_ENCHANTS
 
 items:
-  fire_sword:
+  blood_sword:
     # NamespacedKey in Java
-    key: flareonevents:fire_sword
+    key: flareonevents:blood_sword
 
     # Material & Anzeige-Name
     material: GOLDEN_SWORD
-    display_name: "§c§lHades's Sword"
+    display_name: "§c§lBlood Sword"
 
     # Attribute-Modifikatoren
     attributes:
