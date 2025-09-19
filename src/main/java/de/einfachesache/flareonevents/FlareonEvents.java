@@ -116,6 +116,7 @@ public final class FlareonEvents extends JavaPlugin {
     private void registerListener() {
         var pm = Bukkit.getPluginManager();
         pm.registerEvents(new PlayerInteractListener(), this);
+        pm.registerEvents(new PotionEffectsListener(), this);
         pm.registerEvents(new EntityDamageListener(), this);
         pm.registerEvents(new PortalCreateListener(), this);
         pm.registerEvents(new ResourcePackListener(), this);
