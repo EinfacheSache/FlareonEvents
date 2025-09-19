@@ -449,6 +449,7 @@ public class GameHandler {
 
     public static void resetPlayer(Player player, boolean potionReset, boolean completeReset) {
         if (potionReset) {
+            player.setGlowing(false);
             player.lockFreezeTicks(false);
             player.clearActivePotionEffects();
         }
@@ -476,7 +477,7 @@ public class GameHandler {
             }
         }
 
-        if (!player.isOp()) {
+        if (!player.isOp() && !player.isDead()) {
             player.setGameMode(Config.isEventIsRunning() ? GameMode.SURVIVAL : GameMode.ADVENTURE);
         }
     }
