@@ -29,13 +29,13 @@ items:
     bleeding_duration: 3 # Dauer in Sekunden
     bleeding_tick: 1 # Dauer in Sekunden
 
-  nyx_bow:
+  ice_bow:
     # NamespacedKey in Java
-    key: flareonevents:nyx_bow
+    key: flareonevents:ice_bow
 
     # Material & Anzeige-Name
     material: BOW
-    display_name: "§b§lNyx's Bow"
+    display_name: "§b§lIce Bow"
 
     # Verzauberungen
     enchantments:

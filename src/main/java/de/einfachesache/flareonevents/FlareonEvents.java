@@ -18,7 +18,7 @@ import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.BloodSword;
-import de.einfachesache.flareonevents.item.weapon.NyxBow;
+import de.einfachesache.flareonevents.item.weapon.IceBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
 import de.einfachesache.flareonevents.listener.*;
@@ -136,7 +136,7 @@ public final class FlareonEvents extends JavaPlugin {
         pm.registerEvents(new PoseidonsTrident(), this);
         pm.registerEvents(new SoulEaterScythe(), this);
         pm.registerEvents(new BloodSword(), this);
-        pm.registerEvents(new NyxBow(), this);
+        pm.registerEvents(new IceBow(), this);
 
         pm.registerEvents(new ReinforcedPickaxe(), this);
         pm.registerEvents(new SuperiorPickaxe(), this);

@@ -5,7 +5,7 @@ import de.einfachesache.flareonevents.event.EventState;
 import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.BloodSword;
-import de.einfachesache.flareonevents.item.weapon.NyxBow;
+import de.einfachesache.flareonevents.item.weapon.IceBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
 import de.einfachesache.flareonevents.util.WorldUtils;
@@ -237,7 +237,7 @@ public class Config {
         itemFlags = itemsFile.getStringList("generell.item_flags").stream().map(ItemFlag::valueOf).toArray(ItemFlag[]::new);
 
         loadFireSword();
-        loadNyxBow();
+        loadIceBow();
         loadSoulEaterScythe();
         loadPoseidonsTrident();
         loadReinforcedPickaxe();
@@ -265,31 +265,31 @@ public class Config {
         BloodSword.ITEM_FLAGS = itemFlags;
     }
 
-    private static void loadNyxBow() {
+    private static void loadIceBow() {
         // NamespacedKey, Material & Display-Name
-        String nbKeyString = itemsFile.get("items.nyx_bow.key");
-        NyxBow.NAMESPACED_KEY = NamespacedKey.fromString(nbKeyString, FlareonEvents.getPlugin());
-        NyxBow.MATERIAL = Material.valueOf(itemsFile.get("items.nyx_bow.material"));
-        NyxBow.DISPLAY_NAME = itemsFile.get("items.nyx_bow.display_name");
+        String nbKeyString = itemsFile.get("items.ice_bow.key");
+        IceBow.NAMESPACED_KEY = NamespacedKey.fromString(nbKeyString, FlareonEvents.getPlugin());
+        IceBow.MATERIAL = Material.valueOf(itemsFile.get("items.ice_bow.material"));
+        IceBow.DISPLAY_NAME = itemsFile.get("items.ice_bow.display_name");
 
         // Effekte & Cooldown
-        NyxBow.FREEZE_TIME = itemsFile.getInt("items.nyx_bow.freeze_time");
-        NyxBow.FREEZE_CHANCE = itemsFile.getDouble("items.nyx_bow.freeze_chance");
-        NyxBow.CRIT_FREEZE_CHANCE = itemsFile.getDouble("items.nyx_bow.crit_freeze_chance");
-        NyxBow.DARKNESS_TIME = itemsFile.getInt("items.nyx_bow.darkness_effect_time");
+        IceBow.FREEZE_TIME = itemsFile.getInt("items.ice_bow.freeze_time");
+        IceBow.FREEZE_CHANCE = itemsFile.getDouble("items.ice_bow.freeze_chance");
+        IceBow.CRIT_FREEZE_CHANCE = itemsFile.getDouble("items.ice_bow.crit_freeze_chance");
+        IceBow.DARKNESS_TIME = itemsFile.getInt("items.ice_bow.darkness_effect_time");
 
-        NyxBow.DASH_COOLDOWN = itemsFile.getInt("items.nyx_bow.dash_cooldown");
-        NyxBow.DASH_STRENGTH = itemsFile.getDouble("items.nyx_bow.dash_strength");
-        NyxBow.DASH_LIFT = itemsFile.getDouble("items.nyx_bow.dash_lift");
+        IceBow.DASH_COOLDOWN = itemsFile.getInt("items.ice_bow.dash_cooldown");
+        IceBow.DASH_STRENGTH = itemsFile.getDouble("items.ice_bow.dash_strength");
+        IceBow.DASH_LIFT = itemsFile.getDouble("items.ice_bow.dash_lift");
 
-        NyxBow.SHOOT_COOLDOWN = itemsFile.getInt("items.nyx_bow.shoot_cooldown");
+        IceBow.SHOOT_COOLDOWN = itemsFile.getInt("items.ice_bow.shoot_cooldown");
 
         // Verzauberungen einlesen
-        NyxBow.ENCHANTMENTS = loadEnchantments("nyx_bow");
+        IceBow.ENCHANTMENTS = loadEnchantments("ice_bow");
         // Attribute-Modifier einlesen (falls in config definiert)
-        NyxBow.ATTRIBUTE_MODIFIERS = loadAttributes("nyx_bow");
+        IceBow.ATTRIBUTE_MODIFIERS = loadAttributes("ice_bow");
         // ItemFlags einlesen
-        NyxBow.ITEM_FLAGS = itemFlags;
+        IceBow.ITEM_FLAGS = itemFlags;
     }
 
     private static void loadSoulEaterScythe() {

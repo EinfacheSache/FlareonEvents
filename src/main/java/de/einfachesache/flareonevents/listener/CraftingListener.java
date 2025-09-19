@@ -4,7 +4,7 @@ import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.util.ItemUtils;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.BloodSword;
-import de.einfachesache.flareonevents.item.weapon.NyxBow;
+import de.einfachesache.flareonevents.item.weapon.IceBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -72,8 +72,8 @@ public class CraftingListener implements Listener {
 
         if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.BLOOD_SWORD)) {
             key = BloodSword.getShapedRecipe().getKey();
-        } else if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.NYX_BOW)) {
-            key = NyxBow.getShapedRecipe().getKey();
+        } else if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.ICE_BOW)) {
+            key = IceBow.getShapedRecipe().getKey();
         } else if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.POSEIDONS_TRIDENT)) {
             key = PoseidonsTrident.getShapedRecipe().getKey();
         } else if (ItemUtils.isCustomItem(inv.getResult(), CustomItem.SUPERIOR_PICKAXE)) {
@@ -106,7 +106,7 @@ public class CraftingListener implements Listener {
 
     private boolean isOneTimeCraftableItem(ItemStack item) {
         return ItemUtils.isCustomItem(item, CustomItem.BLOOD_SWORD)
-                || ItemUtils.isCustomItem(item, CustomItem.NYX_BOW)
+                || ItemUtils.isCustomItem(item, CustomItem.ICE_BOW)
                 || ItemUtils.isCustomItem(item, CustomItem.POSEIDONS_TRIDENT)
                 || ItemUtils.isCustomItem(item, CustomItem.SUPERIOR_PICKAXE);
     }

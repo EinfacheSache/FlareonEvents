@@ -10,7 +10,7 @@ import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.BloodSword;
-import de.einfachesache.flareonevents.item.weapon.NyxBow;
+import de.einfachesache.flareonevents.item.weapon.IceBow;
 import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
 import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
 import net.kyori.adventure.text.Component;
@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 public enum CustomItem {
 
     BLOOD_SWORD(BloodSword.DISPLAY_NAME, BloodSword.NAMESPACED_KEY, CustomItemType.WEAPON, BloodSword.getShapedRecipe(), BloodSword::create),
-    NYX_BOW(NyxBow.DISPLAY_NAME, NyxBow.NAMESPACED_KEY, CustomItemType.WEAPON, NyxBow.getShapedRecipe(), NyxBow::create),
+    ICE_BOW(IceBow.DISPLAY_NAME, IceBow.NAMESPACED_KEY, CustomItemType.WEAPON, IceBow.getShapedRecipe(), IceBow::create),
     SOUL_EATER_SCYTHE(SoulEaterScythe.DISPLAY_NAME, SoulEaterScythe.NAMESPACED_KEY, CustomItemType.WEAPON, SoulEaterScythe.getShapedRecipe(), SoulEaterScythe::create),
     POSEIDONS_TRIDENT(PoseidonsTrident.DISPLAY_NAME, PoseidonsTrident.NAMESPACED_KEY, CustomItemType.WEAPON, PoseidonsTrident.getShapedRecipe(), PoseidonsTrident::create),
 

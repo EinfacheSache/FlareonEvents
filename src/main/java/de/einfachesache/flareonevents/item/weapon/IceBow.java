@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @SuppressWarnings("deprecation")
-public class NyxBow implements Listener {
+public class IceBow implements Listener {
 
     public static NamespacedKey NAMESPACED_KEY;
     public static Material MATERIAL;
@@ -136,7 +136,7 @@ public class NyxBow implements Listener {
     @EventHandler
     public void onShoot(EntityShootBowEvent event) {
         if (!(event.getBow() != null && event.getBow().hasItemMeta())) return;
-        if (!ItemUtils.isCustomItem(event.getBow(), CustomItem.NYX_BOW)) return;
+        if (!ItemUtils.isCustomItem(event.getBow(), CustomItem.ICE_BOW)) return;
 
         Arrow arrow = (Arrow) event.getProjectile();
 
@@ -155,7 +155,7 @@ public class NyxBow implements Listener {
 
     @EventHandler
     public void onDash(PlayerInteractEvent event) {
-        if (!ItemUtils.isCustomItem(event.getItem(), CustomItem.NYX_BOW)) return;
+        if (!ItemUtils.isCustomItem(event.getItem(), CustomItem.ICE_BOW)) return;
         if (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK) return;
         if (event.getPlayer().getOpenInventory().getTopInventory().getType() != InventoryType.CRAFTING) return;
 
@@ -186,7 +186,7 @@ public class NyxBow implements Listener {
 
     @EventHandler
     public void onBowShoot(PlayerInteractEvent event) {
-        if (!ItemUtils.isCustomItem(event.getItem(), CustomItem.NYX_BOW)) return;
+        if (!ItemUtils.isCustomItem(event.getItem(), CustomItem.ICE_BOW)) return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.useItemInHand() == Event.Result.DENY) return;
 
@@ -208,7 +208,7 @@ public class NyxBow implements Listener {
     public void onLaunch(ProjectileLaunchEvent e) {
         if (!(e.getEntity() instanceof Arrow arrow)) return;
         if (!(arrow.getShooter() instanceof Player shooter)) return;
-        if (!ItemUtils.isCustomItem(shooter.getInventory().getItemInMainHand(), CustomItem.NYX_BOW)) return;
+        if (!ItemUtils.isCustomItem(shooter.getInventory().getItemInMainHand(), CustomItem.ICE_BOW)) return;
 
         arrow.setColor(Color.AQUA);
         arrow.setGlowing(true);
@@ -248,7 +248,7 @@ public class NyxBow implements Listener {
 
         String targetName = livingEntity.getName();
         Component prefix = Component.text("✦ ", NamedTextColor.DARK_PURPLE)
-                .append(Component.text(NyxBow.DISPLAY_NAME))
+                .append(Component.text(IceBow.DISPLAY_NAME))
                 .append(Component.text(": ", NamedTextColor.GRAY));
 
         Component msg;
