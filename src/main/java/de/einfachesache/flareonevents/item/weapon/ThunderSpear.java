@@ -115,7 +115,7 @@ public class ThunderSpear implements Listener {
 
         if (Math.random() < ON_MELEE_LIGHTNING_CHANCE) {
             player.getWorld().strikeLightning(event.getEntity().getLocation()).getPersistentDataContainer().set(
-                    new NamespacedKey(FlareonEvents.getPlugin(), "trident_lightning_" + player.getName().toLowerCase()), PersistentDataType.BYTE, (byte) 1);
+                    new NamespacedKey(FlareonEvents.getPlugin(), "lightning_trident_" + player.getName().toLowerCase()), PersistentDataType.BYTE, (byte) 1);
         }
     }
 
@@ -165,7 +165,7 @@ public class ThunderSpear implements Listener {
 
         if (Math.random() < THROW_LIGHTNING_CHANCE) {
             LightningStrike lightningStrike = trident.getWorld().strikeLightning(trident.getLocation());
-            lightningStrike.getPersistentDataContainer().set(new NamespacedKey(FlareonEvents.getPlugin(), "trident_lightning_" + player.getName().toLowerCase()), PersistentDataType.BYTE, (byte) 1);
+            lightningStrike.getPersistentDataContainer().set(new NamespacedKey(FlareonEvents.getPlugin(), "lightning_trident_" + player.getName().toLowerCase()), PersistentDataType.BYTE, (byte) 1);
         }
     }
 }
