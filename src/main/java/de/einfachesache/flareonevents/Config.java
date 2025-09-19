@@ -6,8 +6,8 @@ import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.BloodSword;
 import de.einfachesache.flareonevents.item.weapon.IceBow;
-import de.einfachesache.flareonevents.item.weapon.ThunderSpear;
 import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
+import de.einfachesache.flareonevents.item.weapon.ThunderSpear;
 import de.einfachesache.flareonevents.util.WorldUtils;
 import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
 import io.papermc.paper.registry.RegistryAccess;
@@ -18,7 +18,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemFlag;
 
 import java.util.*;
@@ -401,10 +401,14 @@ public class Config {
 
             double amount = ((Number) map.get("amount")).doubleValue();
             AttributeModifier.Operation op = AttributeModifier.Operation.valueOf(map.get("operation").toString());
-            EquipmentSlot slot = EquipmentSlot.valueOf(map.get("slot").toString());
+            EquipmentSlotGroup slot = EquipmentSlotGroup.getByName(map.get("slot").toString());
+
+            if(slot == null) {
+                slot = EquipmentSlotGroup.HAND;
+            }
 
             NamespacedKey modifierKey = new NamespacedKey(FlareonEvents.getPlugin(), attrPath.toLowerCase(Locale.ROOT));
-            AttributeModifier mod = new AttributeModifier(modifierKey, amount, op, slot.getGroup());
+            AttributeModifier mod = new AttributeModifier(modifierKey, amount, op, slot);
             attributes.put(attribute, mod);
         }
 
