@@ -11,7 +11,7 @@ import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.BloodSword;
 import de.einfachesache.flareonevents.item.weapon.IceBow;
-import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
+import de.einfachesache.flareonevents.item.weapon.ThunderSpear;
 import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
@@ -26,10 +26,10 @@ import java.util.function.Supplier;
 
 public enum CustomItem {
 
-    BLOOD_SWORD(BloodSword.DISPLAY_NAME, BloodSword.NAMESPACED_KEY, CustomItemType.WEAPON, BloodSword.getShapedRecipe(), BloodSword::create),
     ICE_BOW(IceBow.DISPLAY_NAME, IceBow.NAMESPACED_KEY, CustomItemType.WEAPON, IceBow.getShapedRecipe(), IceBow::create),
+    BLOOD_SWORD(BloodSword.DISPLAY_NAME, BloodSword.NAMESPACED_KEY, CustomItemType.WEAPON, BloodSword.getShapedRecipe(), BloodSword::create),
     SOUL_EATER_SCYTHE(SoulEaterScythe.DISPLAY_NAME, SoulEaterScythe.NAMESPACED_KEY, CustomItemType.WEAPON, SoulEaterScythe.getShapedRecipe(), SoulEaterScythe::create),
-    POSEIDONS_TRIDENT(PoseidonsTrident.DISPLAY_NAME, PoseidonsTrident.NAMESPACED_KEY, CustomItemType.WEAPON, PoseidonsTrident.getShapedRecipe(), PoseidonsTrident::create),
+    THUNDER_SPEAR(ThunderSpear.DISPLAY_NAME, ThunderSpear.NAMESPACED_KEY, CustomItemType.WEAPON, ThunderSpear.getShapedRecipe(), ThunderSpear::create),
 
     REINFORCED_PICKAXE(ReinforcedPickaxe.DISPLAY_NAME, ReinforcedPickaxe.NAMESPACED_KEY, CustomItemType.TOOL, ReinforcedPickaxe.getShapedRecipe(), ReinforcedPickaxe::create),
     SUPERIOR_PICKAXE(SuperiorPickaxe.DISPLAY_NAME, SuperiorPickaxe.NAMESPACED_KEY, CustomItemType.TOOL, SuperiorPickaxe.getShapedRecipe(), SuperiorPickaxe::create),

@@ -80,13 +80,13 @@ items:
       7: "Lebensraub"
       10: "Seelenschnitter"
 
-  poseidons_trident:
+  thunder_spear:
     # NamespacedKey in Java
-    key: flareonevents:poseidons_trident
+    key: flareonevents:thunder_spear
 
     # Material & Anzeige-Name
     material: TRIDENT
-    display_name: "§1§lPoseidon's Trident"
+    display_name: "§1§lDonner Speer"
 
     # Verzauberungen
     enchantments:

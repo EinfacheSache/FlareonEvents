@@ -33,7 +33,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
-public class PoseidonsTrident implements Listener {
+public class ThunderSpear implements Listener {
 
     public static NamespacedKey NAMESPACED_KEY;
     public static Material MATERIAL;
@@ -111,7 +111,7 @@ public class PoseidonsTrident implements Listener {
     public void onMeleeHit(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player player)) return;
         ItemStack item = player.getInventory().getItemInMainHand();
-        if (!ItemUtils.isCustomItem(item, CustomItem.POSEIDONS_TRIDENT)) return;
+        if (!ItemUtils.isCustomItem(item, CustomItem.THUNDER_SPEAR)) return;
 
         if (Math.random() < ON_MELEE_LIGHTNING_CHANCE) {
             player.getWorld().strikeLightning(event.getEntity().getLocation()).getPersistentDataContainer().set(
@@ -124,7 +124,7 @@ public class PoseidonsTrident implements Listener {
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
 
-        if (!ItemUtils.isCustomItem(item, CustomItem.POSEIDONS_TRIDENT)) return;
+        if (!ItemUtils.isCustomItem(item, CustomItem.THUNDER_SPEAR)) return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.useItemInHand() == Event.Result.DENY) return;
 
@@ -143,7 +143,7 @@ public class PoseidonsTrident implements Listener {
     @EventHandler
     public void onLaunch(ProjectileLaunchEvent e) {
         if (!(e.getEntity() instanceof Trident trident)) return;
-        if (!ItemUtils.isCustomItem(trident.getItemStack(), CustomItem.POSEIDONS_TRIDENT)) return;
+        if (!ItemUtils.isCustomItem(trident.getItemStack(), CustomItem.THUNDER_SPEAR)) return;
         if (!(trident.getShooter() instanceof Player shooter)) return;
 
         trident.setVisualFire(TriState.TRUE);
@@ -161,7 +161,7 @@ public class PoseidonsTrident implements Listener {
     public void onProjectileHit(ProjectileHitEvent event) {
         if (!(event.getEntity() instanceof Trident trident)) return;
         if (!(trident.getShooter() instanceof Player player)) return;
-        if (!ItemUtils.isCustomItem(trident.getItemStack(), CustomItem.POSEIDONS_TRIDENT)) return;
+        if (!ItemUtils.isCustomItem(trident.getItemStack(), CustomItem.THUNDER_SPEAR)) return;
 
         if (Math.random() < THROW_LIGHTNING_CHANCE) {
             LightningStrike lightningStrike = trident.getWorld().strikeLightning(trident.getLocation());

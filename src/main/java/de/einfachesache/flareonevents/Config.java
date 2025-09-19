@@ -6,7 +6,7 @@ import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.BloodSword;
 import de.einfachesache.flareonevents.item.weapon.IceBow;
-import de.einfachesache.flareonevents.item.weapon.PoseidonsTrident;
+import de.einfachesache.flareonevents.item.weapon.ThunderSpear;
 import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
 import de.einfachesache.flareonevents.util.WorldUtils;
 import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
@@ -239,7 +239,7 @@ public class Config {
         loadBloodSword();
         loadIceBow();
         loadSoulEaterScythe();
-        loadPoseidonsTrident();
+        loadThunderSpear();
         loadReinforcedPickaxe();
         loadSuperiorPickaxe();
     }
@@ -309,24 +309,24 @@ public class Config {
         SoulEaterScythe.ITEM_FLAGS = itemFlags;
     }
 
-    private static void loadPoseidonsTrident() {
+    private static void loadThunderSpear() {
         // NamespacedKey, Material & Display-Name
-        String ptKeyString = itemsFile.get("items.poseidons_trident.key");
-        PoseidonsTrident.NAMESPACED_KEY = NamespacedKey.fromString(ptKeyString, FlareonEvents.getPlugin());
-        PoseidonsTrident.MATERIAL = Material.valueOf(itemsFile.get("items.poseidons_trident.material"));
-        PoseidonsTrident.DISPLAY_NAME = itemsFile.get("items.poseidons_trident.display_name");
+        String ptKeyString = itemsFile.get("items.thunder_spear.key");
+        ThunderSpear.NAMESPACED_KEY = NamespacedKey.fromString(ptKeyString, FlareonEvents.getPlugin());
+        ThunderSpear.MATERIAL = Material.valueOf(itemsFile.get("items.thunder_spear.material"));
+        ThunderSpear.DISPLAY_NAME = itemsFile.get("items.thunder_spear.display_name");
 
         // Effekte & Cooldown
-        PoseidonsTrident.THROW_LIGHTNING_CHANCE = itemsFile.getDouble("items.poseidons_trident.throw_lightning_chance");
-        PoseidonsTrident.ON_MELEE_LIGHTNING_CHANCE = itemsFile.getDouble("items.poseidons_trident.melee_lightning_chance");
-        PoseidonsTrident.COOLDOWN = itemsFile.getInt("items.poseidons_trident.cooldown");
+        ThunderSpear.THROW_LIGHTNING_CHANCE = itemsFile.getDouble("items.thunder_spear.throw_lightning_chance");
+        ThunderSpear.ON_MELEE_LIGHTNING_CHANCE = itemsFile.getDouble("items.thunder_spear.melee_lightning_chance");
+        ThunderSpear.COOLDOWN = itemsFile.getInt("items.thunder_spear.cooldown");
 
         // Verzauberungen einlesen
-        PoseidonsTrident.ENCHANTMENTS = loadEnchantments("poseidons_trident");
+        ThunderSpear.ENCHANTMENTS = loadEnchantments("thunder_spear");
         // Attribute-Modifier einlesen (falls in config definiert)
-        PoseidonsTrident.ATTRIBUTE_MODIFIERS = loadAttributes("poseidons_trident");
+        ThunderSpear.ATTRIBUTE_MODIFIERS = loadAttributes("thunder_spear");
         // ItemFlags einlesen
-        PoseidonsTrident.ITEM_FLAGS = itemFlags;
+        ThunderSpear.ITEM_FLAGS = itemFlags;
     }
 
     private static void loadSuperiorPickaxe() {

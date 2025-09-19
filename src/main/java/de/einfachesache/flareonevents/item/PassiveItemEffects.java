@@ -44,7 +44,7 @@ public final class PassiveItemEffects {
             if (ItemUtils.isCustomItem(item, CustomItem.BLOOD_SWORD)) {
                 maybeAdd(add, p, PotionEffectType.FIRE_RESISTANCE, 0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
                 maybeAdd(add, p, PotionEffectType.STRENGTH,       0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
-            } else if (ItemUtils.isCustomItem(item, CustomItem.POSEIDONS_TRIDENT)) {
+            } else if (ItemUtils.isCustomItem(item, CustomItem.THUNDER_SPEAR)) {
                 maybeAdd(add, p, PotionEffectType.DOLPHINS_GRACE,  0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
                 maybeAdd(add, p, PotionEffectType.WATER_BREATHING, 0, FAST_EFFECT_TICKS, FAST_REFRESH_TICKS);
             } else if (ItemUtils.isCustomItem(item, CustomItem.ICE_BOW)) {
