@@ -26,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("SameParameterValue")
 public class Config {
 
     private static long startTime = 0;
@@ -236,128 +237,122 @@ public class Config {
 
         itemFlags = itemsFile.getStringList("generell.item_flags").stream().map(ItemFlag::valueOf).toArray(ItemFlag[]::new);
 
-        loadBloodSword();
-        loadIceBow();
-        loadSoulEaterScythe();
-        loadThunderSpear();
-        loadReinforcedPickaxe();
-        loadSuperiorPickaxe();
+        loadBloodSword("blood_sword");
+        loadIceBow("ice_bow");
+        loadSoulEaterScythe("soul_eater_scythe");
+        loadThunderSpear("thunder_spear");
+        loadReinforcedPickaxe("reinforced_pickaxe");
+        loadSuperiorPickaxe("superior_pickaxe");
     }
 
-    private static void loadBloodSword() {
-        // NamespacedKey, Material & Display-Name
-        String fsKeyString = itemsFile.get("items.blood_sword.key");
-        BloodSword.NAMESPACED_KEY = NamespacedKey.fromString(fsKeyString, FlareonEvents.getPlugin());
-        BloodSword.MATERIAL = Material.valueOf(itemsFile.get("items.blood_sword.material"));
-        BloodSword.DISPLAY_NAME = itemsFile.get("items.blood_sword.display_name");
+    private static void loadBloodSword(String nbKey) {
+        // Material & Display-Name
+        BloodSword.NAMESPACED_KEY = NamespacedKey.fromString(nbKey, FlareonEvents.getPlugin());
+        BloodSword.MATERIAL = Material.valueOf(itemsFile.get("items." + nbKey + ".material"));
+        BloodSword.DISPLAY_NAME = itemsFile.get("items." + nbKey + ".display_name");
 
         // Effekte & Cooldown
-        BloodSword.BLOOD_HUNGER_DURATION = itemsFile.getInt("items.blood_sword.blood_hunger_duration");
-        BloodSword.BLOOD_HUNGER_COOLDOWN = itemsFile.getInt("items.blood_sword.blood_hunger_cooldown");
-        BloodSword.BLEED_DURATION = itemsFile.getInt("items.blood_sword.bleeding_duration");
-        BloodSword.BLEED_TICK = itemsFile.getInt("items.blood_sword.bleeding_tick");
+        BloodSword.BLOOD_HUNGER_DURATION = itemsFile.getInt("items." + nbKey + ".blood_hunger_duration");
+        BloodSword.BLOOD_HUNGER_COOLDOWN = itemsFile.getInt("items." + nbKey + ".blood_hunger_cooldown");
+        BloodSword.BLEED_DURATION = itemsFile.getInt("items." + nbKey + ".bleeding_duration");
+        BloodSword.BLEED_TICK = itemsFile.getInt("items." + nbKey + ".bleeding_tick");
 
         // Enchantments einlesen
-        BloodSword.ENCHANTMENTS = loadEnchantments("blood_sword");
+        BloodSword.ENCHANTMENTS = loadEnchantments(nbKey);
         // Attribute-Modifier einlesen
-        BloodSword.ATTRIBUTE_MODIFIERS = loadAttributes("blood_sword");
+        BloodSword.ATTRIBUTE_MODIFIERS = loadAttributes(nbKey);
         // Item-Flags einlesen
         BloodSword.ITEM_FLAGS = itemFlags;
     }
 
-    private static void loadIceBow() {
-        // NamespacedKey, Material & Display-Name
-        String nbKeyString = itemsFile.get("items.ice_bow.key");
-        IceBow.NAMESPACED_KEY = NamespacedKey.fromString(nbKeyString, FlareonEvents.getPlugin());
-        IceBow.MATERIAL = Material.valueOf(itemsFile.get("items.ice_bow.material"));
-        IceBow.DISPLAY_NAME = itemsFile.get("items.ice_bow.display_name");
+    private static void loadIceBow(String nbKey) {
+        // Material & Display-Name
+        IceBow.NAMESPACED_KEY = NamespacedKey.fromString(nbKey, FlareonEvents.getPlugin());
+        IceBow.MATERIAL = Material.valueOf(itemsFile.get("items." + nbKey + ".material"));
+        IceBow.DISPLAY_NAME = itemsFile.get("items." + nbKey + ".display_name");
 
         // Effekte & Cooldown
-        IceBow.FREEZE_TIME = itemsFile.getInt("items.ice_bow.freeze_time");
-        IceBow.FREEZE_CHANCE = itemsFile.getDouble("items.ice_bow.freeze_chance");
-        IceBow.CRIT_FREEZE_CHANCE = itemsFile.getDouble("items.ice_bow.crit_freeze_chance");
-        IceBow.DARKNESS_TIME = itemsFile.getInt("items.ice_bow.darkness_effect_time");
+        IceBow.FREEZE_TIME = itemsFile.getInt("items." + nbKey + ".freeze_time");
+        IceBow.FREEZE_CHANCE = itemsFile.getDouble("items." + nbKey + ".freeze_chance");
+        IceBow.CRIT_FREEZE_CHANCE = itemsFile.getDouble("items." + nbKey + ".crit_freeze_chance");
+        IceBow.DARKNESS_TIME = itemsFile.getInt("items." + nbKey + ".darkness_effect_time");
 
-        IceBow.DASH_COOLDOWN = itemsFile.getInt("items.ice_bow.dash_cooldown");
-        IceBow.DASH_STRENGTH = itemsFile.getDouble("items.ice_bow.dash_strength");
-        IceBow.DASH_LIFT = itemsFile.getDouble("items.ice_bow.dash_lift");
+        IceBow.DASH_COOLDOWN = itemsFile.getInt("items." + nbKey + ".dash_cooldown");
+        IceBow.DASH_STRENGTH = itemsFile.getDouble("items." + nbKey + ".dash_strength");
+        IceBow.DASH_LIFT = itemsFile.getDouble("items." + nbKey + ".dash_lift");
 
-        IceBow.SHOOT_COOLDOWN = itemsFile.getInt("items.ice_bow.shoot_cooldown");
+        IceBow.SHOOT_COOLDOWN = itemsFile.getInt("items." + nbKey + ".shoot_cooldown");
 
         // Verzauberungen einlesen
-        IceBow.ENCHANTMENTS = loadEnchantments("ice_bow");
+        IceBow.ENCHANTMENTS = loadEnchantments(nbKey);
         // Attribute-Modifier einlesen (falls in config definiert)
-        IceBow.ATTRIBUTE_MODIFIERS = loadAttributes("ice_bow");
+        IceBow.ATTRIBUTE_MODIFIERS = loadAttributes(nbKey);
         // ItemFlags einlesen
         IceBow.ITEM_FLAGS = itemFlags;
     }
 
-    private static void loadSoulEaterScythe() {
-        // NamespacedKey, Material & Display-Name
-        String nbKeyString = itemsFile.get("items.soul_eater_scythe.key");
-        SoulEaterScythe.NAMESPACED_KEY = NamespacedKey.fromString(nbKeyString, FlareonEvents.getPlugin());
-        SoulEaterScythe.MATERIAL = Material.valueOf(itemsFile.get("items.soul_eater_scythe.material"));
-        SoulEaterScythe.DISPLAY_NAME = itemsFile.get("items.soul_eater_scythe.display_name");
+    private static void loadSoulEaterScythe(String nbKey) {
+        // Material & Display-Name
+        SoulEaterScythe.NAMESPACED_KEY = NamespacedKey.fromString(nbKey, FlareonEvents.getPlugin());
+        SoulEaterScythe.MATERIAL = Material.valueOf(itemsFile.get("items." + nbKey + ".material"));
+        SoulEaterScythe.DISPLAY_NAME = itemsFile.get("items." + nbKey + ".display_name");
 
         // Perks
 
         // Verzauberungen einlesen
-        SoulEaterScythe.ENCHANTMENTS = loadEnchantments("soul_eater_scythe");
+        SoulEaterScythe.ENCHANTMENTS = loadEnchantments(nbKey);
         // Attribute-Modifier einlesen (falls in config definiert)
-        SoulEaterScythe.ATTRIBUTE_MODIFIERS = loadAttributes("soul_eater_scythe");
+        SoulEaterScythe.ATTRIBUTE_MODIFIERS = loadAttributes(nbKey);
         // ItemFlags einlesen
         SoulEaterScythe.ITEM_FLAGS = itemFlags;
     }
 
-    private static void loadThunderSpear() {
-        // NamespacedKey, Material & Display-Name
-        String ptKeyString = itemsFile.get("items.thunder_spear.key");
-        ThunderSpear.NAMESPACED_KEY = NamespacedKey.fromString(ptKeyString, FlareonEvents.getPlugin());
-        ThunderSpear.MATERIAL = Material.valueOf(itemsFile.get("items.thunder_spear.material"));
-        ThunderSpear.DISPLAY_NAME = itemsFile.get("items.thunder_spear.display_name");
+    private static void loadThunderSpear(String nbKey) {
+        // Material & Display-Name
+        ThunderSpear.NAMESPACED_KEY = NamespacedKey.fromString(nbKey, FlareonEvents.getPlugin());
+        ThunderSpear.MATERIAL = Material.valueOf(itemsFile.get("items." + nbKey + ".material"));
+        ThunderSpear.DISPLAY_NAME = itemsFile.get("items." + nbKey + ".display_name");
 
         // Effekte & Cooldown
-        ThunderSpear.THROW_LIGHTNING_CHANCE = itemsFile.getDouble("items.thunder_spear.throw_lightning_chance");
-        ThunderSpear.ON_MELEE_LIGHTNING_CHANCE = itemsFile.getDouble("items.thunder_spear.melee_lightning_chance");
-        ThunderSpear.COOLDOWN = itemsFile.getInt("items.thunder_spear.cooldown");
+        ThunderSpear.THROW_LIGHTNING_CHANCE = itemsFile.getDouble("items." + nbKey + ".throw_lightning_chance");
+        ThunderSpear.ON_MELEE_LIGHTNING_CHANCE = itemsFile.getDouble("items." + nbKey + ".melee_lightning_chance");
+        ThunderSpear.COOLDOWN = itemsFile.getInt("items." + nbKey + ".cooldown");
 
         // Verzauberungen einlesen
-        ThunderSpear.ENCHANTMENTS = loadEnchantments("thunder_spear");
+        ThunderSpear.ENCHANTMENTS = loadEnchantments(nbKey);
         // Attribute-Modifier einlesen (falls in config definiert)
-        ThunderSpear.ATTRIBUTE_MODIFIERS = loadAttributes("thunder_spear");
+        ThunderSpear.ATTRIBUTE_MODIFIERS = loadAttributes(nbKey);
         // ItemFlags einlesen
         ThunderSpear.ITEM_FLAGS = itemFlags;
     }
 
-    private static void loadSuperiorPickaxe() {
-        // Superior Pickaxe
-        String brpKeyString = itemsFile.get("items.superior_pickaxe.key");
-        SuperiorPickaxe.NAMESPACED_KEY = NamespacedKey.fromString(brpKeyString, FlareonEvents.getPlugin());
-        SuperiorPickaxe.MATERIAL = Material.valueOf(itemsFile.get("items.superior_pickaxe.material"));
-        SuperiorPickaxe.DISPLAY_NAME = itemsFile.get("items.superior_pickaxe.display_name");
-
-        // Enchantments einlesen
-        SuperiorPickaxe.ENCHANTMENTS = loadEnchantments("superior_pickaxe");
+    private static void loadSuperiorPickaxe(String nbKey) {
+        // Material & Display-Name
+        SuperiorPickaxe.NAMESPACED_KEY = NamespacedKey.fromString(nbKey, FlareonEvents.getPlugin());
+        SuperiorPickaxe.MATERIAL = Material.valueOf(itemsFile.get("items." + nbKey + ".material"));
+        SuperiorPickaxe.DISPLAY_NAME = itemsFile.get("items." + nbKey + ".display_name");
 
         // X-Ray-Konfiguration
-        SuperiorPickaxe.XRAY_ENABLED_TIME = itemsFile.getInt("items.superior_pickaxe.xray.enabled_time");
-        SuperiorPickaxe.XRAY_RADIUS = itemsFile.getInt("items.superior_pickaxe.xray.radius");
-        SuperiorPickaxe.XRAY_COOLDOWN = itemsFile.getInt("items.superior_pickaxe.xray.cooldown");
+        SuperiorPickaxe.XRAY_ENABLED_TIME = itemsFile.getInt("items." + nbKey + ".xray.enabled_time");
+        SuperiorPickaxe.XRAY_RADIUS = itemsFile.getInt("items." + nbKey + ".xray.radius");
+        SuperiorPickaxe.XRAY_COOLDOWN = itemsFile.getInt("items." + nbKey + ".xray.cooldown");
+
+        // Enchantments einlesen
+        SuperiorPickaxe.ENCHANTMENTS = loadEnchantments(nbKey);
         // Item-Flags einlesen
         SuperiorPickaxe.ITEM_FLAGS = itemFlags;
     }
 
-    private static void loadReinforcedPickaxe() {
-        // ReinforcedPickaxe
-        String rpKeyString = itemsFile.get("items.reinforced_pickaxe.key");
-        ReinforcedPickaxe.NAMESPACED_KEY = NamespacedKey.fromString(rpKeyString, FlareonEvents.getPlugin());
-        ReinforcedPickaxe.MATERIAL = Material.valueOf(itemsFile.get("items.reinforced_pickaxe.material"));
-        ReinforcedPickaxe.DISPLAY_NAME = itemsFile.get("items.reinforced_pickaxe.display_name");
+    private static void loadReinforcedPickaxe(String nbKey) {
+        // Material & Display-Name
+        ReinforcedPickaxe.NAMESPACED_KEY = NamespacedKey.fromString(nbKey, FlareonEvents.getPlugin());
+        ReinforcedPickaxe.MATERIAL = Material.valueOf(itemsFile.get("items." + nbKey + ".material"));
+        ReinforcedPickaxe.DISPLAY_NAME = itemsFile.get("items." + nbKey + ".display_name");
 
         // Enchantments einlesen
-        ReinforcedPickaxe.ENCHANTMENTS = loadEnchantments("reinforced_pickaxe");
+        ReinforcedPickaxe.ENCHANTMENTS = loadEnchantments(nbKey);
         // Attribute-Modifier einlesen
-        ReinforcedPickaxe.ATTRIBUTE_MODIFIERS = loadAttributes("reinforced_pickaxe");
+        ReinforcedPickaxe.ATTRIBUTE_MODIFIERS = loadAttributes(nbKey);
         // Item-Flags einlesen
         ReinforcedPickaxe.ITEM_FLAGS = itemFlags;
     }
@@ -403,7 +398,7 @@ public class Config {
             AttributeModifier.Operation op = AttributeModifier.Operation.valueOf(map.get("operation").toString());
             EquipmentSlotGroup slot = EquipmentSlotGroup.getByName(map.get("slot").toString());
 
-            if(slot == null) {
+            if (slot == null) {
                 slot = EquipmentSlotGroup.HAND;
             }
 

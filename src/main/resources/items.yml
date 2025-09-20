@@ -5,9 +5,6 @@ generell:
 
 items:
   blood_sword:
-    # NamespacedKey in Java
-    key: flareonevents:blood_sword
-
     # Material & Anzeige-Name
     material: GOLDEN_SWORD
     display_name: "§c§lBlut Schwert"
@@ -30,9 +27,6 @@ items:
     bleeding_tick: 1 # Dauer in Sekunden
 
   ice_bow:
-    # NamespacedKey in Java
-    key: flareonevents:ice_bow
-
     # Material & Anzeige-Name
     material: BOW
     display_name: "§b§lIce Bow"
@@ -54,9 +48,6 @@ items:
     shoot_cooldown: 1200      # Cooldown in Millisekunden
 
   soul_eater_scythe:
-    # NamespacedKey in Java
-    key: flareonevents:soul_eater_scythe
-
     # Material & Anzeige-Name
     material: IRON_AXE
     display_name: "§5§lSoul Eater Scythe"
@@ -81,9 +72,6 @@ items:
       10: "Seelenschnitter"
 
   thunder_spear:
-    # NamespacedKey in Java
-    key: flareonevents:thunder_spear
-
     # Material & Anzeige-Name
     material: TRIDENT
     display_name: "§1§lDonner Speer"
@@ -109,9 +97,6 @@ items:
     cooldown: 10                   # Cooldown in Sekunden
 
   reinforced_pickaxe:
-    # NamespacedKey in Java
-    key: flareonevents:reinforced_pickaxe
-
     # Item-Grundlagen
     material: DIAMOND_PICKAXE
     display_name: "§6§lReinforced Pickaxe"
@@ -126,9 +111,6 @@ items:
       efficiency: 2
 
   superior_pickaxe:
-    # NamespacedKey in Java
-    key: flareonevents:superior_pickaxe
-
     # Item-Grundlagen
     material: NETHERITE_PICKAXE
     display_name: "§6§l§kABC§r§6§l Superior Pickaxe §kXYZ§r§6§l"
