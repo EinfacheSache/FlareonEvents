@@ -46,8 +46,7 @@ public class SoulEaterScythe implements Listener {
 
     public static NamespacedKey KILLS_COUNT = new NamespacedKey(FlareonEvents.getPlugin(), "soul_kills");
 
-    record Perk(String id, int threshold, String display) {
-    }
+    record Perk(String id, int threshold, String display) { }
 
     private static final List<Perk> SOUL_EATER_PERKS = List.of(
             new Perk("DAMAGE", 1, "Schaden +1"),
@@ -110,7 +109,7 @@ public class SoulEaterScythe implements Listener {
                 .ofNullable(meta.getAttributeModifiers(Attribute.ATTACK_DAMAGE))
                 .orElse(java.util.Collections.emptyList())
                 .stream()
-                .mapToDouble(org.bukkit.attribute.AttributeModifier::getAmount)
+                .mapToDouble(AttributeModifier::getAmount)
                 .sum();
 
         lore.add(serializer.deserialize("§f"));
@@ -184,7 +183,7 @@ public class SoulEaterScythe implements Listener {
 
     private static void checkForKillPerks(Player damager, int killCount) {
         if (killCount >= 3) {
-            damager.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 3, 0));
+            damager.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 3 * 20, 1));
             damager.playSound(damager.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 0.8f, 1.0f);
         }
     }
@@ -192,14 +191,14 @@ public class SoulEaterScythe implements Listener {
     private static void checkForHitPerks(Player damager, LivingEntity target, int killCount) {
         if (killCount >= 5) {
             if (ThreadLocalRandom.current().nextDouble() < 0.15) {
-                target.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 3, 0));
+                target.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 3 * 20, 0));
                 damager.playSound(damager.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.8f, 1.0f);
             }
         }
 
         if (killCount >= 7) {
             if (ThreadLocalRandom.current().nextDouble() < 0.15) {
-                target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 3, 0));
+                target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 3 * 20, 0));
                 damager.playSound(damager.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.8f, 1.0f);
             }
         }

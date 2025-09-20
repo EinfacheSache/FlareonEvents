@@ -84,7 +84,7 @@ public class BloodSword implements Listener {
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Du verfällst dem §cBluthunger§7 für §e" + BLOOD_HUNGER_DURATION + "s§7 (Rechtsklick)"));
-        lore.add(serializer.deserialize("§7Treffer lassen das Ziel §e" + BLEED_DURATION + "s §cbluten§7 und verursachen alle §e" + BLEED_TICK + "s §c0.5❤ schaden§7."));
+        lore.add(serializer.deserialize("§7Treffer lassen das Ziel §e" + BLEED_DURATION + "s §cbluten§7 und verursachen alle §e" + BLEED_TICK + "s §c0.25❤ schaden§7."));
         lore.add(serializer.deserialize("§7Jeder Blutschaden heilt dich."));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Besonderheit: §bStrength §7& §bFire Resistance §7in Hand"));
@@ -117,7 +117,7 @@ public class BloodSword implements Listener {
         ItemStack item = event.getItem();
         if (!ItemUtils.isCustomItem(item, CustomItem.BLOOD_SWORD)) return;
 
-        int bloodHungerCooldown = player.isOp() ? BLOOD_HUNGER_DURATION : BLOOD_HUNGER_COOLDOWN;
+        int bloodHungerCooldown = player.getGameMode() == GameMode.CREATIVE ? BLOOD_HUNGER_DURATION : BLOOD_HUNGER_COOLDOWN;
         long remaining = (bloodHungerCooldown - ((System.currentTimeMillis() - cooldownMap.getOrDefault(player.getUniqueId(), 0L))) / 1000);
         if (remaining > 0) {
             player.sendMessage(Component.text("Du kannst Bluthunger in " + remaining + "s erneut verwenden!", NamedTextColor.RED));
@@ -240,10 +240,10 @@ public class BloodSword implements Listener {
                 // 0.5❤ Schaden (1.0 HP) an Opfer, Quelle = Angreifer (gut für Combat-Log)
                 victim.damage(1.0);
 
-                // Heal den Angreifer um 0.5❤ (clampen)
+                // Heal den Angreifer um 0.25❤ (clampen)
                 var attr = damager.getAttribute(Attribute.MAX_HEALTH);
                 double max = attr != null ? attr.getValue() : 20.0;
-                damager.setHealth(Math.min(max, damager.getHealth() + 1.0));
+                damager.setHealth(Math.min(max, damager.getHealth() + 0.5));
                 damager.playSound(damager.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 0.8f, 1.0f);
 
                 // Optional: kleiner Blut-Partikelimpuls am Opfer (sehr sparsam)

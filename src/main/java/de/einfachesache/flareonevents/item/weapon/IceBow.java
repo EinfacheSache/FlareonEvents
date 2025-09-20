@@ -236,11 +236,11 @@ public class IceBow implements Listener {
             return;
         }
 
-        if (applyCritFreeze) {
+        if (!applyCritFreeze) {
+            livingEntity.setFreezeTicks(livingEntity.getMaxFreezeTicks() - 1);
+        } else {
             livingEntity.setFreezeTicks(livingEntity.getMaxFreezeTicks());
             livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 20 * DARKNESS_TIME, 0));
-        } else {
-            livingEntity.setFreezeTicks(livingEntity.getMaxFreezeTicks() - 1);
         }
 
         livingEntity.lockFreezeTicks(true);
