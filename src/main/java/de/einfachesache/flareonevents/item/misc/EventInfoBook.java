@@ -2,10 +2,11 @@ package de.einfachesache.flareonevents.item.misc;
 
 import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.FlareonEvents;
+import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.util.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.event.Event;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -33,25 +34,23 @@ public class EventInfoBook implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent e) {
-
-        ItemStack clicked = e.getCurrentItem();
-        if (e.getSlot() != 8 || clicked == null || !clicked.hasItemMeta()) return;
-
-        if (clicked.getItemMeta().getPersistentDataContainer().has(EventInfoBook.NAMESPACED_KEY)) {
-            e.setResult(Event.Result.DENY);
-            e.getView().setCursor(null);
+    public void onClick(InventoryClickEvent e) {
+        if (isEventBook(e.getCurrentItem()) || isEventBook(e.getCursor())) {
+            e.setCancelled(true);
+            if (e.getWhoClicked() instanceof Player p) {
+                p.setItemOnCursor(null);
+                p.updateInventory();
+            }
         }
     }
 
     @EventHandler
-    public void onPlayerDrop(PlayerDropItemEvent e) {
-
-        ItemStack clicked = e.getItemDrop().getItemStack();
-        if (!clicked.hasItemMeta()) return;
-
-        if (clicked.getItemMeta().getPersistentDataContainer().has(EventInfoBook.NAMESPACED_KEY)) {
+    public void onDrop(PlayerDropItemEvent e) {
+        if (isEventBook(e.getItemDrop().getItemStack()))
             e.setCancelled(true);
-        }
+    }
+
+    private boolean isEventBook(ItemStack itemStack) {
+        return ItemUtils.isCustomItem(itemStack, CustomItem.EVENT_INFO_BOOK);
     }
 }
