@@ -168,7 +168,7 @@ public class TeamHandler {
         UUID playerUUID = player.getUniqueId();
 
         if (!Config.getPlayerTeams().containsKey(playerUUID)) {
-            if(isKick){
+            if(!isKick){
                 Objects.requireNonNull(player.getPlayer()).sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Du bist in keinem Team!", NamedTextColor.RED)));
             }
             return;
