@@ -36,6 +36,18 @@ public class GameHandler {
     static final int noPvPTime = 5 * 60; // DEFAULT: 5 * 60
     static final int netherOpenTime = 60 * 60; // DEFAULT: 60 * 60
 
+    public record BorderPhase(Duration at, int targetSize, Duration shrink) {}
+
+    static final List<BorderPhase> borderPhases = List.of(
+            new BorderPhase(Duration.ofMinutes(30),  2500, Duration.ofMinutes(10)),
+            new BorderPhase(Duration.ofMinutes(60),  1800, Duration.ofMinutes(15)),
+            new BorderPhase(Duration.ofMinutes(90),  1200, Duration.ofMinutes(15)),
+            new BorderPhase(Duration.ofMinutes(120),  600, Duration.ofMinutes(20)),
+            new BorderPhase(Duration.ofMinutes(150),  200, Duration.ofMinutes(15)),
+            new BorderPhase(Duration.ofMinutes(165),   50, Duration.ofMinutes(10)),
+            new BorderPhase(Duration.ofMinutes(175),   10, Duration.ofMinutes(5))
+    );
+
     static String winner = "§cNO WINNER§6";
 
     static String secondWord(int n) {
@@ -47,9 +59,9 @@ public class GameHandler {
     }
 
     static final Title.Times times = Title.Times.times(
-            Duration.ofMillis(1000),  // 20 Ticks = 1 Sekunde (fadeIn)
-            Duration.ofMillis(3000),  // 60 Ticks = 3 Sekunden (stay)
-            Duration.ofMillis(1000)   // 20 Ticks = 1 Sekunde (fadeOut)
+            Duration.ofMillis(1000),  // 1 Sekunde (fadeIn)
+            Duration.ofMillis(3000),  // 3 Sekunden (stay)
+            Duration.ofMillis(1000)   // 1 Sekunde (fadeOut)
     );
 
     public static void prepareEvent(boolean forceStart) {
@@ -67,7 +79,10 @@ public class GameHandler {
 
         playerAssignedSpawns.clear();
 
-        plugin.getServer().getWorlds().forEach(world -> world.setPVP(false));
+        plugin.getServer().getWorlds().forEach(world -> {
+            world.setPVP(false);
+            world.getWorldBorder().setSize(3000);
+        });
 
         World world = Bukkit.getWorlds().getFirst();
         world.setTime(6000);
@@ -164,7 +179,10 @@ public class GameHandler {
 
         PortalCreateListener.setNether(false);
 
-        plugin.getServer().getWorlds().forEach(world -> world.setPVP(false));
+        plugin.getServer().getWorlds().forEach(world -> {
+            world.setPVP(false);
+            world.getWorldBorder().setSize(world.getWorldBorder().getSize());
+        });
         plugin.getServer().getOnlinePlayers().forEach(player -> {
 
             if(player.getGameMode() == GameMode.SPECTATOR) {
@@ -374,77 +392,64 @@ public class GameHandler {
         }.runTaskTimer(plugin, noPvPTime * 20L, 20L));
     }
 
+    public static void startBorderSchedule() {
+        for (var p : borderPhases) {
+            long delayTicks = p.at().toSeconds() * 20L;
+            tasks.add(Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                var worlds = Bukkit.getWorlds();
+                moveBorder(worlds, p.targetSize(), (int) p.shrink().toMinutes());
+            }, delayTicks));
+        }
 
-    private static void startBorderSchedule() {
+        Duration end = borderPhases.stream()
+                .map(p -> p.at().plus(p.shrink()))
+                .max(Duration::compareTo)
+                .orElse(Duration.ZERO);
 
-        List<World> worlds = Bukkit.getWorlds();
-
-        // Nach 40 Minuten (40 * 60 * 20 Ticks)
-        tasks.add(new BukkitRunnable() {
-            @Override
-            public void run() {
-                // Verkleinere in 20 Minuten (20 * 60 Sekunden) auf 2000
-                moveBorder(worlds, 2000, 20);
-            }
-        }.runTaskLater(plugin, 40 * 60 * 20L));
-
-        // Nach 90 Minuten (30 min + 20 min + 40 min)
-        tasks.add(new BukkitRunnable() {
-            @Override
-            public void run() {
-                // Verkleinere in 30 Minuten auf 1500
-                moveBorder(worlds, 1500, 30);
-            }
-        }.runTaskLater(plugin, 90 * 60 * 20L));
-
-        // Nach 140 Minuten (20min + 30min + 30 min + 20 min + 40 min)
-        tasks.add(new BukkitRunnable() {
-            @Override
-            public void run() {
-                // Verkleinere in 40 Minuten auf 200
-                moveBorder(worlds, 200, 40);
-            }
-        }.runTaskLater(plugin, 140 * 60 * 20L));
-
-        // Nach 210 Minuten (30min + 40min + 20min + 30min + 30 min + 20 min + 40 min)
-        tasks.add(new BukkitRunnable() {
-            @Override
-            public void run() {
-                // Verkleinere in 10 Minuten auf 50
-                moveBorder(worlds, 50, 10);
-            }
-        }.runTaskLater(plugin, 210 * 60 * 20L));
-
-        // Nach 240 Minuten (20min + 10min + 30min + 40min + 20min + 30min + 30 min + 20 min + 40 min)
-        tasks.add(new BukkitRunnable() {
-            @Override
-            public void run() {
-                // Verkleinere in 5 Minuten auf 5
-                moveBorder(worlds, 5, 5);
-            }
-        }.runTaskLater(plugin, 240 * 60 * 20L));
-
-        tasks.add(new BukkitRunnable() {
-            @Override
-            public void run() {
-                plugin.getServer().broadcast(Component.text("Die Border ist stehen geblieben. Das Gebiet bleibt nun auf 5x5 Blöcke begrenzt!", NamedTextColor.YELLOW));
-            }
-        }.runTaskLater(plugin, 245 * 60 * 20L));
+        tasks.add(Bukkit.getScheduler().runTaskLater(plugin, () ->
+                plugin.getServer().broadcast(Component.
+                        text("Die Border ist stehen geblieben. Das Gebiet bleibt nun auf 10×10 Blöcke begrenzt!", NamedTextColor.YELLOW)
+        ), end.toSeconds() * 20L));
     }
 
     private static void moveBorder(List<World> worlds, int size, int delayInMinutes) {
+
+        long totalSec = Math.max(0, TimeUnit.MINUTES.toSeconds(delayInMinutes));
+        long endAt = System.currentTimeMillis() + (totalSec * 1000L);
+        double startSize = worlds.isEmpty()
+                ? size
+                : worlds.getFirst().getWorldBorder().getSize();
+
         Title title = Title.title(
                 Component.text("ACHTUNG", NamedTextColor.RED),
-                Component.text("Die Border bewegt sich nun zu " + size + "x" + size, NamedTextColor.YELLOW),
-                times);
+                Component.text("Border → " + size + "×" + size + " in " + inMinuteString(delayInMinutes), NamedTextColor.YELLOW),
+                times
+        );
 
         plugin.getServer().getOnlinePlayers().forEach(player -> {
             player.showTitle(title);
             player.playSound(EventSound.NOTIFY.adventure());
-            player.sendMessage(Component.text("Pass auf! Die Border hat sich in Bewegung gesetzt. Das Gebiet wird nun auf " + size + "x" + size + " Blöcke begrenzt!", NamedTextColor.YELLOW));
+            player.sendMessage(Component.text(
+                    "Border schrumpft: " + (int) Math.round(startSize) + " → " + size +
+                            " | Dauer " + inMinuteString(delayInMinutes) +
+                            " | Ende ~" + toHourMinuteFormat(endAt),
+                    NamedTextColor.RED
+            ));
         });
 
-        worlds.forEach(world -> world.getWorldBorder().setSize(size, TimeUnit.MINUTES, delayInMinutes));
+        worlds.forEach(world ->
+                world.getWorldBorder().setSize(size, TimeUnit.MINUTES, delayInMinutes)
+        );
+    }
+
+    private static String inMinuteString(long min) {
+        return min + " min";
+    }
+
+    private static String toHourMinuteFormat(long epochMillis) {
+        var t = java.time.Instant.ofEpochMilli(epochMillis)
+                .atZone(java.time.ZoneId.systemDefault()).toLocalTime();
+        return String.format("%02d:%02d", t.getHour(), t.getMinute());
     }
 
     public static void resetPlayer(Player player, boolean potionReset, boolean completeReset) {
