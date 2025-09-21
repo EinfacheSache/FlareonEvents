@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class TexturepackHandler {
 
-    private static final String PACK_URL_BASE = "https://flareonevents.de/texturepack/Flareon-Events.zip";
+    private static final String PACK_URL_BASE = "https://download.flareonevents.de/texturepack/Flareon-Events.zip";
     private static final UUID SESSION_UUID = UUID.randomUUID();
     private static final Component PACK_PROMPT =
             Component.text("Benötigtes Texturepack für ", NamedTextColor.GRAY)
