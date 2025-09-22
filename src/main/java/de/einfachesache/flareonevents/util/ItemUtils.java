@@ -8,6 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -21,16 +22,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
 public class ItemUtils {
 
+    private static final PlainTextComponentSerializer PLAIN = PlainTextComponentSerializer.plainText();
     static NamespacedKey invulnerable = new NamespacedKey(FlareonEvents.getPlugin(), "invulnerable");
 
     public static ItemStack createCustomItem(Material mat, String name, NamespacedKey itemKey) {
@@ -51,6 +50,7 @@ public class ItemUtils {
     }
 
     public static boolean isInvulnerable(ItemStack item) {
+        if (item == null) return false;
         if (!item.hasItemMeta()) return false;
 
         PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
@@ -98,10 +98,8 @@ public class ItemUtils {
                 newItem.setAmount(oldItem.getAmount());
 
                 return switch (customItem) {
-                    case SOUL_HEART_CRYSTAL ->
-                            SoulHeartCrystal.create(SoulHeartCrystal.getDroppedByPlayer(oldItem));
-                    case SOUL_EATER_SCYTHE ->
-                            SoulEaterScythe.create(SoulEaterScythe.getKillCount(oldItem));
+                    case SOUL_HEART_CRYSTAL -> SoulHeartCrystal.create(SoulHeartCrystal.getDroppedByPlayer(oldItem));
+                    case SOUL_EATER_SCYTHE -> SoulEaterScythe.create(SoulEaterScythe.getKillCount(oldItem));
                     default -> newItem;
                 };
             }
@@ -142,6 +140,50 @@ public class ItemUtils {
         lore.add(deserialize("§f"));
 
         return lore;
+    }
+
+    public static void rewriteEnchantLoreWithNewEnchantments(ItemStack result) {
+        List<Component> lore = result.lore();
+        List<Map.Entry<Enchantment,Integer>> enchantmentEntries = result.getEnchantments().entrySet().stream()
+                        .filter(e -> e.getKey() != Enchantment.UNBREAKING)
+                        .sorted(Comparator.comparing(e -> e.getKey().getKey().asString()))
+                        .collect(Collectors.toCollection(ArrayList::new));
+
+        if (lore == null) {
+            return;
+        }
+
+        int headerIdx = -1;
+        for (int i = 0; i < lore.size(); i++) {
+            if (serialize(lore.get(i)).trim().equalsIgnoreCase("Enchantment:")) {
+                headerIdx = i;
+                break;
+            }
+        }
+
+        List<Component> finalLore = new ArrayList<>(lore.stream().filter(line -> !serialize(line).contains("➤")).toList());
+        if (headerIdx == -1 && !enchantmentEntries.isEmpty()) {
+            headerIdx = finalLore.size();
+            finalLore.add(Component.text("Enchantment:", NamedTextColor.GRAY));
+        }
+
+        int insertAt = headerIdx + 1;
+        for (Map.Entry<Enchantment, Integer> enchantment : enchantmentEntries) {
+            String enchantmentName = prettyEnchantmentName(enchantment.getKey()) + " " + ItemUtils.toRoman(enchantment.getValue());
+            finalLore.add(insertAt++, Component.text("➤ ", NamedTextColor.GRAY).append(Component.text(enchantmentName, NamedTextColor.DARK_RED)));
+        }
+
+        if (serialize(finalLore.getLast()).startsWith("➤")) {
+            finalLore.add(deserialize("§7"));
+        }
+
+        result.lore(finalLore);
+    }
+
+    private static String prettyEnchantmentName(Enchantment enchantment) {
+        NamespacedKey key = enchantment.getKey();
+        String base = key.getKey().replace('_', ' ');
+        return Character.toUpperCase(base.charAt(0)) + base.substring(1);
     }
 
     public static Material getRandomDrop(Map<Material, Integer> chances) {
@@ -187,5 +229,9 @@ public class ItemUtils {
 
     public static Component deserialize(String string) {
         return LegacyComponentSerializer.legacySection().deserialize(string);
+    }
+
+    public static String serialize(Component component) {
+        return PLAIN.serialize(component);
     }
 }

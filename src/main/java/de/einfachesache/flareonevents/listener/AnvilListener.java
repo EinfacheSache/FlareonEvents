@@ -1,6 +1,7 @@
 package de.einfachesache.flareonevents.listener;
 
 import de.einfachesache.flareonevents.item.CustomItem;
+import de.einfachesache.flareonevents.util.ItemUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
@@ -25,9 +26,12 @@ public class AnvilListener implements Listener {
             if (item.matches(left)) {
                 item.applyName(resultMeta);
                 result.setItemMeta(resultMeta);
-                event.setResult(result);
                 break;
             }
+        }
+
+        if(ItemUtils.isInvulnerable(left)) {
+            ItemUtils.rewriteEnchantLoreWithNewEnchantments(result);
         }
     }
 }
