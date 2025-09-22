@@ -40,12 +40,13 @@ public class GameHandler {
 
     static final List<BorderPhase> borderPhases = List.of(
             new BorderPhase(Duration.ofMinutes(30),  2500, Duration.ofMinutes(10)),
-            new BorderPhase(Duration.ofMinutes(60),  1800, Duration.ofMinutes(15)),
-            new BorderPhase(Duration.ofMinutes(90),  1200, Duration.ofMinutes(15)),
-            new BorderPhase(Duration.ofMinutes(120),  600, Duration.ofMinutes(20)),
-            new BorderPhase(Duration.ofMinutes(150),  200, Duration.ofMinutes(15)),
-            new BorderPhase(Duration.ofMinutes(165),   50, Duration.ofMinutes(10)),
-            new BorderPhase(Duration.ofMinutes(175),   10, Duration.ofMinutes(5))
+            new BorderPhase(Duration.ofMinutes(60),  2000, Duration.ofMinutes(15)),
+            new BorderPhase(Duration.ofMinutes(90),  1350, Duration.ofMinutes(15)),
+            new BorderPhase(Duration.ofMinutes(120),  700, Duration.ofMinutes(20)),
+            new BorderPhase(Duration.ofMinutes(150),  250, Duration.ofMinutes(15)),
+            new BorderPhase(Duration.ofMinutes(165),   100, Duration.ofMinutes(10)),
+            new BorderPhase(Duration.ofMinutes(175),   10, Duration.ofMinutes(5)),
+            new BorderPhase(Duration.ofMinutes(200),   0, Duration.ofMinutes(5))
     );
 
     static String winner = "§cNO WINNER§6";
@@ -59,7 +60,7 @@ public class GameHandler {
     }
 
     static final Title.Times times = Title.Times.times(
-            Duration.ofMillis(1000),  // 1 Sekunde (fadeIn)
+            Duration.ofMillis(500),  // 0.5 Sekunde (fadeIn)
             Duration.ofMillis(3000),  // 3 Sekunden (stay)
             Duration.ofMillis(1000)   // 1 Sekunde (fadeOut)
     );
