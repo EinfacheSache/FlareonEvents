@@ -2,6 +2,7 @@ package de.einfachesache.flareonevents.listener;
 
 import de.einfachesache.flareonevents.item.misc.EventInfoBook;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,6 +16,6 @@ public class PlayerQuitListener implements Listener {
 
         player.getInventory().remove(EventInfoBook.create());
 
-        event.quitMessage(Component.text("§7" + player.getName() + " hat den Server verlassen"));
+        event.quitMessage(player.displayName().append(Component.text(" hat den Server verlassen", NamedTextColor.GRAY)));
     }
 }

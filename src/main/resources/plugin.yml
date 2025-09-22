@@ -4,23 +4,22 @@ website: https://einfachesache.de/discord
 description: Das offizielle Flareon Events Plugin
 version: '1.0-SNAPSHOT'
 main: de.einfachesache.flareonevents.FlareonEvents
-api-version: '1.21'
-softdepend: [voicechat]
+api-version: '1.21.6'
+softdepend: [ voicechat ]
 commands:
   help:
     description: 'Event command Help'
 
   team:
     description: 'Manage your team: invite, list, leave, and more'
-    aliases: [ tm ]
 
   recipe:
     description: 'Open the custom item recipe GUI'
-    aliases: [ rg, recipegui ]
+    aliases: [ rg ]
 
   report:
     description: Meldet einen Bug als Discord Ticket
-    aliases: [ bug, bugreport ]
+    aliases: [ bugreport ]
 
   event:
     description: 'Administrative event management commands'

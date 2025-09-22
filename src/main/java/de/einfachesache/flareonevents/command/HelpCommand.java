@@ -20,7 +20,7 @@ public class HelpCommand implements CommandExecutor {
                 .append(Component.text(" - Öffnet das Rezept GUI-Menü", NamedTextColor.GRAY)));
         sender.sendMessage(Component.text("/msg <Spieler> <Nachricht>", NamedTextColor.GREEN)
                 .append(Component.text(" - Sendet eine private Nachricht", NamedTextColor.GRAY)));
-        sender.sendMessage(Component.text("/bugreport <Type> <Kurze Beschreibung>", NamedTextColor.GREEN)
+        sender.sendMessage(Component.text("/bugreport <Type> <Beschreibung>", NamedTextColor.GREEN)
                 .append(Component.text(" - Erstelle einen Bugreport", NamedTextColor.GRAY)));
         return true;
     }

@@ -6,7 +6,7 @@ pages:
 
     §cPvP §7nach §65m§7
 
-    §cNether §7nach §61h§7
+    §cNetherevent §7nach §61h§7
 
     §cEnd §7ist §6geschlossen §7
 
@@ -38,14 +38,14 @@ pages:
     
     §7- /msg <Spieler> <Nachricht>
     
-    §7- /bugreport <Type> <Kurze Beschreibung>
+    §7- /bugreport <Type> <Beschreibung>
 
   4: |-
     §6Custom Items §7Liste
 
     §7- §4Blutmond
     §7- §bEiswind
-    §7- §5Seelenschnitter
+    §7- §5Seelenschnitt
     §7- §1Himmelsspieß
     
     §7- §6Reinforced Pickaxe
@@ -53,7 +53,7 @@ pages:
     
     §7- §5Soul Heart Crystal
     
-    §7- Ingridients
+    §7- Ingredients
 
   5: |-
     §6Custom Items §7Info
@@ -65,13 +65,13 @@ pages:
     §73. Änderungen bleiben vorbehalten.
 
   6: |-
-    §6Custom Items §7Weapons
+    §6Custom Items §7Waffen
 
-    §74. Jede §6Custom Weapon §7kann nur einmal gecraftet werden.
+    §74. Jede §6legendäre Waffe §7kann nur einmal gecraftet werden.
 
-    §75. Jeder Spieler kann nur ein §6Custom Weapon §7craften.
+    §75. Jeder Spieler kann nur ein §6legendäre Waffe §7craften.
 
-    §76. Jede §6Custom Weapon §7besitzt besondere Fähigkeiten.
+    §76. Jede §6legendäre Waffe §7besitzt besondere Fähigkeiten.
 
   7: |-
     §6Custom Items §7Extras
@@ -80,13 +80,15 @@ pages:
 
     §78. §6Soul Heart Crystals §7werden beim killen von Spielern erlangt.
 
-    §79. Jedes §6Rüstungsteil §7kann nur einmal gecraftet werden.
+    §79. Jedes §6Rüstungsteil §7kann nur einmal erlangt werden.
 
   8: |-
     §cGebannte Items§7:
     - Mace
-    - Potion
+    - Potions
+    - Anchor
+    - End Crystal 
+    - TNT-Minecart
 
     §cGebannte Funktionen§7:
-    - TNT-Bed im Nether
-    - Anchor Explosion
+    - Bett im Nether

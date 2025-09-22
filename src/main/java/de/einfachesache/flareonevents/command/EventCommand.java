@@ -39,7 +39,7 @@ public class EventCommand implements CommandExecutor, TabCompleter {
         return switch (sub) {
             case "pvp" -> handlePvP(sender);
             case "start" -> handleStart(sender, args);
-            case "cancel" -> handleCancel(sender);
+            case "cancel" -> handleCancel(sender, args);
             case "reset" -> handleReset(sender, args);
             case "spawncircle" -> handleSpawnCircle(sender, args);
             case "setspawn" -> handleSetSpawn(sender, args);
@@ -74,16 +74,23 @@ public class EventCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private boolean handleCancel(CommandSender sender) {
+    private boolean handleCancel(CommandSender sender, String[] args) {
+
+        if (!(sender instanceof ConsoleCommandSender) && !(sender instanceof Player p && p.getUniqueId().equals(FlareonEvents.DEV_UUID))) {
+            sender.sendMessage("§cDu darfst diesen Command nicht verwenden.");
+            return false;
+        }
+
         if (Config.getEventState().getId() == 0) {
             sender.sendMessage("§cDas Event wurde noch nicht gestartet!");
             return false;
         }
-        if (!(sender instanceof ConsoleCommandSender) &&
-                !(sender instanceof Player p && p.getUniqueId().equals(FlareonEvents.DEV_UUID))) {
-            sender.sendMessage("§cDu darfst diesen Command nicht verwenden.");
+
+        if (args.length != 2 || !args[1].equalsIgnoreCase("confirm")) {
+            sender.sendMessage("§cBitte verwende /event cancel confirm");
             return false;
         }
+
         GameHandler.cancelEvent();
         sender.sendMessage("§4Du hast das Event erfolgreich gecancelt!");
         return true;
