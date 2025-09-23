@@ -25,6 +25,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @SuppressWarnings("deprecation")
 public class ItemUtils {
@@ -161,7 +162,13 @@ public class ItemUtils {
             }
         }
 
-        List<Component> finalLore = new ArrayList<>(lore.stream().filter(line -> !serialize(line).contains("➤")).toList());
+        final int finalHeader = headerIdx;
+        List<Component> finalLore = (headerIdx < 0)
+                        ? new ArrayList<>(lore)
+                        : IntStream.range(0, lore.size())
+                        .filter(i -> i <= finalHeader || !serialize(lore.get(i)).trim().startsWith("➤"))
+                        .mapToObj(lore::get).collect(Collectors.toCollection(ArrayList::new));
+
         if (headerIdx == -1 && !enchantmentEntries.isEmpty()) {
             headerIdx = finalLore.size();
             finalLore.add(Component.text("Enchantment:", NamedTextColor.GRAY));
@@ -170,7 +177,7 @@ public class ItemUtils {
         int insertAt = headerIdx + 1;
         for (Map.Entry<Enchantment, Integer> enchantment : enchantmentEntries) {
             String enchantmentName = prettyEnchantmentName(enchantment.getKey()) + " " + ItemUtils.toRoman(enchantment.getValue());
-            finalLore.add(insertAt++, Component.text("➤ ", NamedTextColor.GRAY).append(Component.text(enchantmentName, NamedTextColor.DARK_RED)));
+            finalLore.add(Math.min(insertAt++, finalLore.size() - 1), Component.text("➤ ", NamedTextColor.GRAY).append(Component.text(enchantmentName, NamedTextColor.DARK_RED)));
         }
 
         if (serialize(finalLore.getLast()).startsWith("➤")) {
