@@ -26,4 +26,8 @@ public class PortalCreateListener implements Listener {
             Bukkit.broadcast(Component.text("§aDer Nether ist ab jetzt geöffnet. Der Zugang ist freigegeben. Viel Erfolg."));
         PortalCreateListener.nether = nether;
     }
+
+    public static boolean netherEnabled() {
+        return nether;
+    }
 }

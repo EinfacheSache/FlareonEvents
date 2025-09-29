@@ -23,9 +23,7 @@ import java.util.List;
 
 public class EventCommand implements CommandExecutor, TabCompleter {
 
-    private static final List<String> SUB_COMMANDS = Arrays.asList("pvp", "start", "cancel", "reset", "spawncircle", "setspawn");
-
-    FlareonEvents plugin = FlareonEvents.getPlugin();
+    private static final List<String> SUB_COMMANDS = Arrays.asList("start", "cancel", "reset", "spawncircle", "setspawn");
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String @NotNull [] args) {
@@ -37,7 +35,6 @@ public class EventCommand implements CommandExecutor, TabCompleter {
 
         String sub = args[0].toLowerCase();
         return switch (sub) {
-            case "pvp" -> handlePvP(sender);
             case "start" -> handleStart(sender, args);
             case "cancel" -> handleCancel(sender, args);
             case "reset" -> handleReset(sender, args);
@@ -48,13 +45,6 @@ public class EventCommand implements CommandExecutor, TabCompleter {
                 yield false;
             }
         };
-    }
-
-    private boolean handlePvP(CommandSender sender) {
-        boolean pvp = Bukkit.getWorlds().getFirst().getPVP();
-        plugin.getServer().getWorlds().forEach(world -> world.setPVP(!pvp));
-        sender.sendMessage("§cPVP wurde erfolgreich " + (!pvp ? "§aaktiviert!" : "§cdeaktiviert!"));
-        return true;
     }
 
     private boolean handleStart(CommandSender sender, String[] args) {

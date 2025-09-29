@@ -18,7 +18,7 @@ commands:
     aliases: [ rg ]
 
   report:
-    description: Meldet einen Bug als Discord Ticket
+    description: 'Meldet einen Bug als Discord Ticket'
     aliases: [ bugreport ]
 
   event:
@@ -35,3 +35,8 @@ commands:
     description: 'Command to give yourself a custom item'
     permission: 'event.op'
     aliases: [ ci ]
+
+  settings:
+    description: 'Adjust world and event settings such as PvP, view distance, simulation distance, and Nether access'
+    permission: 'event.op'
+    aliases: [ ctl ]

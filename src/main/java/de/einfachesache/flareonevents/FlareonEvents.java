@@ -110,6 +110,7 @@ public final class FlareonEvents extends JavaPlugin {
         registerCommand("team", new TeamCommand());
         registerCommand("event", new EventCommand());
         registerCommand("update", new UpdateCommand());
+        registerCommand("settings", new SettingsCommand());
         registerCommand("report", new BugReportCommand(this));
     }
 
