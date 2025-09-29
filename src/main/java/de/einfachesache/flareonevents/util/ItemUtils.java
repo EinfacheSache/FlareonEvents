@@ -128,8 +128,17 @@ public class ItemUtils {
         return recipe;
     }
 
+    private static final String enchantmentKey = "Verzauberung";
+
     public static List<Component> getEnchantments(Map<Enchantment, Integer> enchantments) {
         List<Component> lore = new ArrayList<>();
+
+        lore.add(deserialize("§7" + enchantmentKey + (enchantments.size() > 1 ? "en" : "") + ":"));
+
+        if (enchantments.isEmpty()) {
+            lore.add(deserialize("§7➤ §8(noch keine)"));
+            return lore;
+        }
 
         for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
             String key = entry.getKey().getKey().getKey();
@@ -138,59 +147,47 @@ public class ItemUtils {
             lore.add(deserialize("§7➤ §4" + name + " " + roman));
         }
 
-        lore.add(deserialize("§f"));
-
         return lore;
     }
 
     public static void rewriteEnchantLoreWithNewEnchantments(ItemStack result) {
-        List<Component> lore = result.lore();
-        List<Map.Entry<Enchantment,Integer>> enchantmentEntries = result.getEnchantments().entrySet().stream()
-                        .filter(e -> e.getKey() != Enchantment.UNBREAKING)
-                        .sorted(Comparator.comparing(e -> e.getKey().getKey().asString()))
-                        .collect(Collectors.toCollection(ArrayList::new));
+        List<Component> lore = Objects.requireNonNullElseGet(result.lore(), Collections::emptyList);
+        Map<Enchantment, Integer> enchantments = result.getEnchantments().entrySet().stream()
+                .filter(e -> e.getKey() != Enchantment.UNBREAKING)
+                .sorted(Comparator.comparing(e -> e.getKey().getKey().asString()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
 
-        if (lore == null) {
-            return;
-        }
-
-        int headerIdx = -1;
+        int enchantmentHeader = -1;
+        int enchantmentsEnd = -1;
         for (int i = 0; i < lore.size(); i++) {
-            if (serialize(lore.get(i)).trim().equalsIgnoreCase("Enchantment:")) {
-                headerIdx = i;
+
+            String serialized = serialize(lore.get(i)).trim();
+
+            if (serialized.startsWith(enchantmentKey)) {
+                enchantmentHeader = i;
+            }
+
+            if (enchantmentHeader != -1 && serialized.equalsIgnoreCase("")) {
+                enchantmentsEnd = i;
                 break;
             }
         }
 
-        final int finalHeader = headerIdx;
-        List<Component> finalLore = (headerIdx < 0)
-                        ? new ArrayList<>(lore)
-                        : IntStream.range(0, lore.size())
-                        .filter(i -> i <= finalHeader || !serialize(lore.get(i)).trim().startsWith("➤"))
-                        .mapToObj(lore::get).collect(Collectors.toCollection(ArrayList::new));
+        final int enchantmentHeaderFinal = enchantmentHeader;
+        final int enchantmentsEndFinal = enchantmentsEnd;
+        List<Component> finalLore = (enchantmentHeader < 0)
+                ? new ArrayList<>(lore)
+                : IntStream.range(0, lore.size())
+                .filter(i -> (i < enchantmentHeaderFinal || enchantmentsEndFinal < i) || (!serialize(lore.get(i)).trim().startsWith("➤") && !serialize(lore.get(i)).trim().startsWith(enchantmentKey)))
+                .mapToObj(lore::get).collect(Collectors.toCollection(ArrayList::new));
 
-        if (headerIdx == -1 && !enchantmentEntries.isEmpty()) {
-            headerIdx = finalLore.size();
-            finalLore.add(Component.text("Enchantment:", NamedTextColor.GRAY));
-        }
+        finalLore.addAll(enchantmentHeader != -1 ? enchantmentHeader : finalLore.size(), ItemUtils.getEnchantments(enchantments));
 
-        int insertAt = headerIdx + 1;
-        for (Map.Entry<Enchantment, Integer> enchantment : enchantmentEntries) {
-            String enchantmentName = prettyEnchantmentName(enchantment.getKey()) + " " + ItemUtils.toRoman(enchantment.getValue());
-            finalLore.add(Math.min(insertAt++, finalLore.size() - 1), Component.text("➤ ", NamedTextColor.GRAY).append(Component.text(enchantmentName, NamedTextColor.DARK_RED)));
-        }
-
-        if (serialize(finalLore.getLast()).startsWith("➤")) {
+        if (!serialize(finalLore.getLast()).isEmpty()) {
             finalLore.add(deserialize("§7"));
         }
 
         result.lore(finalLore);
-    }
-
-    private static String prettyEnchantmentName(Enchantment enchantment) {
-        NamespacedKey key = enchantment.getKey();
-        String base = key.getKey().replace('_', ' ');
-        return Character.toUpperCase(base.charAt(0)) + base.substring(1);
     }
 
     public static Material getRandomDrop(Map<Material, Integer> chances) {

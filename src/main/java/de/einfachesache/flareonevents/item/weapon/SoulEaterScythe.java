@@ -29,9 +29,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @SuppressWarnings("deprecation")
@@ -112,41 +110,27 @@ public class SoulEaterScythe implements Listener {
                 .mapToDouble(AttributeModifier::getAmount)
                 .sum();
 
-        lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7§oKills mit dieser Scythe schalten Perks frei und erhöhen den §5Soul Counter"));
-        lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7Schaden: §4" + attackDamage));
-        lore.add(serializer.deserialize("§f"));
+        int maxThreshold = SOUL_EATER_PERKS.stream().mapToInt(p -> p.threshold).max().orElse(0);
 
-        Integer nextThreshold = null;
-        for (Perk p : SOUL_EATER_PERKS) {
-            if (killCount < p.threshold) {
-                nextThreshold = p.threshold;
-                break;
-            }
-        }
-        String progress = (nextThreshold == null) ? "§c(Max)" : "§6(" + killCount + "/" + nextThreshold + ")";
-        lore.add(serializer.deserialize("§5Soul Counter: " + progress));
         lore.add(serializer.deserialize("§f"));
-
+        lore.add(serializer.deserialize("§7Besonderheit:"));
+        lore.add(serializer.deserialize("§7Kills mit dieser Scythe schalten Perks frei und erhöhen den §bSeelenzähler§7."));
+        lore.add(serializer.deserialize("§7Seelenzähler: §e" + killCount + "/" + maxThreshold));
+        lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Perks:"));
         for (Perk p : SOUL_EATER_PERKS) {
             boolean unlocked = killCount >= p.threshold;
             String color = unlocked ? "§6" : "§8";
-            lore.add(serializer.deserialize(
-                    "§7➤ " + color + p.display + " §8(" + p.threshold + (p.threshold == 1 ? " Kill" : " Kills") + ")"
-            ));
+            lore.add(serializer.deserialize("§7➤ " + color + p.display + " §8(" + p.threshold + (p.threshold == 1 ? " Kill" : " Kills") + ")"));
         }
-
         lore.add(serializer.deserialize("§f"));
-
-        if (!ENCHANTMENTS.isEmpty()) {
-            lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
-            lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
-        }
-
+        lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
+        lore.add(serializer.deserialize("§f"));
+        lore.add(serializer.deserialize("§7Schaden: §c" + attackDamage));
+        lore.add(serializer.deserialize("§f"));
         return lore;
     }
+
 
     @EventHandler
     public void onKill(PlayerDeathEvent event) {

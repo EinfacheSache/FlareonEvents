@@ -81,22 +81,22 @@ public class ThunderSpear implements Listener {
 
         LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         List<Component> lore = new ArrayList<>();
-        lore.add(serializer.deserialize("§7"));
-        lore.add(serializer.deserialize("§7§e" + (int) (THROW_LIGHTNING_CHANCE * 100) + "%§7 Chance: §cBlitz §7beim Wurf"));
-        lore.add(serializer.deserialize("§7§e" + (int) (ON_MELEE_LIGHTNING_CHANCE * 100) + "%§7 Chance: §cBlitz §7bei Nahkampftreffer"));
-        lore.add(serializer.deserialize("§7"));
-        lore.add(serializer.deserialize("§7§oBesonderheit: §bDolphin's Grace §7& §bWater Breathing §7in Hand"));
-        lore.add(serializer.deserialize("§7"));
-        lore.add(serializer.deserialize("§7Schaden: §4" + attackDamage));
-        lore.add(serializer.deserialize("§7"));
+        lore.add(serializer.deserialize("§f"));
+        lore.add(serializer.deserialize("§7Besonderheit:"));
+        lore.add(serializer.deserialize("§7➤ §e" + (int) (THROW_LIGHTNING_CHANCE * 100) + "% §7Chance: §cBlitz §7beim Wurf"));
+        lore.add(serializer.deserialize("§7➤ §e" + (int) (ON_MELEE_LIGHTNING_CHANCE * 100) + "% §7Chance: §cBlitz §7bei Nahkampftreffer"));
+        lore.add(serializer.deserialize("§f"));
+        lore.add(serializer.deserialize("§7Wurf:"));
+        lore.add(serializer.deserialize("§7➤ Abklingzeit: §e" + COOLDOWN + "s"));
+        lore.add(serializer.deserialize("§f"));
+        lore.add(serializer.deserialize("§7Effekte:"));
+        lore.add(serializer.deserialize("§bDolphin's Grace §7& §bWater Breathing §7wenn in Main-Hand"));
+        lore.add(serializer.deserialize("§f"));
+        lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
+        lore.add(serializer.deserialize("§f"));
+        lore.add(serializer.deserialize("§7Schaden: §c" + attackDamage));
+        lore.add(serializer.deserialize("§f"));
 
-        if (!ENCHANTMENTS.isEmpty()) {
-            lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
-            lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
-        }
-
-        lore.add(serializer.deserialize("§7Cooldown: §e" + COOLDOWN + "s"));
-        lore.add(serializer.deserialize("§7"));
 
         meta.lore(lore);
         meta.setCustomModelData(69);

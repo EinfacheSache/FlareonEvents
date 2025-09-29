@@ -83,22 +83,17 @@ public class BloodSword implements Listener {
 
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7Du verfällst dem §cBluthunger§7 für §e" + BLOOD_HUNGER_DURATION + "s§7 (Rechtsklick)"));
-        lore.add(serializer.deserialize("§7Treffer lassen das Ziel §e" + BLEED_DURATION + "s §cbluten§7 und verursachen alle §e" + BLEED_TICK + "s §c0.25❤ schaden§7."));
-        lore.add(serializer.deserialize("§7Jeder Blutschaden heilt dich."));
+        lore.add(serializer.deserialize("§7Besonderheit:"));
+        lore.add(serializer.deserialize("§7➤ Du verfällst dem §cBluthunger §7für §e" + BLOOD_HUNGER_DURATION + "s §7(§oRechtsklick§7) §8— §7Abklingzeit: §e" + BLOOD_HUNGER_COOLDOWN + "s"));
+        lore.add(serializer.deserialize("§7➤ Bei Treffer: Ziel blutet §e" + BLEED_DURATION + "s§7; alle §e" + BLEED_TICK + "s §c0.5❤ §7Schaden. Jeder Blutsschaden heilt dich."));
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7Besonderheit: §bStrength §7& §bFire Resistance §7in Hand"));
+        lore.add(serializer.deserialize("§7Effekte:"));
+        lore.add(serializer.deserialize("§bStrength §7wenn in Main-Hand"));
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7Schaden: §4" + attackDamage));
+        lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7§oCooldown: §e" + BLOOD_HUNGER_COOLDOWN + "s"));
+        lore.add(serializer.deserialize("§7Schaden: §c" + attackDamage));
         lore.add(serializer.deserialize("§f"));
-
-        // Dynamisch aus ENCHANTMENTS-Map
-        if (!ENCHANTMENTS.isEmpty()) {
-            lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
-            lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
-        }
 
         meta.lore(lore);
         meta.setCustomModelData(69);

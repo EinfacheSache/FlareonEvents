@@ -82,6 +82,7 @@ public class IceBow implements Listener {
 
     public static ItemStack create() {
         ItemStack item = ItemUtils.createCustomItem(MATERIAL, DISPLAY_NAME, NAMESPACED_KEY);
+        LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         ItemMeta meta = item.getItemMeta();
 
         for (var entry : ATTRIBUTE_MODIFIERS.entrySet()) {
@@ -92,25 +93,24 @@ public class IceBow implements Listener {
             meta.addEnchant(entry.getKey(), entry.getValue(), true);
         }
 
-        LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
+
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7Jeder Treffer: §bFriert das Ziel ein"));
-        lore.add(serializer.deserialize("§e" + (int) (FREEZE_CHANCE * 100) + "%§7 Chance: §bFrostschock"));
-        lore.add(serializer.deserialize("§e" + (int) (CRIT_FREEZE_CHANCE * 100) + "%§7 Chance: §bkritischer Frostschock§7 & §8Darkness"));
+        lore.add(serializer.deserialize("§7Besonderheit:"));
+        lore.add(serializer.deserialize("§7➤ Bei Treffer: §bFriert §7das Ziel ein"));
+        lore.add(serializer.deserialize("§7➤ §e" + (int) (FREEZE_CHANCE * 100) + "% §7Chance: §bFrostschock"));
+        lore.add(serializer.deserialize("§7➤ §e" + (int) (CRIT_FREEZE_CHANCE * 100) + "% §7Chance: §bKritischer Frostschock §7& §8Darkness"));
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7§oBesonderheit: §bSpeed I§7 in Hand"));
+        lore.add(serializer.deserialize("§7Fähigkeit:"));
+        lore.add(serializer.deserialize("§7➤ §oLinksklick§7: §6Dash §7nach vorn (ohne Fallschaden) §8— §7Abklingzeit: §e" + DASH_COOLDOWN + "s"));
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7Left-Click: §eDash nach vorne §8(ohne Fallschaden)"));
-        lore.add(serializer.deserialize("§7Cooldown: §e" + DASH_COOLDOWN + "s"));
+        lore.add(serializer.deserialize("§7Schuss:"));
+        lore.add(serializer.deserialize("§7➤ Schuss-Abklingzeit: §e" + SHOOT_COOLDOWN + "ms"));
         lore.add(serializer.deserialize("§f"));
-
-        if (!ENCHANTMENTS.isEmpty()) {
-            lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
-            lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
-        }
-
-        lore.add(serializer.deserialize("§7Cooldown: §e" + SHOOT_COOLDOWN + "ms"));
+        lore.add(serializer.deserialize("§7Effekte:"));
+        lore.add(serializer.deserialize("§bSpeed I §7wenn in Main-Hand"));
+        lore.add(serializer.deserialize("§f"));
+        lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
         lore.add(serializer.deserialize("§f"));
 
         meta.lore(lore);

@@ -67,6 +67,7 @@ public class ReinforcedPickaxe implements Listener {
 
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§f"));
+        lore.add(serializer.deserialize("§7Besonderheit:"));
         lore.add(serializer.deserialize("§7Beim §bAbbauen §7von §6Erzen §7können"));
         lore.add(serializer.deserialize("§7zufällig andere §6Erze §7droppen:"));
         lore.add(serializer.deserialize("§f"));
@@ -75,13 +76,11 @@ public class ReinforcedPickaxe implements Listener {
         lore.add(serializer.deserialize("§7➤ §e20%§7 §fRaw Eisen"));
         lore.add(serializer.deserialize("§7➤ §e10%§7 §8Kohle"));
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7Besonderheit: §bNight Vision §7in Höhlen"));
+        lore.add(serializer.deserialize("§7Effekte:"));
+        lore.add(serializer.deserialize("§bNight Vision §7in Höhlen"));
         lore.add(serializer.deserialize("§f"));
-
-        if (!ReinforcedPickaxe.ENCHANTMENTS.isEmpty()) {
-            lore.add(serializer.deserialize(("§7Enchantment" + (ReinforcedPickaxe.ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
-            lore.addAll(ItemUtils.getEnchantments(ReinforcedPickaxe.ENCHANTMENTS));
-        }
+        lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
+        lore.add(serializer.deserialize("§f"));
 
         meta.lore(lore);
         meta.setCustomModelData(69);

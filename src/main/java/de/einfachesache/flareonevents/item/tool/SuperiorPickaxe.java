@@ -59,6 +59,7 @@ public class SuperiorPickaxe implements Listener {
 
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§f"));
+        lore.add(serializer.deserialize("§7Besonderheit:"));
         lore.add(serializer.deserialize("§7Beim §bAbbauen §7von §6Erzen §7können"));
         lore.add(serializer.deserialize("§7zufällig andere §6Erze §7droppen:"));
         lore.add(serializer.deserialize("§f"));
@@ -68,17 +69,14 @@ public class SuperiorPickaxe implements Listener {
         lore.add(serializer.deserialize("§7➤ §e25%§7 §fEisen"));
         lore.add(serializer.deserialize("§7➤ §e15%§7 §8Kohle"));
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7Besonderheit: §bNight Vision §7in Höhlen"));
+        lore.add(serializer.deserialize("§7Fähigkeit:"));
+        lore.add(serializer.deserialize("§7Rechtsklick: §e" + XRAY_ENABLED_TIME + "s §cX-RAY §7(Radius: §e" + XRAY_RADIUS + " Blöcke§7) §8— §7Abklingzeit: §e" + XRAY_COOLDOWN + "s"));
         lore.add(serializer.deserialize("§f"));
-
-        lore.add(serializer.deserialize("§7Right-Click → Für §e" + XRAY_ENABLED_TIME + "s §4X-RAY §7(Radius: §e" + XRAY_RADIUS + " Blöcke§7)"));
-        lore.add(serializer.deserialize("§7Cooldown: §e" + XRAY_COOLDOWN + "s"));
+        lore.add(serializer.deserialize("§7Effekte:"));
+        lore.add(serializer.deserialize("§bNight Vision §7in Höhlen"));
         lore.add(serializer.deserialize("§f"));
-
-        if (!ENCHANTMENTS.isEmpty()) {
-            lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
-            lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
-        }
+        lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
+        lore.add(serializer.deserialize("§f"));
 
         meta.lore(lore);
         meta.setCustomModelData(69);
