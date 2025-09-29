@@ -159,5 +159,10 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
             }
             default -> inv.addItem(item);
         }
+
+        player.sendMessage(
+                Component.text("Armor ", NamedTextColor.GREEN)
+                        .append(item.effectiveName())
+                        .append(Component.text(" created with ModelData: §e" + ItemUtils.getCustomModelDataIfSet(item), NamedTextColor.GREEN)));
     }
 }
