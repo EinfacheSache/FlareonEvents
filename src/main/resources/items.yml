@@ -113,7 +113,7 @@ items:
   superior_pickaxe:
     # Item-Grundlagen
     material: NETHERITE_PICKAXE
-    display_name: "§6§l§kABC§r§6§l Superior Pickaxe §kXYZ§r§6§l"
+    display_name: "§6§l§k---§r§6§l Superior Pickaxe §k---"
     # Verzauberungen
     enchantments:
       efficiency: 3

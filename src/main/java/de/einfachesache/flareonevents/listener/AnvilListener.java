@@ -8,7 +8,9 @@ import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.view.AnvilView;
 
+@SuppressWarnings("UnstableApiUsage")
 public class AnvilListener implements Listener {
 
     @EventHandler
@@ -31,6 +33,14 @@ public class AnvilListener implements Listener {
         }
 
         if(ItemUtils.isInvulnerable(left)) {
+            AnvilView anvilView = event.getView();
+
+            int base = anvilView.getRepairCost();
+            int newCost = (int) Math.max(0, Math.round(base * 1.5));
+
+            anvilView.setRepairCost(newCost);
+            anvilView.setMaximumRepairCost(Math.max(newCost, anvilView.getMaximumRepairCost()));
+
             ItemUtils.rewriteEnchantLoreWithNewEnchantments(result);
         }
     }
