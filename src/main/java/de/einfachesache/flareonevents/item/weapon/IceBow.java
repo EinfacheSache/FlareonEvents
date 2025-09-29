@@ -155,8 +155,9 @@ public class IceBow implements Listener {
 
     @EventHandler
     public void onDash(PlayerInteractEvent event) {
-        if (!ItemUtils.isCustomItem(event.getItem(), CustomItem.ICE_BOW)) return;
         if (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK) return;
+
+        if (!ItemUtils.isCustomItem(event.getItem(), CustomItem.ICE_BOW)) return;
         if (event.getPlayer().getOpenInventory().getTopInventory().getType() != InventoryType.CRAFTING) return;
 
         Player player = event.getPlayer();

@@ -5,6 +5,7 @@ import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.item.ingredient.BloodShard;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonevents.util.ItemUtils;
+import de.einfachesache.flareonevents.util.WorldUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -111,6 +112,7 @@ public class BloodSword implements Listener {
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
         if (!ItemUtils.isCustomItem(item, CustomItem.BLOOD_SWORD)) return;
+        if (WorldUtils.isUsingBlock(event)) return;
 
         int bloodHungerCooldown = player.getGameMode() == GameMode.CREATIVE ? BLOOD_HUNGER_DURATION : BLOOD_HUNGER_COOLDOWN;
         long remaining = (bloodHungerCooldown - ((System.currentTimeMillis() - cooldownMap.getOrDefault(player.getUniqueId(), 0L))) / 1000);
@@ -161,7 +163,8 @@ public class BloodSword implements Listener {
                     t.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
                 }
                 if (!t.hasEntry(player.getName())) t.addEntry(player.getName());
-            } catch (IllegalArgumentException ignore) {}
+            } catch (IllegalArgumentException ignore) {
+            }
         }
 
         final long endAt = System.currentTimeMillis() + BLOOD_HUNGER_DURATION * 1000L;
@@ -190,7 +193,8 @@ public class BloodSword implements Listener {
                         t.removeEntry(player.getName());
                         if (t.getEntries().isEmpty()) t.unregister();
                     }
-                } catch (Exception ignore) {}
+                } catch (Exception ignore) {
+                }
             }
 
             playerInBloodlust.remove(player.getUniqueId());

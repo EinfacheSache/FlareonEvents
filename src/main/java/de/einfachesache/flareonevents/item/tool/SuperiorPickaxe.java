@@ -101,11 +101,11 @@ public class SuperiorPickaxe implements Listener {
 
         // (Summe = 73, restliche 27% liefern null)
         Map<Material, Integer> drops = new LinkedHashMap<>();
-        drops.put(Material.NETHERITE_SCRAP,    3);
-        drops.put(Material.DIAMOND,           10);
-        drops.put(Material.GOLD_INGOT,        20);
-        drops.put(Material.IRON_INGOT,        25);
-        drops.put(Material.COAL,              15);
+        drops.put(Material.NETHERITE_SCRAP, 3);
+        drops.put(Material.DIAMOND, 10);
+        drops.put(Material.GOLD_INGOT, 20);
+        drops.put(Material.IRON_INGOT, 25);
+        drops.put(Material.COAL, 15);
 
         Material drop = ItemUtils.getRandomDrop(drops);
 
@@ -116,12 +116,14 @@ public class SuperiorPickaxe implements Listener {
 
     @EventHandler
     public void onPlayerInteraction(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) return;
+
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
         if (!ItemUtils.isCustomItem(item, CustomItem.SUPERIOR_PICKAXE)) return;
+        if (WorldUtils.isUsingBlock(event)) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) return;
 
         int playerXRayCooldown = player.getGameMode() == GameMode.CREATIVE ? XRAY_ENABLED_TIME : XRAY_COOLDOWN;
         long remaining = (playerXRayCooldown - ((System.currentTimeMillis() - cooldownMap.getOrDefault(player.getUniqueId(), 0L))) / 1000);

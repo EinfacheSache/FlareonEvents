@@ -2,7 +2,13 @@ package de.einfachesache.flareonevents.util;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Openable;
+import org.bukkit.block.data.type.Switch;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -36,6 +42,21 @@ public class WorldUtils {
         }
 
         return isNaturalCeiling(ceilingBlock.getType());
+    }
+
+    public static boolean isUsingBlock(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return false;
+        Block block = event.getClickedBlock();
+        if (block == null) return false;
+
+        if(event.useInteractedBlock() == Event.Result.DENY){
+            return false;
+        }
+
+        // Hebel/Knöpfe
+        // Türen/Falltüren/Zäune
+        // Container (Kiste, Fass, Ofen, Hopper, Trichter, …)
+        return block.getBlockData() instanceof Switch || block.getBlockData() instanceof Openable || block.getState(false) instanceof InventoryHolder;
     }
 
     public static boolean isOre(Material material) {
