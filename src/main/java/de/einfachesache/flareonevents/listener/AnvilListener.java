@@ -1,6 +1,5 @@
 package de.einfachesache.flareonevents.listener;
 
-import de.einfachesache.flareonevents.item.CustomItem;
 import de.einfachesache.flareonevents.util.ItemUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,27 +15,27 @@ public class AnvilListener implements Listener {
     @EventHandler
     public void onAnvilPrepare(PrepareAnvilEvent event) {
         AnvilInventory inv = event.getInventory();
-        ItemStack left = inv.getItem(0);
+        ItemStack left = inv.getFirstItem();
         if (left == null || !left.hasItemMeta()) return;
 
         ItemStack result = event.getResult();
         if (result == null || !result.hasItemMeta()) return;
 
-        ItemMeta resultMeta = result.getItemMeta();
-
-        for (CustomItem item : CustomItem.values()) {
-            if (item.matches(left)) {
-                item.applyName(resultMeta);
-                result.setItemMeta(resultMeta);
-                break;
-            }
-        }
-
         if(ItemUtils.isInvulnerable(left)) {
+
             AnvilView anvilView = event.getView();
+            ItemMeta resultMeta = result.getItemMeta();
+
+            if(inv.getSecondItem() == null) {
+                event.setResult(null);
+                return;
+            }
+
+            resultMeta.displayName(left.effectiveName());
+            result.setItemMeta(resultMeta);
 
             int base = anvilView.getRepairCost();
-            int newCost = (int) Math.max(0, Math.round(base * 1.5));
+            int newCost = (int) Math.max(0, Math.round((base - 1) * 1.5));
 
             anvilView.setRepairCost(newCost);
             anvilView.setMaximumRepairCost(Math.max(newCost, anvilView.getMaximumRepairCost()));
