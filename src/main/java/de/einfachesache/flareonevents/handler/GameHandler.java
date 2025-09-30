@@ -33,20 +33,21 @@ public class GameHandler {
 
     static final int preparingTime = 3 * 60; // DEFAULT: 3 * 60
     static final int startingTime = 2 * 60; // DEFAULT: 2 * 60
-    static final int noPvPTime = 5 * 60; // DEFAULT: 5 * 60
+    static final int noPvPTime = 10 * 60; // DEFAULT: 10 * 60
     static final int netherOpenTime = 60 * 60; // DEFAULT: 60 * 60
 
-    public record BorderPhase(Duration at, int targetSize, Duration shrink) {}
+    public record BorderPhase(Duration at, int targetSize, Duration shrink) {
+    }
 
     static final List<BorderPhase> borderPhases = List.of(
-            new BorderPhase(Duration.ofMinutes(30),  2500, Duration.ofMinutes(10)),
-            new BorderPhase(Duration.ofMinutes(60),  2000, Duration.ofMinutes(15)),
-            new BorderPhase(Duration.ofMinutes(90),  1350, Duration.ofMinutes(15)),
-            new BorderPhase(Duration.ofMinutes(120),  700, Duration.ofMinutes(20)),
-            new BorderPhase(Duration.ofMinutes(150),  250, Duration.ofMinutes(15)),
-            new BorderPhase(Duration.ofMinutes(165),   100, Duration.ofMinutes(10)),
-            new BorderPhase(Duration.ofMinutes(175),   10, Duration.ofMinutes(5)),
-            new BorderPhase(Duration.ofMinutes(200),   0, Duration.ofMinutes(5))
+            new BorderPhase(Duration.ofMinutes(30), 2500, Duration.ofMinutes(10)),
+            new BorderPhase(Duration.ofMinutes(60), 2000, Duration.ofMinutes(15)),
+            new BorderPhase(Duration.ofMinutes(90), 1350, Duration.ofMinutes(15)),
+            new BorderPhase(Duration.ofMinutes(120), 700, Duration.ofMinutes(20)),
+            new BorderPhase(Duration.ofMinutes(150), 250, Duration.ofMinutes(15)),
+            new BorderPhase(Duration.ofMinutes(165), 100, Duration.ofMinutes(10)),
+            new BorderPhase(Duration.ofMinutes(175), 10, Duration.ofMinutes(5)),
+            new BorderPhase(Duration.ofMinutes(200), 0, Duration.ofMinutes(5))
     );
 
     static String winner = "§cNO WINNER§6";
@@ -59,7 +60,7 @@ public class GameHandler {
         return n <= 1 ? "Minute" : "Minuten";
     }
 
-    static final Title.Times times = Title.Times.times(
+    public static final Title.Times times = Title.Times.times(
             Duration.ofMillis(500),  // 0.5 Sekunde (fadeIn)
             Duration.ofMillis(3000),  // 3 Sekunden (stay)
             Duration.ofMillis(1000)   // 1 Sekunde (fadeOut)
@@ -90,7 +91,7 @@ public class GameHandler {
         world.setClearWeatherDuration(20 * 60 * 20);
         world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
 
-        int minStartTime = (forceStart ? 1 / 12:  (preparingTime + startingTime) / 60);
+        int minStartTime = (forceStart ? 1 / 12 : (preparingTime + startingTime) / 60);
         Bukkit.getServer().getOnlinePlayers().forEach(player -> {
 
             player.showTitle(Title.title(
@@ -99,7 +100,7 @@ public class GameHandler {
                     times));
             player.playSound(EventSound.NOTIFY.adventure());
 
-            if(player.getGameMode() == GameMode.SPECTATOR) {
+            if (player.getGameMode() == GameMode.SPECTATOR) {
                 SpectatorHandler.stopSpectating(player);
             }
 
@@ -165,10 +166,10 @@ public class GameHandler {
                         Bukkit.getServer().getOnlinePlayers().forEach(
                                 player -> resetPlayer(player, true, true));
                     }
-                }.runTaskLater(plugin,  (forceStart ? 5 : startingTime) * 20L));
+                }.runTaskLater(plugin, (forceStart ? 5 : startingTime) * 20L));
 
             }
-        }.runTaskLater(plugin,  (forceStart ? 5 : preparingTime) * 20L));
+        }.runTaskLater(plugin, (forceStart ? 5 : preparingTime) * 20L));
     }
 
     public static void cancelEvent() {
@@ -186,7 +187,7 @@ public class GameHandler {
         });
         plugin.getServer().getOnlinePlayers().forEach(player -> {
 
-            if(player.getGameMode() == GameMode.SPECTATOR) {
+            if (player.getGameMode() == GameMode.SPECTATOR) {
                 SpectatorHandler.stopSpectating(player);
             }
 
@@ -238,7 +239,7 @@ public class GameHandler {
         plugin.getServer().getOnlinePlayers().forEach(player -> {
             player.showTitle(Title.title(
                     Component.text("Event Beendet!", NamedTextColor.RED),
-                    Component.text( winner + " hat gewonnen!", NamedTextColor.GOLD), times));
+                    Component.text(winner + " hat gewonnen!", NamedTextColor.GOLD), times));
             player.playSound(EventSound.START_END.adventure());
         });
         plugin.getServer().broadcast(Component.text("Das Event ist beendet. Vielen Dank für eure Teilnahme!", NamedTextColor.GOLD));
@@ -371,11 +372,15 @@ public class GameHandler {
 
                 if (secondsLeft <= 0) {
 
-                    PortalCreateListener.setNether(true);
-
-                    plugin.getServer().getOnlinePlayers().forEach(player -> {
-                        player.sendActionBar(Component.text("Nether ist nun geöffnet", NamedTextColor.DARK_RED));
-                        player.playSound(EventSound.NOTIFY.adventure());
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mythicmobs mobs spawn ugron 1 world,0,86,0,0,0");
+                    Bukkit.broadcast(Component.text("Der Wächter des Nethers §lUgron §rist bei 0 / 0 erschienen!", NamedTextColor.DARK_RED));
+                    Bukkit.broadcast(Component.text("Besiege ihn, um den Nether freizuschalten und eine besondere Belohnung zu erhalten!", NamedTextColor.DARK_RED));
+                    Bukkit.getOnlinePlayers().forEach(player -> {
+                        player.playSound(EventSound.START_END.adventure());
+                        player.showTitle(Title.title(
+                                Component.text("Ugron ist erschienen", NamedTextColor.DARK_RED),
+                                Component.text(""),
+                                GameHandler.times));
                     });
 
                     this.cancel();
@@ -410,7 +415,7 @@ public class GameHandler {
         tasks.add(Bukkit.getScheduler().runTaskLater(plugin, () ->
                 plugin.getServer().broadcast(Component.
                         text("Die Border ist stehen geblieben. Das Gebiet bleibt nun auf 10×10 Blöcke begrenzt!", NamedTextColor.YELLOW)
-        ), end.toSeconds() * 20L));
+                ), end.toSeconds() * 20L));
     }
 
     private static void moveBorder(List<World> worlds, int size, int delayInMinutes) {

@@ -102,8 +102,8 @@ public class SettingsCommand implements CommandExecutor, TabCompleter {
     private void sendUsage(CommandSender sender, String label) {
         sender.sendMessage(Component.text("--- Verwendung ---", NamedTextColor.RED));
         sender.sendMessage(Component.text("/" + label + " PVP - schaltet PVP ein/aus", NamedTextColor.RED));
-        sender.sendMessage(Component.text("/" + label + " stelle die view distanz ein - schaltet Nether ein/aus", NamedTextColor.RED));
+        sender.sendMessage(Component.text("/" + label + " NETHER - schaltet Nether ein/aus", NamedTextColor.RED));
         sender.sendMessage(Component.text("/" + label + " VIEW_DISTANZ - stelle die view distanz ein", NamedTextColor.RED));
-        sender.sendMessage(Component.text("/" + label + " SIMULATION_VIEW_DISTANZ - stelle die simulation view distanz ein", NamedTextColor.RED));
+        sender.sendMessage(Component.text("/" + label + " SIMULATION_DISTANZ - stelle die simulation distanz ein", NamedTextColor.RED));
     }
 }

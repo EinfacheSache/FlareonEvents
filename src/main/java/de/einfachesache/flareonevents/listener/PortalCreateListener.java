@@ -1,6 +1,10 @@
 package de.einfachesache.flareonevents.listener;
 
+import de.einfachesache.flareonevents.event.EventSound;
+import de.einfachesache.flareonevents.handler.GameHandler;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,8 +26,16 @@ public class PortalCreateListener implements Listener {
     }
 
     public static void setNether(boolean nether) {
-        if (nether)
+
+        if (nether) {
+            Bukkit.getServer().getOnlinePlayers().forEach(player -> {
+                player.playSound(EventSound.START_END.adventure());
+                player.sendActionBar(Component.text("Erkunde die Nether Welt!", NamedTextColor.GREEN));
+                player.showTitle(Title.title(Component.text("Der Nether ist nun geöffnet!", NamedTextColor.DARK_RED), Component.text(""), GameHandler.times));
+            });
             Bukkit.broadcast(Component.text("§aDer Nether ist ab jetzt geöffnet. Der Zugang ist freigegeben. Viel Erfolg."));
+        }
+
         PortalCreateListener.nether = nether;
     }
 

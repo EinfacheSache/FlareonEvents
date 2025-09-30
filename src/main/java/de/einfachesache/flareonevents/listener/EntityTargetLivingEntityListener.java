@@ -4,16 +4,17 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 
 public class EntityTargetLivingEntityListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onTarget(EntityTargetLivingEntityEvent e) {
-        if (!(e.getTarget() instanceof Player p)) return;
-        if (p.getGameMode() == GameMode.ADVENTURE) {
+        if (!(e.getTarget() instanceof Player player)) return;
+        if (player.getGameMode() == GameMode.ADVENTURE) {
             e.setTarget(null);
             e.setCancelled(true);
         }

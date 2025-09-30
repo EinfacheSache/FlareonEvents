@@ -1,0 +1,32 @@
+package de.einfachesache.flareonevents.listener;
+
+import de.einfachesache.flareonevents.FlareonEvents;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.Objects;
+
+public class UgronDeathListener implements Listener {
+
+    private final NamespacedKey namespacedKey = new NamespacedKey("mythicmobs", "type");
+
+    @EventHandler
+    public void onPlayerDeath(EntityDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+
+        if(!Objects.equals(entity.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING), "ugron")) {
+            return;
+        }
+
+        Bukkit.broadcast(Component.text("§cDer mächtige §4§lUgron §cwurde besiegt!"));
+        Bukkit.getScheduler().runTaskLater(FlareonEvents.getPlugin(),
+                () -> PortalCreateListener.setNether(true),
+                2 * 20);
+    }
+}
