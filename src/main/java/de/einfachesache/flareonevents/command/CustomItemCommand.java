@@ -46,7 +46,7 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String alias, @NotNull String @NotNull [] args) {
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("Nur Spieler können diesen Command benutzen.");
+            sender.sendMessage(Component.text("Dieser Command kann nur von Spielern verwendet werden!", NamedTextColor.RED));
             return true;
         }
 
