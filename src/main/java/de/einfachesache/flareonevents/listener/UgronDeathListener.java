@@ -1,5 +1,6 @@
 package de.einfachesache.flareonevents.listener;
 
+import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.FlareonEvents;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -21,6 +22,10 @@ public class UgronDeathListener implements Listener {
         LivingEntity entity = event.getEntity();
 
         if(!Objects.equals(entity.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING), "ugron")) {
+            return;
+        }
+
+        if(!Config.isEventStarted()){
             return;
         }
 
