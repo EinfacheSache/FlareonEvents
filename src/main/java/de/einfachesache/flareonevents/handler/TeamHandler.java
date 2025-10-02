@@ -2,6 +2,7 @@ package de.einfachesache.flareonevents.handler;
 
 import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.FlareonEvents;
+import de.einfachesache.flareonevents.command.MsgCommand;
 import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class TeamHandler {
 
@@ -22,7 +24,7 @@ public class TeamHandler {
 
     public static void handleInvite(Player sender, String[] args) {
         if (args.length != 2) {
-            sender.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Verwendung: /team invite <Spielername>", NamedTextColor.RED)));
+            sender.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Verwendung: /team invite <Spieler>", NamedTextColor.RED)));
             return;
         }
 
@@ -98,7 +100,7 @@ public class TeamHandler {
 
     public static void handleAccept(Player player, String[] args) {
         if (args.length != 2) {
-            player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Verwendung: /team accept <Spielername>", NamedTextColor.RED)));
+            player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Verwendung: /team accept <Spieler>", NamedTextColor.RED)));
             return;
         }
 
@@ -168,7 +170,7 @@ public class TeamHandler {
         UUID playerUUID = player.getUniqueId();
 
         if (!Config.getPlayerTeams().containsKey(playerUUID)) {
-            if(!isKick){
+            if (!isKick) {
                 Objects.requireNonNull(player.getPlayer()).sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Du bist in keinem Team!", NamedTextColor.RED)));
             }
             return;
@@ -208,7 +210,7 @@ public class TeamHandler {
     public static void handleKick(Player player, String[] args) {
 
         if (args.length != 2) {
-            player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Verwendung: /team kick <Spielername>", NamedTextColor.RED)));
+            player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Verwendung: /team kick <Spieler>", NamedTextColor.RED)));
             return;
         }
 
@@ -321,6 +323,51 @@ public class TeamHandler {
         }
 
         player.sendMessage(Component.text("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", NamedTextColor.GOLD));
+    }
+
+
+    public static void handleTeamMsg(Player sender, String text) {
+        Collection<UUID> teamMembers = Optional.ofNullable(Config.getPlayerTeams().get(sender.getUniqueId()))
+                .map(id -> Config.getTeams().get(id))
+                .orElse(Collections.emptySet());
+
+        if (teamMembers.isEmpty()) {
+            sender.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Du bist in keinem Team!", NamedTextColor.RED)));
+            return;
+        }
+
+        // Online-Empfänger ohne den Sender selbst
+        List<Player> recipients = teamMembers.stream()
+                .filter(Objects::nonNull)
+                .filter(uuid -> !uuid.equals(sender.getUniqueId()))
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull)
+                .filter(Player::isOnline)
+                .distinct()
+                .toList();
+
+        if (recipients.isEmpty()) {
+            sender.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Es sind keine Teammitglieder online.", NamedTextColor.RED)));
+            return;
+        }
+
+        // Ausgabe beim Sender (zeigt, an wen gesendet wurde)
+        String names = recipients.stream().map(Player::getName).collect(Collectors.joining(", "));
+        sender.sendMessage(Component.text("→ ", NamedTextColor.GRAY)
+                        .append(Component.text("Team (" + names + ")", NamedTextColor.AQUA))
+                        .append(Component.text(": ", NamedTextColor.GRAY))
+                        .append(Component.text(text, NamedTextColor.WHITE)));
+
+        // Nachricht an alle Empfänger
+        for (Player target : recipients) {
+            target.sendMessage(Component.text("← ", NamedTextColor.GRAY)
+                            .append(Component.text(sender.getName(), NamedTextColor.GOLD))
+                            .append(Component.text(" [Team]: ", NamedTextColor.AQUA))
+                            .append(Component.text(text, NamedTextColor.WHITE)));
+
+            // Jeder Empfänger kann dem Sender mit /reply antworten
+            MsgCommand.LAST_MESSAGED.put(target.getUniqueId(), sender.getUniqueId());
+        }
     }
 
     public static boolean arePlayersOnSameTeam(Player player1, Player player2) {

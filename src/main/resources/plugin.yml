@@ -8,35 +8,42 @@ api-version: '1.21.6'
 softdepend: [ voicechat ]
 commands:
   help:
-    description: 'Event command Help'
+    description: 'Hilfe zu Event-Befehlen'
+
+  msg:
+    description: 'Sende eine private Nachricht an einen Spieler'
+
+  reply:
+    description: 'Antworte dem letzten Gesprächspartner privat'
+    aliases: [ r ]
 
   team:
-    description: 'Manage your team: invite, list, leave, and more'
+    description: 'Verwalte dein Team: einladen, auflisten, verlassen und mehr'
 
   recipe:
-    description: 'Open the custom item recipe GUI'
+    description: 'Öffne die Rezept-GUI für Custom-Items'
     aliases: [ rg ]
 
   report:
-    description: 'Meldet einen Bug als Discord Ticket'
+    description: 'Melde einen Bug als Discord-Ticket'
     aliases: [ bugreport ]
 
   event:
-    description: 'Administrative event management commands'
+    description: 'Administrative Befehle zur Event-Verwaltung'
     permission: 'event.op'
     aliases: [ ev ]
 
   update:
-    description: 'Update custom items and reload all configuration files'
+    description: 'Aktualisiere Custom-Items und lade alle Konfigurationsdateien neu'
     permission: 'event.op'
     aliases: [ devreload ]
 
   customitem:
-    description: 'Command to give yourself a custom item'
+    description: 'Gib dir ein benutzerdefiniertes Item'
     permission: 'event.op'
     aliases: [ ci ]
 
   settings:
-    description: 'Adjust world and event settings such as PvP, view distance, simulation distance, and Nether access'
+    description: 'Passe Welt- und Event-Einstellungen an (z. B. PvP, Sichtweite, Simulations-Distanz, Nether-Zugriff)'
     permission: 'event.op'
     aliases: [ ctl ]

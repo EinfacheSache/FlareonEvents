@@ -19,8 +19,8 @@ import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.weapon.BloodSword;
 import de.einfachesache.flareonevents.item.weapon.IceBow;
-import de.einfachesache.flareonevents.item.weapon.ThunderSpear;
 import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
+import de.einfachesache.flareonevents.item.weapon.ThunderSpear;
 import de.einfachesache.flareonevents.listener.*;
 import de.einfachesache.flareonevents.util.WorldUtils;
 import de.einfachesache.flareonevents.voicechat.VoiceModPlugin;
@@ -104,6 +104,8 @@ public final class FlareonEvents extends JavaPlugin {
     }
 
     private void registerCommands() {
+        registerCommand("msg", new MsgCommand());
+        registerCommand("reply", new MsgCommand());
         registerCommand("help", new HelpCommand());
         registerCommand("recipe", new RecipeGuiCommand());
         registerCommand("customitem", new CustomItemCommand());
