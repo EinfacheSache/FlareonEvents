@@ -4,6 +4,8 @@ import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import de.einfachesache.flareonevents.Config;
 import de.einfachesache.flareonevents.FlareonEvents;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,24 +37,24 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String alias, String[] args) {
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cDieser Command kann nur von Spielern verwendet werden!");
+            sender.sendMessage(Component.text("Dieser Command kann nur von Spielern verwendet werden!", NamedTextColor.RED));
             return true;
         }
 
         if (args.length <= 1) {
-            player.sendMessage("§7Nutzung: §e/" + alias + " <Type> <Kurze Beschreibung>");
+            player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Verwendung: /" + alias + " <Type> <Kurztext>", NamedTextColor.RED)));
             return true;
         }
 
         String bugType = args[0].toUpperCase(Locale.ROOT);
         if (!BUG_TYPES.contains(bugType)) {
-            player.sendMessage("§7Ungültiger BugType. Bitte verwenden: " + BUG_TYPES);
+            player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Ungültiger BugType. Bitte verwenden: " + String.join(", ", BUG_TYPES), NamedTextColor.RED)));
             return true;
         }
 
         long timeLeft = (commandCooldown.getOrDefault(player.getUniqueId(), 0L) + COOLDOWN_TIME_SEC * 1000) - System.currentTimeMillis();
         if (timeLeft > 0) {
-            player.sendMessage("§eBitte warte noch " + timeLeft / 1000 + "s bevor du einen neuen Report erstellst");
+            player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Bitte warte noch " + timeLeft / 1000 + "s bevor du einen neuen Report erstellst", NamedTextColor.YELLOW)));
             return true;
         }
         commandCooldown.put(player.getUniqueId(), System.currentTimeMillis());
@@ -93,7 +95,7 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
         out.writeUTF(gson.toJson(payload));
         player.sendPluginMessage(plugin, FlareonEvents.CH_TICKET, out.toByteArray());
 
-        player.sendMessage("§aDanke! Dein Bug-Report wurde gesendet.");
+        player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Danke! Dein Bug-Report wurde gesendet.", NamedTextColor.GREEN)));
         return true;
     }
 
