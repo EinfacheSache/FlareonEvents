@@ -101,6 +101,7 @@ public class ChestLootCommand implements CommandExecutor, TabCompleter, Listener
         String tableString = pdc.get(tableKey, PersistentDataType.STRING);
 
         if (tableString == null) {
+            player.sendMessage("§eKeine LootTable an dieser Kiste gespeichert.");
             return;
         }
 
@@ -112,13 +113,13 @@ public class ChestLootCommand implements CommandExecutor, TabCompleter, Listener
 
         LootTable table = Bukkit.getLootTable(namespacedKey);
         if (table == null) {
-            player.sendMessage("§cLootTable nicht gefunden.");
+            player.sendMessage("§cLootTable '" + namespacedKey + "' nicht gefunden oder Datapack nicht geladen.");
             return;
         }
 
         lootable.setLootTable(table);
         container.update(true, false);
-        player.sendMessage("§aKiste zurückgesetzt (Tier " + tableString + "). Re-Seeding beim nächsten Öffnen.");
+        player.sendMessage("§aKiste zurückgesetzt auf LootTable §f" + tableString + "§a. Loot beim nächsten Öffnen.");
     }
 
     private void sendUsage(Player player) {
@@ -155,7 +156,7 @@ public class ChestLootCommand implements CommandExecutor, TabCompleter, Listener
 
         LootTable table = Bukkit.getLootTable(namespacedKey);
         if (table == null) {
-            p.sendMessage("§cLootTable nicht gefunden.");
+            p.sendMessage("§cLootTable '" + namespacedKey + "' nicht gefunden oder Datapack nicht geladen.");
             return;
         }
 
