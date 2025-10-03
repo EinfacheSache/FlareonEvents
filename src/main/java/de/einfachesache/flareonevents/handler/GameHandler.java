@@ -34,7 +34,7 @@ public class GameHandler {
     static final int preparingTime = 3 * 60; // DEFAULT: 3 * 60
     static final int startingTime = 2 * 60; // DEFAULT: 2 * 60
     static final int noPvPTime = 10 * 60; // DEFAULT: 10 * 60
-    static final int netherOpenTime = 60 * 60; // DEFAULT: 60 * 60
+    static final int netherOpenTime = 45 * 60; // DEFAULT: 45 * 60
 
     public record BorderPhase(Duration at, int targetSize, Duration shrink) {
     }
