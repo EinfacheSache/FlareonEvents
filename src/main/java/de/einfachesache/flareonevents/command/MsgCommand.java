@@ -19,7 +19,7 @@ public class MsgCommand implements CommandExecutor, TabCompleter {
 
     private static final String TEAM_TOKEN = "@team";
 
-    public static final Map<UUID, UUID> LAST_MESSAGED = new ConcurrentHashMap<>();
+    public static final Map<UUID, String> LAST_MESSAGED = new ConcurrentHashMap<>();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
@@ -64,7 +64,7 @@ public class MsgCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            case "reply", "r" -> {
+            case "reply" -> {
                 if (args.length == 0) {
                     player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Verwendung: /reply <Nachricht>", NamedTextColor.RED)));
                     return true;
@@ -96,19 +96,24 @@ public class MsgCommand implements CommandExecutor, TabCompleter {
                 .append(Component.text(text, NamedTextColor.WHITE)));
 
         // Für /reply merken (beidseitig, damit beide direkt /reply nutzen können)
-        LAST_MESSAGED.put(sender.getUniqueId(), target.getUniqueId());
-        LAST_MESSAGED.put(target.getUniqueId(), sender.getUniqueId());
+        LAST_MESSAGED.put(sender.getUniqueId(), target.getUniqueId().toString());
+        LAST_MESSAGED.put(target.getUniqueId(), sender.getUniqueId().toString());
     }
 
 
     private void handleReply(Player sender, String text) {
-        UUID last = LAST_MESSAGED.get(sender.getUniqueId());
+        String last = LAST_MESSAGED.get(sender.getUniqueId());
         if (last == null) {
             sender.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Es gibt niemanden, dem du antworten kannst.", NamedTextColor.RED)));
             return;
         }
 
-        Player target = Bukkit.getPlayer(last);
+        if(last.equalsIgnoreCase("@team")) {
+            TeamHandler.handleTeamMsg(sender, text);
+            return;
+        }
+
+        Player target = Bukkit.getPlayer(UUID.fromString(last));
         if (target == null || !target.isOnline()) {
             sender.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Dieser Spieler ist nicht mehr online.", NamedTextColor.RED)));
             return;

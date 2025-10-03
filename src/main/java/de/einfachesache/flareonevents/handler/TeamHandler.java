@@ -366,7 +366,7 @@ public class TeamHandler {
                             .append(Component.text(text, NamedTextColor.WHITE)));
 
             // Jeder Empfänger kann dem Sender mit /reply antworten
-            MsgCommand.LAST_MESSAGED.put(target.getUniqueId(), sender.getUniqueId());
+            MsgCommand.LAST_MESSAGED.put(target.getUniqueId(), "@team");
         }
     }
 
