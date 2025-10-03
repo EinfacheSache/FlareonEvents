@@ -1,8 +1,8 @@
 package de.einfachesache.flareonevents.handler;
 
 import de.einfachesache.flareonevents.Config;
-import de.einfachesache.flareonevents.event.EventState;
 import de.einfachesache.flareonevents.FlareonEvents;
+import de.einfachesache.flareonevents.event.EventState;
 import de.einfachesache.flareonevents.listener.PlayerDeathListener;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -29,6 +29,12 @@ public class ScoreboardHandler implements Listener {
     private static final Map<UUID, Scoreboard> playerBoards = new HashMap<>();
     private static final Map<World, Integer> cachedWorldBorders = new HashMap<>();
     private static final String[] EMPTY_LINES = {"§0", "§1", "§2", "§3", "§4", "§5", "§6", "§7", "§8", "§9"};
+    private static final char[] PALETTE = {
+            'c','4','6','e',  // hellrot, dunkelrot, gold, gelb
+            'a','2','b','3',  // hellgrün, dunkelgrün, hell-aqua, dunkel-aqua
+            '9','1','d','5',  // hellblau, dunkelblau, hell-lila, dunkel-lila
+            'f','7','8','0'   // weiß, grau, dunkelgrau, schwarz
+    };
 
     private static volatile ScoreboardContext cachedContext;
 
@@ -129,7 +135,7 @@ public class ScoreboardHandler implements Listener {
 
     private static void updateTablist(Player player) {
         int teamID = Config.getPlayerTeams().getOrDefault(player.getUniqueId(), -1);
-        String prefix, suffix = teamID == -1 ? "" : "§7 [" + teamID + "]";
+        String prefix, suffix = teamID == -1 ? "" : codeForTeamId(teamID) + " [" + teamID + "]";
         int listOrder;
 
         if (FlareonEvents.DEV_UUID.equals(player.getUniqueId())) {
@@ -205,6 +211,13 @@ public class ScoreboardHandler implements Listener {
         int size = cachedWorldBorders.getOrDefault(player.getWorld(), 0);
         sidebar.getScore("§f" + size + "x" + size).setScore(score);
 
+    }
+
+    public static String codeForTeamId(int teamId) {
+        if (teamId <= 0) return "§7";
+
+        int idx = (teamId - 1) % PALETTE.length;
+        return "§" + PALETTE[idx];
     }
 
     private static void setEmptyLine(Objective sidebar, int score) {
