@@ -33,7 +33,7 @@ public class ScoreboardHandler implements Listener {
             'c','4','6','e',  // hellrot, dunkelrot, gold, gelb
             'a','2','b','3',  // hellgrün, dunkelgrün, hell-aqua, dunkel-aqua
             '9','1','d','5',  // hellblau, dunkelblau, hell-lila, dunkel-lila
-            'f','7','8','0'   // weiß, grau, dunkelgrau, schwarz
+            'f','7'           // weiß, grau,
     };
 
     private static volatile ScoreboardContext cachedContext;
