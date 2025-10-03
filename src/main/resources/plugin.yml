@@ -33,6 +33,11 @@ commands:
     permission: 'event.op'
     aliases: [ ev ]
 
+  chestloot:
+    description: 'Administrative Befehle um Chestloot zu setzen'
+    permission: 'event.op'
+    aliases: [ loot ]
+
   update:
     description: 'Aktualisiere Custom-Items und lade alle Konfigurationsdateien neu'
     permission: 'event.op'

@@ -107,13 +107,16 @@ public final class FlareonEvents extends JavaPlugin {
         registerCommand("msg", new MsgCommand());
         registerCommand("reply", new MsgCommand());
         registerCommand("help", new HelpCommand());
-        registerCommand("recipe", new RecipeGuiCommand());
-        registerCommand("customitem", new CustomItemCommand());
         registerCommand("team", new TeamCommand());
+        registerCommand("recipe", new RecipeGuiCommand());
+        registerCommand("report", new BugReportCommand(this));
+
+
         registerCommand("event", new EventCommand());
         registerCommand("update", new UpdateCommand());
         registerCommand("settings", new SettingsCommand());
-        registerCommand("report", new BugReportCommand(this));
+        registerCommand("customitem", new CustomItemCommand());
+        registerCommand("chestloot", new ChestLootCommand(this));
     }
 
     private void registerListener() {
