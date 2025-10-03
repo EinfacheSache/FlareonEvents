@@ -25,6 +25,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -89,7 +91,7 @@ public class BloodSword implements Listener {
         lore.add(serializer.deserialize("§7➤ Bei Treffer: Ziel blutet §e" + BLEED_DURATION_TICKS / 20 + "s§7; alle §e" + BLEED_TICK + "s §c0.5❤ §7Schaden. Jeder Blutsschaden heilt dich."));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Effekte:"));
-        lore.add(serializer.deserialize("§bStrength §7wenn in Main-Hand"));
+        lore.add(serializer.deserialize("§bStrength §7während des Bluthungers"));
         lore.add(serializer.deserialize("§f"));
         lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
         lore.add(serializer.deserialize("§f"));
@@ -115,7 +117,7 @@ public class BloodSword implements Listener {
         if (WorldUtils.isUsingBlock(event)) return;
 
         int bloodHungerCooldownTicks = player.getGameMode() == GameMode.CREATIVE ? BLOOD_HUNGER_DURATION_TICKS : BLOOD_HUNGER_COOLDOWN_TICKS;
-        long remainingTicks = bloodHungerCooldownTicks - ((System.currentTimeMillis() - cooldownMap.getOrDefault(player.getUniqueId(), 0L)) / 1000);
+        long remainingTicks = bloodHungerCooldownTicks - ((System.currentTimeMillis() - cooldownMap.getOrDefault(player.getUniqueId(), 0L)) / 50);
         if (remainingTicks > 0) {
             player.sendMessage(Component.text("Du kannst Bluthunger in " + remainingTicks / 20 + "s erneut verwenden!", NamedTextColor.RED));
             return;
@@ -149,6 +151,7 @@ public class BloodSword implements Listener {
         playerInBloodlust.add(player.getUniqueId());
 
         player.setGlowing(true);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, BLOOD_HUNGER_DURATION_TICKS, 0, false, false, true));
         player.sendMessage("§cBluthunger§7 flammt in dir auf – §f" + BLOOD_HUNGER_DURATION_TICKS / 20 + "s §7lang dürstet deine Klinge nach Blut.");
         player.playSound(player.getLocation(), Sound.ITEM_TRIDENT_THUNDER, 2f, 1.6f);
 
