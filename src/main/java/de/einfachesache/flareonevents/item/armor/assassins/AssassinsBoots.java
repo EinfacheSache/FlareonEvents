@@ -65,12 +65,8 @@ public class AssassinsBoots implements Listener {
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Besonderheit: ..."));
         lore.add(serializer.deserialize("§f"));
-
-        // Dynamisch aus ENCHANTMENTS-Map
-        if (!ENCHANTMENTS.isEmpty()) {
-            lore.add(serializer.deserialize(("§7Enchantment" + (ENCHANTMENTS.size() > 1 ? "s" : "") + ":")));
-            lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
-        }
+        lore.addAll(ItemUtils.getEnchantments(ENCHANTMENTS));
+        lore.add(serializer.deserialize("§f"));
 
         meta.lore(lore);
         meta.setCustomModelData(69);
