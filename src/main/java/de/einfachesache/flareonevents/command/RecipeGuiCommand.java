@@ -23,6 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class RecipeGuiCommand implements CommandExecutor, Listener {
 
@@ -85,9 +86,14 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
     }
 
     private void openItemsOfCategory(Player player, CustomItem.CustomItemType type, Inventory previusInventory) {
-        List<CustomItem> items = Arrays.stream(CustomItem.getEnabledItems())
-                .filter(i -> i.getCustomItemType() == type)
-                .toList();
+        List<ItemStack> items = Arrays.stream(CustomItem.getEnabledItems())
+                .filter(ci -> ci.getCustomItemType() == type)
+                .map(CustomItem::getItem).filter(Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        if(items.isEmpty()) {
+            items.add(ItemUtils.getComingSoonItem());
+        }
 
         int itemCount = items.size();
         int totalSlots = ((itemCount * 2 + 1 + 8) / 9) * 9;
@@ -109,10 +115,10 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         }
 
         int index = 0;
-        for (CustomItem item : items) {
+        for (ItemStack item : items) {
             int itemPos = ITEM_GUI_POSITIONS[index];
             if (itemPos >= totalSlots - 1) break;
-            gui.setItem(itemPos, item.getItem());
+            gui.setItem(itemPos, item);
             index++;
         }
 

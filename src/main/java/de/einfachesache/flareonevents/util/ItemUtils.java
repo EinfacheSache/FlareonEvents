@@ -116,6 +116,14 @@ public class ItemUtils {
         return item;
     }
 
+    public static ItemStack getComingSoonItem() {
+        ItemStack notFoundItem = ItemStack.of(Material.BARRIER);
+        ItemMeta meta = notFoundItem.getItemMeta();
+        meta.displayName(Component.text("Kommt bald", NamedTextColor.RED).decorate(TextDecoration.BOLD, TextDecoration.ITALIC));
+        notFoundItem.setItemMeta(meta);
+        return notFoundItem;
+    }
+
     public static ShapedRecipe getNotFoundRecipe() {
         ItemStack notFoundItem = ItemStack.of(Material.BARRIER);
         ItemMeta meta = notFoundItem.getItemMeta();

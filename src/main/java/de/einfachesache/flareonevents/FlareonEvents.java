@@ -183,7 +183,7 @@ public final class FlareonEvents extends JavaPlugin {
 
 
     private void setupEvent() {
-        ItemRecipe.loadCustomRecipes();
+        ItemRecipe.reloadCustomRecipes();
         ItemRecipe.removeBannedRecipes();
         BloodSword.startBleedTask();
         PassiveItemEffects.applyPassiveEffects();

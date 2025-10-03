@@ -14,11 +14,7 @@ import java.util.Set;
 public class ItemRecipe {
 
     private static final Set<String> bannedRecipes = Set.of("mace", "crafter", "tnt_minecart", "end_crystal", "respawn_anchor");
-
-    public static void loadCustomRecipes() {
-        Arrays.stream(CustomItem.getEnabledItems()).forEach(customItem ->
-                Bukkit.addRecipe(customItem.getRecipe(), true));
-    }
+    private static final NamespacedKey defaultNamespacedKey = new NamespacedKey(FlareonEvents.getPlugin(), "not_set");
 
     public static void discoverCustomRecipe(Player player) {
         Arrays.stream(CustomItem.getEnabledItems()).forEach(customItem ->
@@ -30,19 +26,27 @@ public class ItemRecipe {
                 Bukkit.removeRecipe(NamespacedKey.minecraft(bannedRecipe), true));
     }
 
+    public static void reloadCustomRecipes() {
+        Arrays.stream(CustomItem.getEnabledItems()).forEach(customItem -> {
+                Bukkit.removeRecipe(customItem.getNamespacedKey(), true);
+                Bukkit.addRecipe(customItem.getRecipe(), true);
+        });
+    }
+
     public static void reloadAllPluginRecipes() {
+
         Iterator<Recipe> it = Bukkit.recipeIterator();
         while (it.hasNext()) {
             Recipe recipe = it.next();
-
             if (recipe instanceof Keyed keyed) {
                 NamespacedKey key = keyed.getKey();
-                if (key.getNamespace().equals(new NamespacedKey(FlareonEvents.getPlugin(), "not_set").getNamespace())) {
+                if (key.getNamespace().equalsIgnoreCase(defaultNamespacedKey.getNamespace())) {
                     it.remove();
                     FlareonEvents.getLogManager().info("Reload recipe: " + key);
                 }
             }
         }
-        loadCustomRecipes();
+
+        reloadCustomRecipes();
     }
 }
