@@ -48,14 +48,14 @@ public class IceBow implements Listener {
     public static NamespacedKey NAMESPACED_KEY;
     public static Material MATERIAL;
     public static String DISPLAY_NAME;
-    public static double FREEZE_CHANCE;
-    public static double CRIT_FREEZE_CHANCE;
-    public static int FREEZE_TIME;
-    public static int DARKNESS_TIME;
-    public static int SHOOT_COOLDOWN;
-    public static int DASH_COOLDOWN;
-    public static double DASH_STRENGTH;
-    public static double DASH_LIFT;
+    public static float FREEZE_CHANCE;
+    public static float CRIT_FREEZE_CHANCE;
+    public static int FREEZE_TIME_TICKS;
+    public static int DARKNESS_TIME_TICKS;
+    public static int SHOOT_COOLDOWN_MS;
+    public static int DASH_COOLDOWN_TICKS;
+    public static float DASH_STRENGTH;
+    public static float DASH_LIFT;
     public static ItemFlag[] ITEM_FLAGS;
     public static Map<Enchantment, Integer> ENCHANTMENTS;
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS;
@@ -102,10 +102,10 @@ public class IceBow implements Listener {
         lore.add(serializer.deserialize("§7➤ §e" + (int) (CRIT_FREEZE_CHANCE * 100) + "% §7Chance: §bKritischer Frostschock §7& §8Darkness"));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Fähigkeit:"));
-        lore.add(serializer.deserialize("§7➤ §oLinksklick§7: §6Dash §7nach vorn (ohne Fallschaden) §8— §7Abklingzeit: §e" + DASH_COOLDOWN + "s"));
+        lore.add(serializer.deserialize("§7➤ §oLinksklick§7: §6Dash §7nach vorn (ohne Fallschaden) §8— §7Abklingzeit: §e" + DASH_COOLDOWN_TICKS / 20 + "s"));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Schuss:"));
-        lore.add(serializer.deserialize("§7➤ Schuss-Abklingzeit: §e" + SHOOT_COOLDOWN + "ms"));
+        lore.add(serializer.deserialize("§7➤ Schuss-Abklingzeit: §e" + SHOOT_COOLDOWN_MS + "ms"));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Effekte:"));
         lore.add(serializer.deserialize("§bSpeed I §7wenn in Main-Hand"));
@@ -163,11 +163,11 @@ public class IceBow implements Listener {
         Player player = event.getPlayer();
 
         long now = System.currentTimeMillis();
-        int cooldown = (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) ? 0 : DASH_COOLDOWN;
+        int cooldown_ticks = (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) ? 0 : DASH_COOLDOWN_TICKS;
         long lastUse = dashCooldownMap.getOrDefault(player.getUniqueId(), 0L);
-        if (now - lastUse < cooldown * 1000L) {
-            long remaining = ((cooldown * 1000L) - (now - lastUse));
-            player.sendMessage("§cBitte warte noch " + remaining / 1000 + "s, bevor du erneut Dashed!");
+        if (now - lastUse < cooldown_ticks * 50L) {
+            long remaining_ticks = ((cooldown_ticks * 50L) - (now - lastUse));
+            player.sendMessage("§cBitte warte noch " + remaining_ticks / 50L + "s, bevor du erneut Dashed!");
             return;
         }
 
@@ -195,8 +195,8 @@ public class IceBow implements Listener {
 
         long now = System.currentTimeMillis();
         long lastUse = shootCooldownMap.getOrDefault(shooter.getUniqueId(), 0L);
-        if (now - lastUse < SHOOT_COOLDOWN) {
-            long remaining = (SHOOT_COOLDOWN - (now - lastUse));
+        if (now - lastUse < SHOOT_COOLDOWN_MS) {
+            long remaining = (SHOOT_COOLDOWN_MS - (now - lastUse));
             shooter.sendMessage("§cBitte warte noch " + remaining + "ms, bevor du erneut schießt!");
             event.setUseItemInHand(Event.Result.DENY);
             return;
@@ -215,7 +215,7 @@ public class IceBow implements Listener {
         arrow.setGlowing(true);
 
         long preparedCooldown = preparedCooldownMap.get(shooter.getUniqueId());
-        int cooldownInMilliSec = Math.max(0, (int) (SHOOT_COOLDOWN - (System.currentTimeMillis() - preparedCooldown)));
+        int cooldownInMilliSec = Math.max(0, (int) (SHOOT_COOLDOWN_MS - (System.currentTimeMillis() - preparedCooldown)));
         shootCooldownMap.put(shooter.getUniqueId(), preparedCooldown);
         shooter.setCooldown(shooter.getInventory().getItemInMainHand(), cooldownInMilliSec / 50);
     }
@@ -229,10 +229,10 @@ public class IceBow implements Listener {
         if (livingEntity instanceof Player player && player.getGameMode() == GameMode.CREATIVE) return;
 
         double roll = Math.random();
-        boolean applyFreeze = roll < FREEZE_CHANCE;
+        boolean applyNoFreeze = roll >= FREEZE_CHANCE;
         boolean applyCritFreeze = roll < CRIT_FREEZE_CHANCE;
 
-        if (!applyFreeze) {
+        if (applyNoFreeze) {
             livingEntity.setFreezeTicks(livingEntity.getMaxFreezeTicks() - 70);
             return;
         }
@@ -241,7 +241,7 @@ public class IceBow implements Listener {
             livingEntity.setFreezeTicks(livingEntity.getMaxFreezeTicks() - 1);
         } else {
             livingEntity.setFreezeTicks(livingEntity.getMaxFreezeTicks());
-            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 20 * DARKNESS_TIME, 0));
+            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, DARKNESS_TIME_TICKS, 0));
         }
 
         livingEntity.lockFreezeTicks(true);
@@ -278,7 +278,7 @@ public class IceBow implements Listener {
             if (!livingEntity.isValid() || livingEntity.isDead()) return;
             livingEntity.lockFreezeTicks(false);
             freezeTimers.remove(uuid);
-        }, 20L * FREEZE_TIME);
+        }, FREEZE_TIME_TICKS);
 
         BukkitTask old = freezeTimers.remove(uuid);
         if (old != null) {

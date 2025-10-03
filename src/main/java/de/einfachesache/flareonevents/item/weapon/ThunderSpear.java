@@ -38,9 +38,9 @@ public class ThunderSpear implements Listener {
     public static NamespacedKey NAMESPACED_KEY;
     public static Material MATERIAL;
     public static String DISPLAY_NAME;
-    public static double THROW_LIGHTNING_CHANCE;
-    public static double ON_MELEE_LIGHTNING_CHANCE;
-    public static int COOLDOWN;
+    public static float THROW_LIGHTNING_CHANCE;
+    public static float ON_MELEE_LIGHTNING_CHANCE;
+    public static int THROW_COOLDOWN_TICKS;
     public static ItemFlag[] ITEM_FLAGS;
     public static Map<Enchantment, Integer> ENCHANTMENTS;
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS;
@@ -87,7 +87,7 @@ public class ThunderSpear implements Listener {
         lore.add(serializer.deserialize("§7➤ §e" + (int) (ON_MELEE_LIGHTNING_CHANCE * 100) + "% §7Chance: §cBlitz §7bei Nahkampftreffer"));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Wurf:"));
-        lore.add(serializer.deserialize("§7➤ Abklingzeit: §e" + COOLDOWN + "s"));
+        lore.add(serializer.deserialize("§7➤ Abklingzeit: §e" + THROW_COOLDOWN_TICKS / 20 + "s"));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Effekte:"));
         lore.add(serializer.deserialize("§bDolphin's Grace §7& §bWater Breathing §7wenn in Main-Hand"));
@@ -130,9 +130,9 @@ public class ThunderSpear implements Listener {
 
         long now = System.currentTimeMillis();
         long lastUse = cooldownMap.getOrDefault(player.getUniqueId(), 0L);
-        if (now - lastUse < COOLDOWN * 1000L) {
-            long remaining = (COOLDOWN - ((now - lastUse)) / 1000);
-            player.sendMessage("§cBitte warte noch " + remaining + "s, bevor du erneut wirfst!");
+        if (now - lastUse < THROW_COOLDOWN_TICKS * 50L) {
+            long remaining_ticks = (THROW_COOLDOWN_TICKS - ((now - lastUse)) / 50);
+            player.sendMessage("§cBitte warte noch " + remaining_ticks / 20 + "s, bevor du erneut wirfst!");
             event.setUseItemInHand(Event.Result.DENY);
             return;
         }
@@ -154,7 +154,7 @@ public class ThunderSpear implements Listener {
 
         long now = System.currentTimeMillis();
         cooldownMap.put(shooter.getUniqueId(), now);
-        shooter.setCooldown(trident.getItemStack(), COOLDOWN * 20);
+        shooter.setCooldown(trident.getItemStack(), THROW_COOLDOWN_TICKS);
     }
 
     @EventHandler

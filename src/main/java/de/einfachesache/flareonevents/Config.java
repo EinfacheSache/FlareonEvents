@@ -252,9 +252,9 @@ public class Config {
         BloodSword.DISPLAY_NAME = itemsFile.get("items." + nbKey + ".display_name");
 
         // Effekte & Cooldown
-        BloodSword.BLOOD_HUNGER_DURATION = itemsFile.getInt("items." + nbKey + ".blood_hunger_duration");
-        BloodSword.BLOOD_HUNGER_COOLDOWN = itemsFile.getInt("items." + nbKey + ".blood_hunger_cooldown");
-        BloodSword.BLEED_DURATION = itemsFile.getInt("items." + nbKey + ".bleeding_duration");
+        BloodSword.BLOOD_HUNGER_DURATION_TICKS = Math.round(itemsFile.getFloat("items." + nbKey + ".blood_hunger_duration") * 20);
+        BloodSword.BLOOD_HUNGER_COOLDOWN_TICKS = Math.round(itemsFile.getFloat("items." + nbKey + ".blood_hunger_cooldown") * 20);
+        BloodSword.BLEED_DURATION_TICKS = Math.round(itemsFile.getFloat("items." + nbKey + ".bleeding_duration") * 20);
         BloodSword.BLEED_TICK = itemsFile.getInt("items." + nbKey + ".bleeding_tick");
 
         // Enchantments einlesen
@@ -272,16 +272,16 @@ public class Config {
         IceBow.DISPLAY_NAME = itemsFile.get("items." + nbKey + ".display_name");
 
         // Effekte & Cooldown
-        IceBow.FREEZE_TIME = itemsFile.getInt("items." + nbKey + ".freeze_time");
-        IceBow.FREEZE_CHANCE = itemsFile.getDouble("items." + nbKey + ".freeze_chance");
-        IceBow.CRIT_FREEZE_CHANCE = itemsFile.getDouble("items." + nbKey + ".crit_freeze_chance");
-        IceBow.DARKNESS_TIME = itemsFile.getInt("items." + nbKey + ".darkness_effect_time");
+        IceBow.FREEZE_CHANCE = itemsFile.getFloat("items." + nbKey + ".freeze_chance");
+        IceBow.CRIT_FREEZE_CHANCE = itemsFile.getFloat("items." + nbKey + ".crit_freeze_chance");
+        IceBow.FREEZE_TIME_TICKS = Math.round(itemsFile.getFloat("items." + nbKey + ".freeze_time") * 20);
+        IceBow.DARKNESS_TIME_TICKS = Math.round(itemsFile.getFloat("items." + nbKey + ".darkness_effect_time") * 20);
 
-        IceBow.DASH_COOLDOWN = itemsFile.getInt("items." + nbKey + ".dash_cooldown");
-        IceBow.DASH_STRENGTH = itemsFile.getDouble("items." + nbKey + ".dash_strength");
-        IceBow.DASH_LIFT = itemsFile.getDouble("items." + nbKey + ".dash_lift");
+        IceBow.DASH_LIFT = itemsFile.getFloat("items." + nbKey + ".dash_lift");
+        IceBow.DASH_STRENGTH = itemsFile.getFloat("items." + nbKey + ".dash_strength");
+        IceBow.DASH_COOLDOWN_TICKS = Math.round(itemsFile.getFloat("items." + nbKey + ".dash_cooldown") * 20);
 
-        IceBow.SHOOT_COOLDOWN = itemsFile.getInt("items." + nbKey + ".shoot_cooldown");
+        IceBow.SHOOT_COOLDOWN_MS = itemsFile.getInt("items." + nbKey + ".shoot_cooldown");
 
         // Verzauberungen einlesen
         IceBow.ENCHANTMENTS = loadEnchantments(nbKey);
@@ -296,8 +296,6 @@ public class Config {
         SoulEaterScythe.NAMESPACED_KEY = NamespacedKey.fromString(nbKey, FlareonEvents.getPlugin());
         SoulEaterScythe.MATERIAL = Material.valueOf(itemsFile.get("items." + nbKey + ".material"));
         SoulEaterScythe.DISPLAY_NAME = itemsFile.get("items." + nbKey + ".display_name");
-
-        // Perks
 
         // Verzauberungen einlesen
         SoulEaterScythe.ENCHANTMENTS = loadEnchantments(nbKey);
@@ -314,9 +312,9 @@ public class Config {
         ThunderSpear.DISPLAY_NAME = itemsFile.get("items." + nbKey + ".display_name");
 
         // Effekte & Cooldown
-        ThunderSpear.THROW_LIGHTNING_CHANCE = itemsFile.getDouble("items." + nbKey + ".throw_lightning_chance");
-        ThunderSpear.ON_MELEE_LIGHTNING_CHANCE = itemsFile.getDouble("items." + nbKey + ".melee_lightning_chance");
-        ThunderSpear.COOLDOWN = itemsFile.getInt("items." + nbKey + ".cooldown");
+        ThunderSpear.THROW_LIGHTNING_CHANCE = itemsFile.getFloat("items." + nbKey + ".throw_lightning_chance");
+        ThunderSpear.ON_MELEE_LIGHTNING_CHANCE = itemsFile.getFloat("items." + nbKey + ".melee_lightning_chance");
+        ThunderSpear.THROW_COOLDOWN_TICKS = Math.round(itemsFile.getFloat("items." + nbKey + ".cooldown") * 20);
 
         // Verzauberungen einlesen
         ThunderSpear.ENCHANTMENTS = loadEnchantments(nbKey);

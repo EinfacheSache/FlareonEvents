@@ -36,7 +36,7 @@ public class BloodSword implements Listener {
     public static NamespacedKey NAMESPACED_KEY;
     public static Material MATERIAL;
     public static String DISPLAY_NAME;
-    public static int BLOOD_HUNGER_COOLDOWN, BLOOD_HUNGER_DURATION, BLEED_DURATION, BLEED_TICK;
+    public static int BLOOD_HUNGER_COOLDOWN_TICKS, BLOOD_HUNGER_DURATION_TICKS, BLEED_DURATION_TICKS, BLEED_TICK;
 
     public static ItemFlag[] ITEM_FLAGS;
     public static Map<Enchantment, Integer> ENCHANTMENTS;
@@ -85,8 +85,8 @@ public class BloodSword implements Listener {
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Besonderheit:"));
-        lore.add(serializer.deserialize("§7➤ Du verfällst dem §cBluthunger §7für §e" + BLOOD_HUNGER_DURATION + "s §7(§oRechtsklick§7) §8— §7Abklingzeit: §e" + BLOOD_HUNGER_COOLDOWN + "s"));
-        lore.add(serializer.deserialize("§7➤ Bei Treffer: Ziel blutet §e" + BLEED_DURATION + "s§7; alle §e" + BLEED_TICK + "s §c0.5❤ §7Schaden. Jeder Blutsschaden heilt dich."));
+        lore.add(serializer.deserialize("§7➤ Du verfällst dem §cBluthunger §7für §e" + BLOOD_HUNGER_DURATION_TICKS / 20 + "s §7(§oRechtsklick§7) §8— §7Abklingzeit: §e" + BLOOD_HUNGER_COOLDOWN_TICKS / 20 + "s"));
+        lore.add(serializer.deserialize("§7➤ Bei Treffer: Ziel blutet §e" + BLEED_DURATION_TICKS / 20 + "s§7; alle §e" + BLEED_TICK + "s §c0.5❤ §7Schaden. Jeder Blutsschaden heilt dich."));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Effekte:"));
         lore.add(serializer.deserialize("§bStrength §7wenn in Main-Hand"));
@@ -114,10 +114,10 @@ public class BloodSword implements Listener {
         if (!ItemUtils.isCustomItem(item, CustomItem.BLOOD_SWORD)) return;
         if (WorldUtils.isUsingBlock(event)) return;
 
-        int bloodHungerCooldown = player.getGameMode() == GameMode.CREATIVE ? BLOOD_HUNGER_DURATION : BLOOD_HUNGER_COOLDOWN;
-        long remaining = (bloodHungerCooldown - ((System.currentTimeMillis() - cooldownMap.getOrDefault(player.getUniqueId(), 0L))) / 1000);
-        if (remaining > 0) {
-            player.sendMessage(Component.text("Du kannst Bluthunger in " + remaining + "s erneut verwenden!", NamedTextColor.RED));
+        int bloodHungerCooldownTicks = player.getGameMode() == GameMode.CREATIVE ? BLOOD_HUNGER_DURATION_TICKS : BLOOD_HUNGER_COOLDOWN_TICKS;
+        long remainingTicks = bloodHungerCooldownTicks - ((System.currentTimeMillis() - cooldownMap.getOrDefault(player.getUniqueId(), 0L)) / 1000);
+        if (remainingTicks > 0) {
+            player.sendMessage(Component.text("Du kannst Bluthunger in " + remainingTicks / 20 + "s erneut verwenden!", NamedTextColor.RED));
             return;
         }
 
@@ -125,7 +125,7 @@ public class BloodSword implements Listener {
 
         enterBloodlust(player);
         cooldownMap.put(player.getUniqueId(), System.currentTimeMillis());
-        event.getPlayer().setCooldown(item, bloodHungerCooldown * 20);
+        event.getPlayer().setCooldown(item, bloodHungerCooldownTicks);
     }
 
     @EventHandler
@@ -149,7 +149,7 @@ public class BloodSword implements Listener {
         playerInBloodlust.add(player.getUniqueId());
 
         player.setGlowing(true);
-        player.sendMessage("§cBluthunger§7 flammt in dir auf – §f" + BLOOD_HUNGER_DURATION + "s §7lang dürstet deine Klinge nach Blut.");
+        player.sendMessage("§cBluthunger§7 flammt in dir auf – §f" + BLOOD_HUNGER_DURATION_TICKS / 20 + "s §7lang dürstet deine Klinge nach Blut.");
         player.playSound(player.getLocation(), Sound.ITEM_TRIDENT_THUNDER, 2f, 1.6f);
 
         final String teamName = ("blood_" + player.getUniqueId().toString().substring(0, 8)).replace("-", "");
@@ -167,7 +167,7 @@ public class BloodSword implements Listener {
             }
         }
 
-        final long endAt = System.currentTimeMillis() + BLOOD_HUNGER_DURATION * 1000L;
+        final long endAt = System.currentTimeMillis() + BLOOD_HUNGER_DURATION_TICKS * 50L;
         final int particleTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(FlareonEvents.getPlugin(), () -> {
                     if (!player.isOnline() || System.currentTimeMillis() >= endAt) return;
                     var loc = player.getLocation().add(0, 1.0, 0);
@@ -199,7 +199,7 @@ public class BloodSword implements Listener {
 
             playerInBloodlust.remove(player.getUniqueId());
             player.sendMessage("§7Der §cBluthunger§7 verflacht. Deine Klinge stillt ihren Durst.");
-        }, BLOOD_HUNGER_DURATION * 20L);
+        }, BLOOD_HUNGER_DURATION_TICKS);
     }
 
     public static void startBleedTask() {
@@ -214,7 +214,7 @@ public class BloodSword implements Listener {
                 if (last == null) continue;
 
                 // Abgelaufen?
-                if (now - last >= (BLEED_DURATION + 1) * 1000L) {
+                if (now - last >= (BLEED_DURATION_TICKS + 1) * 50L) {
                     cleanupBleed(targetId);
                     continue;
                 }
