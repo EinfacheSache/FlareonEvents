@@ -170,6 +170,7 @@ public class SuperiorPickaxe implements Listener {
 
         cooldownMap.put(player.getUniqueId(), System.currentTimeMillis());
 
+        final int radiusSqPlusOne = (XRAY_RADIUS + 1) * (XRAY_RADIUS + 1);
         final int radiusSq = XRAY_RADIUS * XRAY_RADIUS;
         World world = player.getWorld();
         Location center = player.getLocation();
@@ -182,53 +183,48 @@ public class SuperiorPickaxe implements Listener {
         Set<Location> fake = new HashSet<>();
         List<Location> locations = new ArrayList<>();
 
-        // Scan und clientseitig ersetzen
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (int dx = -XRAY_RADIUS; dx <= XRAY_RADIUS; dx++) {
-                    for (int dy = -XRAY_RADIUS; dy <= XRAY_RADIUS; dy++) {
-                        for (int dz = -XRAY_RADIUS; dz <= XRAY_RADIUS; dz++) {
-                            if (dx * dx + dy * dy + dz * dz > radiusSq) continue;
+        Bukkit.getScheduler().runTaskAsynchronously(FlareonEvents.getPlugin(), () -> {
+            for (int dx = -XRAY_RADIUS; dx <= XRAY_RADIUS; dx++) {
+                for (int dy = -XRAY_RADIUS; dy <= XRAY_RADIUS; dy++) {
+                    for (int dz = -XRAY_RADIUS; dz <= XRAY_RADIUS; dz++) {
+                        int distanceSq = dx * dx + dy * dy + dz * dz;
+                        if (distanceSq > radiusSqPlusOne) continue;
 
-                            int x = cx + dx;
-                            int y = cy + dy;
-                            int z = cz + dz;
-                            if (y <= minY || y >= maxY) continue;
+                        int x = cx + dx;
+                        int y = cy + dy;
+                        int z = cz + dz;
+                        if (y <= minY || y >= maxY) continue;
 
-                            Block b = world.getBlockAt(x, y, z);
-                            Material type = b.getType();
+                        Block block = world.getBlockAt(x, y, z);
+                        Material type = block.getType();
 
-                            // Luft, Wasser, Lava und Erze überspringen
-                            if (type.isAir() || type == Material.WATER || type == Material.LAVA || WorldUtils.isOre(type) ||
-                                    type != Material.GRASS_BLOCK && !WorldUtils.isNaturalCeiling(type)) continue;
+                        // Luft, Wasser, Lava, etc überspringen
+                        if (type.isAir() || type == Material.WATER || type == Material.LAVA || type != Material.GRASS_BLOCK && !WorldUtils.isNaturalCeiling(type))
+                            continue;
 
-                            fake.add(b.getLocation());
-                            locations.add(b.getLocation());
-                            player.sendBlockChange(
-                                    b.getLocation(),
-                                    Material.BARRIER.createBlockData()
-                            );
-                        }
+                        BlockData blockData = WorldUtils.isOre(type) || (distanceSq > radiusSq) ? type.createBlockData() : Material.BARRIER.createBlockData();
+
+                        fake.add(block.getLocation());
+                        locations.add(block.getLocation());
+                        player.sendBlockChange(
+                                block.getLocation(),
+                                blockData
+                        );
                     }
                 }
-
-                xrayBlocks.put(player.getUniqueId(), fake);
-                player.sendMessage("§eX-Ray (Radius " + XRAY_RADIUS + ") aktiviert für §6" + XRAY_ENABLED_TIME + "§e Sekunden.");
-
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        for (Location loc : locations) {
-                            BlockData current = loc.getWorld().getBlockAt(loc).getBlockData();
-                            player.sendBlockChange(loc, current);
-                        }
-                        xrayBlocks.remove(player.getUniqueId());
-                        player.sendMessage("§aX-Ray beendet.");
-                    }
-                }.runTaskLater(FlareonEvents.getPlugin(), XRAY_ENABLED_TIME * 20L);
             }
-        }.runTask(FlareonEvents.getPlugin());
 
+            xrayBlocks.put(player.getUniqueId(), fake);
+            player.sendMessage("§eX-Ray (Radius " + XRAY_RADIUS + ") aktiviert für §6" + XRAY_ENABLED_TIME + "§e Sekunden.");
+
+            Bukkit.getScheduler().runTaskLaterAsynchronously(FlareonEvents.getPlugin(), () -> {
+                for (Location loc : locations) {
+                    BlockData current = loc.getWorld().getBlockAt(loc).getBlockData();
+                    player.sendBlockChange(loc, current);
+                }
+                xrayBlocks.remove(player.getUniqueId());
+                player.sendMessage("§aX-Ray beendet.");
+            }, XRAY_ENABLED_TIME * 20L);
+        });
     }
 }
