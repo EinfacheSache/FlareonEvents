@@ -49,9 +49,9 @@ public class SoulEaterScythe implements Listener {
     private static final List<Perk> SOUL_EATER_PERKS = List.of(
             new Perk("DAMAGE", 1, "Schaden +1"),
             new Perk("REGEN", 3, "Regeneration II (3 s) nach Kill"),
-            new Perk("WITHER", 5, "15 %: Wither (3 s) bei Treffer"),
-            new Perk("SLOWNESS", 7, "15 %: Slowness (3 s) bei Treffer"),
-            new Perk("LIFESTEAL", 10, "20 %: +1❤ bei Treffer")
+            new Perk("WITHER", 5, "20 %: Wither (4 s) bei Treffer"),
+            new Perk("SLOWNESS", 7, "20 %: Slowness (4 s) bei Treffer"),
+            new Perk("LIFESTEAL", 10, "25 %: +1❤ bei Treffer")
     );
 
     public static ShapedRecipe getShapedRecipe() {
@@ -174,21 +174,21 @@ public class SoulEaterScythe implements Listener {
 
     private static void checkForHitPerks(Player damager, LivingEntity target, int killCount) {
         if (killCount >= 5) {
-            if (ThreadLocalRandom.current().nextDouble() < 0.15) {
-                target.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 3 * 20, 0));
+            if (ThreadLocalRandom.current().nextDouble() < 0.20) {
+                target.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 4 * 20, 0));
                 damager.playSound(damager.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.8f, 1.0f);
             }
         }
 
         if (killCount >= 7) {
-            if (ThreadLocalRandom.current().nextDouble() < 0.15) {
-                target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 3 * 20, 0));
+            if (ThreadLocalRandom.current().nextDouble() < 0.20) {
+                target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 4 * 20, 0));
                 damager.playSound(damager.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.8f, 1.0f);
             }
         }
 
         if (killCount >= 10) {
-            if (ThreadLocalRandom.current().nextDouble() < 0.2) {
+            if (ThreadLocalRandom.current().nextDouble() < 0.25) {
                 var attr = damager.getAttribute(Attribute.MAX_HEALTH);
                 double max = attr != null ? attr.getValue() : 20.0;
                 damager.setHealth(Math.min(max, damager.getHealth() + 2.0));

@@ -16,7 +16,7 @@ public class HelpCommand implements CommandExecutor {
                 .append(Component.text(" - Zeigt diese Übersicht aller Befehle an", NamedTextColor.GRAY)));
         sender.sendMessage(Component.text("/team <Args>", NamedTextColor.GREEN)
                 .append(Component.text(" - Team: einladen, annehmen, verlassen, kicken, list", NamedTextColor.GRAY)));
-        sender.sendMessage(Component.text("/recipegui", NamedTextColor.GREEN)
+        sender.sendMessage(Component.text("/recipe", NamedTextColor.GREEN)
                 .append(Component.text(" - Öffnet das Rezept GUI-Menü", NamedTextColor.GRAY)));
         sender.sendMessage(Component.text("/msg <Spieler> <Nachricht>", NamedTextColor.GREEN)
                 .append(Component.text(" - Sendet eine private Nachricht", NamedTextColor.GRAY)));

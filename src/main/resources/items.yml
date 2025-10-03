@@ -63,14 +63,6 @@ items:
         operation: ADD_NUMBER
         slot: HAND
 
-    # Perks
-    perks:
-      1: "Regeneration I"
-      3: "Stärke I"
-      5: "Tempo I"
-      7: "Lebensraub"
-      10: "Seelenschnitter"
-
   thunder_spear:
     # Material & Anzeige-Name
     material: TRIDENT
@@ -87,14 +79,14 @@ items:
         operation: ADD_NUMBER
         slot: HAND
       - attribute: attack_speed
-        amount: -2.9
+        amount: -3.1
         operation: ADD_NUMBER
         slot: HAND
 
     # Effekte & Cooldown
     throw_lightning_chance: 1.0    # Chance für Blitz beim Wurf (100%)
-    melee_lightning_chance: 0.33   # Chance für Blitz bei Nahkampftreffer
-    cooldown: 10                   # Cooldown in Sekunden
+    melee_lightning_chance: 0.50   # Chance für Blitz bei Nahkampftreffer
+    cooldown: 5                    # Cooldown in Sekunden
 
   reinforced_pickaxe:
     # Item-Grundlagen

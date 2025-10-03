@@ -1,4 +1,4 @@
-package de.einfachesache.flareonevents.item.misc;
+package de.einfachesache.flareonevents.item.vanilla;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -8,7 +8,6 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 
 public class GoldenApple {
 
-    public static final String DISPLAY_NAME = "§6Blood Shard";
     public static final NamespacedKey NAMESPACED_KEY = NamespacedKey.minecraft("golden_apple");
     public static final ItemStack ITEM = ItemStack.of(Material.GOLDEN_APPLE);
 

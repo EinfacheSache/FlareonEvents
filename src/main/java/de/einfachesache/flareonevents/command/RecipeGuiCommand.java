@@ -29,7 +29,7 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
 
     private static final Component MAIN_GUI_TITLE = Component.text("Custom Item Rezepte", NamedTextColor.GOLD).decorate(TextDecoration.BOLD, TextDecoration.ITALIC);
     private static final String CATEGORY_GUI_KEY = "category_gui";
-    private static final int[] CATEGORY_GUI_POSITIONS = {10, 12, 14, 16, 31};
+    private static final int[] CATEGORY_GUI_POSITIONS = {10, 12, 14, 16, 30, 32};
     private static final int[] ITEM_GUI_POSITIONS = {10, 12, 14, 16, 28, 30, 32, 34};
 
     @Override
@@ -65,11 +65,12 @@ public class RecipeGuiCommand implements CommandExecutor, Listener {
         for (int i = 0; i < types.length; i++) {
             CustomItem.CustomItemType type = types[i];
             Material iconMaterial = switch (type) {
-                case TOOL -> Material.GOLDEN_PICKAXE;
                 case WEAPON -> Material.GOLDEN_SWORD;
+                case TOOL -> Material.GOLDEN_PICKAXE;
                 case ARMOR -> Material.GOLDEN_CHESTPLATE;
-                case MISC -> Material.ENCHANTED_GOLDEN_APPLE;
                 case INGREDIENT -> Material.RAW_GOLD;
+                case MISC -> Material.ENCHANTED_GOLDEN_APPLE;
+                case VANILLA -> Material.CRAFTING_TABLE;
                 default -> Material.BARRIER;
             };
 

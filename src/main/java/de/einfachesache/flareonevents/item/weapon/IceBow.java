@@ -165,9 +165,9 @@ public class IceBow implements Listener {
         long now = System.currentTimeMillis();
         int cooldown_ticks = (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) ? 0 : DASH_COOLDOWN_TICKS;
         long lastUse = dashCooldownMap.getOrDefault(player.getUniqueId(), 0L);
-        if (now - lastUse < cooldown_ticks * 50L) {
-            long remaining_ticks = ((cooldown_ticks * 50L) - (now - lastUse));
-            player.sendMessage("§cBitte warte noch " + remaining_ticks / 50L + "s, bevor du erneut Dashed!");
+        long remaining_ticks = (cooldown_ticks - ((now - lastUse) / 50));
+        if (remaining_ticks > 0) {
+            player.sendMessage("§cBitte warte noch " + remaining_ticks / 20L + "s, bevor du erneut Dashed!");
             return;
         }
 

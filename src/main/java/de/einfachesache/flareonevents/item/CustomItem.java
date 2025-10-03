@@ -1,15 +1,14 @@
 package de.einfachesache.flareonevents.item;
 
-import de.einfachesache.flareonevents.item.armor.assassins.AssassinsBoots;
-import de.einfachesache.flareonevents.item.armor.assassins.AssassinsChestplate;
-import de.einfachesache.flareonevents.item.armor.assassins.AssassinsHelmet;
-import de.einfachesache.flareonevents.item.armor.assassins.AssassinsLeggings;
+import de.einfachesache.flareonevents.item.armor.assassins.*;
 import de.einfachesache.flareonevents.item.ingredient.*;
 import de.einfachesache.flareonevents.item.misc.EventInfoBook;
-import de.einfachesache.flareonevents.item.misc.GoldenApple;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
+import de.einfachesache.flareonevents.item.vanilla.Anvil;
+import de.einfachesache.flareonevents.item.vanilla.Apple;
+import de.einfachesache.flareonevents.item.vanilla.GoldenApple;
 import de.einfachesache.flareonevents.item.weapon.BloodSword;
 import de.einfachesache.flareonevents.item.weapon.IceBow;
 import de.einfachesache.flareonevents.item.weapon.SoulEaterScythe;
@@ -33,6 +32,7 @@ public enum CustomItem {
     REINFORCED_PICKAXE(ReinforcedPickaxe.NAMESPACED_KEY, CustomItemType.TOOL, ReinforcedPickaxe.getShapedRecipe(), ReinforcedPickaxe::create),
     SUPERIOR_PICKAXE(SuperiorPickaxe.NAMESPACED_KEY, CustomItemType.TOOL, SuperiorPickaxe.getShapedRecipe(), SuperiorPickaxe::create),
 
+    UGRONS_CHESTPLATE(UgronsChestplate.NAMESPACED_KEY, CustomItemType.ARMOR, null, UgronsChestplate::create),
     ASSASSINS_HELMET(AssassinsHelmet.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsHelmet.getShapedRecipe(), AssassinsHelmet::create),
     ASSASSINS_CHESTPLATE(AssassinsChestplate.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsChestplate.getShapedRecipe(), AssassinsChestplate::create),
     ASSASSINS_LEGGINGS(AssassinsLeggings.NAMESPACED_KEY, CustomItemType.ARMOR, AssassinsLeggings.getShapedRecipe(), AssassinsLeggings::create),
@@ -45,7 +45,9 @@ public enum CustomItem {
     DEMON_SOUL(DemonSoul.NAMESPACED_KEY, CustomItemType.INGREDIENT, DemonSoul.getShapedRecipe(), DemonSoul.ITEM::clone),
     REINFORCED_STICK(ReinforcedStick.NAMESPACED_KEY, CustomItemType.INGREDIENT, ReinforcedStick.getShapedRecipe(), ReinforcedStick.ITEM::clone),
 
-    GOLDEN_APPLE(GoldenApple.NAMESPACED_KEY, CustomItemType.MISC, GoldenApple.getShapedRecipe(), GoldenApple.ITEM::clone),
+    APPLE(Apple.NAMESPACED_KEY, CustomItemType.VANILLA, Apple.getShapedRecipe(), Apple.ITEM::clone),
+    GOLDEN_APPLE(GoldenApple.NAMESPACED_KEY, CustomItemType.VANILLA, GoldenApple.getShapedRecipe(), GoldenApple.ITEM::clone),
+    ANVIL(Anvil.NAMESPACED_KEY, CustomItemType.VANILLA, Anvil.getShapedRecipe(), Anvil.ITEM::clone),
 
     SOUL_HEART_CRYSTAL(SoulHeartCrystal.NAMESPACED_KEY, CustomItemType.MISC, null, SoulHeartCrystal::create),
 
@@ -99,6 +101,7 @@ public enum CustomItem {
         ARMOR("Rüstungen"),
         INGREDIENT("Ingredient"),
         MISC("Misc"),
+        VANILLA("Vanilla"),
         OTHER(null);
 
         private final String displayName;

@@ -104,20 +104,20 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
     }
 
     private void giveAllGear(Player player) {
-        Arrays.stream(CustomItem.values()).filter(customItem ->
+        Arrays.stream(CustomItem.getEnabledItems()).filter(customItem ->
                 customItem.getCustomItemType().equals(CustomItem.CustomItemType.WEAPON)
                         || customItem.getCustomItemType().equals(CustomItem.CustomItemType.TOOL)).forEach(gear ->
                 giveItem(player, gear.getItem()));
     }
 
     private void giveAllArmor(Player player) {
-        Arrays.stream(CustomItem.values()).filter(customItem ->
+        Arrays.stream(CustomItem.getEnabledItems()).filter(customItem ->
                 customItem.getCustomItemType().equals(CustomItem.CustomItemType.ARMOR)).forEach(armor ->
                 equipOrAdd(player, armor.getItem()));
     }
 
     private void giveAllIngredients(Player player) {
-        Arrays.stream(CustomItem.values()).filter(customItem ->
+        Arrays.stream(CustomItem.getEnabledItems()).filter(customItem ->
                 customItem.getCustomItemType().equals(CustomItem.CustomItemType.INGREDIENT)).forEach(ingredient ->
                 giveItem(player, ingredient.getItem()));
     }
