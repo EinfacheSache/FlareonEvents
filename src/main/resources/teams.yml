@@ -1,4 +1,4 @@
-max-invite-distanz: 45
+max-invite-distance: 45
 max-team-size: 3
 next-team-id: 1
 teams: { }

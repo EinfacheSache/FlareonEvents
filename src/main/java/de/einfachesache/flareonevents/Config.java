@@ -154,7 +154,7 @@ public class Config {
 
         nextTeamId = teamsFile.getInt("next-team-id", 1);
         maxTeamSize = teamsFile.getInt("max-team-size", 3);
-        maxInviteDistanz = teamsFile.getInt("max-invite-distanz", 30);
+        maxInviteDistanz = teamsFile.getInt("max-invite-distance", 30);
 
         ConfigurationSection teamSection = teamsFile.getConfigurationSection("teams");
         if (teamSection != null) {
