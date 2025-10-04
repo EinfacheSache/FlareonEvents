@@ -13,10 +13,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings("deprecation")
 public class UgronsChestplate {
@@ -26,7 +23,7 @@ public class UgronsChestplate {
     public static String DISPLAY_NAME = "§4§lUgrons Brustpanzer";
 
     public static ItemFlag[] ITEM_FLAGS = new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS};
-    public static Map<Enchantment, Integer> ENCHANTMENTS = new HashMap<>();
+    public static Map<Enchantment, Integer> ENCHANTMENTS = Map.of(Enchantment.PROTECTION, 2);
     public static Map<Attribute, AttributeModifier> ATTRIBUTE_MODIFIERS = new HashMap<>();
 
 
