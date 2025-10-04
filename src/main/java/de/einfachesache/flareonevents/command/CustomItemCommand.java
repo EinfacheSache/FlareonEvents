@@ -26,11 +26,10 @@ public class CustomItemCommand implements CommandExecutor, TabCompleter {
     private static final List<String> SUB_COMMANDS;
 
     static {
-        List<String> items = Arrays.stream(CustomItem.values())
+        List<String> items = Arrays.stream(CustomItem.getEnabledItems())
                 .filter(customItem ->
-                        customItem.getCustomItemType() != CustomItem.CustomItemType.ARMOR
-                        && customItem.getCustomItemType() != CustomItem.CustomItemType.INGREDIENT
-                        && customItem.getCustomItemType() != CustomItem.CustomItemType.OTHER)
+                        customItem.getCustomItemType() != CustomItem.CustomItemType.INGREDIENT
+                                && customItem.getCustomItemType() != CustomItem.CustomItemType.OTHER)
                 .map(customItem -> customItem.getNamespacedKey().getKey().toUpperCase())
                 .collect(Collectors.toList());
 
