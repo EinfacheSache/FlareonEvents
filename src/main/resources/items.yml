@@ -112,5 +112,5 @@ items:
     # X-Ray-Konfiguration
     xray:
       enabled_time: 5    # Dauer in Sekunden
-      radius: 30         # Radius in Blöcken
+      radius: 40         # Radius in Blöcken
       cooldown: 45       # Cooldown in Sekunden
