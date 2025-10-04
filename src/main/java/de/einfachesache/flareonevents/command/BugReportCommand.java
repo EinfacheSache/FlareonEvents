@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @SuppressWarnings("deprecation")
 public class BugReportCommand implements CommandExecutor, TabCompleter {
 
-    private static final List<String> BUG_TYPES = Arrays.asList("ITEM", "PLAYER", "COMMAND", "GUI", "CHAT", "PERMISSION", "EVENT", "OTHER");
-    private static final int COOLDOWN_TIME_SEC = 60;
+    private static final List<String> REPORT_TYPES = Arrays.asList("SPIELER", "ITEM", "COMMAND", "RECHTE", "EVENT", "VORSCHLAG", "SONSTIGES");
+    private static final int REPORT_COOLDOWN_TIME_SEC = 30;
 
     private final Map<UUID, Long> commandCooldown = new HashMap<>();
     private final Gson gson = new Gson();
@@ -47,12 +47,12 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
         }
 
         String bugType = args[0].toUpperCase(Locale.ROOT);
-        if (!BUG_TYPES.contains(bugType)) {
-            player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Ungültiger BugType. Bitte verwenden: " + String.join(", ", BUG_TYPES), NamedTextColor.RED)));
+        if (!REPORT_TYPES.contains(bugType)) {
+            player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Ungültiger BugType. Bitte verwenden: " + String.join(", ", REPORT_TYPES), NamedTextColor.RED)));
             return true;
         }
 
-        long timeLeft = (commandCooldown.getOrDefault(player.getUniqueId(), 0L) + COOLDOWN_TIME_SEC * 1000) - System.currentTimeMillis();
+        long timeLeft = (commandCooldown.getOrDefault(player.getUniqueId(), 0L) + REPORT_COOLDOWN_TIME_SEC * 1000) - System.currentTimeMillis();
         if (timeLeft > 0) {
             player.sendMessage(FlareonEvents.PLUGIN_PREFIX.append(Component.text("Bitte warte noch " + timeLeft / 1000 + "s bevor du einen neuen Report erstellst", NamedTextColor.YELLOW)));
             return true;
@@ -101,13 +101,13 @@ public class BugReportCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-        if (args.length == 0) return BUG_TYPES;
+        if (args.length == 0) return REPORT_TYPES;
 
         if (args.length == 1) {
             String prefix = args[0];
-            if (prefix.isEmpty()) return BUG_TYPES;
+            if (prefix.isEmpty()) return REPORT_TYPES;
             String p = prefix.toUpperCase(Locale.ROOT);
-            return BUG_TYPES.stream()
+            return REPORT_TYPES.stream()
                     .filter(t -> t.startsWith(p))
                     .collect(Collectors.toList());
         }
