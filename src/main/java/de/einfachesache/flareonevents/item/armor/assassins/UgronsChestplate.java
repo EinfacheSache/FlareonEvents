@@ -42,7 +42,7 @@ public class UgronsChestplate {
 
         List<Component> lore = new ArrayList<>();
         lore.add(serializer.deserialize("§f"));
-        lore.add(serializer.deserialize("§7Die Brustplatte des Wächters §4§lUgrons §7vom Nether glüht wie ein ewiger Schild aus Flammen."));
+        lore.add(serializer.deserialize("§7Die Brustplatte des Wächters §4§lUgrons §7glüht wie ein ewiger Schild aus Flammen."));
         lore.add(serializer.deserialize("§f"));
         lore.add(serializer.deserialize("§7Effekte:"));
         lore.add(serializer.deserialize("§bFire-Resistance §7wenn getragen"));
