@@ -15,33 +15,27 @@ commands:
 
   reply:
     description: 'Antworte dem letzten Gesprächspartner privat'
-    aliases: [ r ]
 
   team:
     description: 'Verwalte dein Team: einladen, auflisten, verlassen und mehr'
 
   recipe:
     description: 'Öffne die Rezept-GUI für Custom-Items'
-    aliases: [ rg ]
 
   report:
     description: 'Melde einen Bug als Discord-Ticket'
-    aliases: [ bugreport ]
 
   event:
     description: 'Administrative Befehle zur Event-Verwaltung'
     permission: 'event.op'
-    aliases: [ ev ]
 
   chestloot:
     description: 'Administrative Befehle um Chestloot zu setzen'
     permission: 'event.op'
-    aliases: [ loot ]
 
   update:
     description: 'Aktualisiere Custom-Items und lade alle Konfigurationsdateien neu'
     permission: 'event.op'
-    aliases: [ devreload ]
 
   customitem:
     description: 'Gib dir ein benutzerdefiniertes Item'
