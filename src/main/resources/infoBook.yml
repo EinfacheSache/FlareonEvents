@@ -23,9 +23,7 @@ pages:
     §cNur Voicechat§7 erlaubt
     → externe Kommunikation ist §cverboten§7
 
-    §cMax Teamgröße§7 ist §c3§7
-
-    §cTrapping§7 ist §6erlaubt§7
+    §cFehlverhalten §7führt zum §cAusschluss
 
   3: |-
     §4§lCommands§7
@@ -38,9 +36,18 @@ pages:
     
     §7- /msg <Spieler> <Nachricht>
     
-    §7- /bugreport <Type> <Beschreibung>
+    §7- /report <Type> <Kurztext>
 
   4: |-
+    §4§lTeams§7
+
+    §cMax Teamgröße§7 ist §c3§7
+    
+    §cTeams§7 sind in einer §6Voice Gruppe §7und können permanent reden
+    
+    §cSchaden §7zwischen Teammitgliedern ist §cdeaktiviert
+
+  5: |-
     §6Custom Items §7Liste
 
     §7- §4Blutmond
@@ -55,7 +62,7 @@ pages:
     
     §7- Ingredients
 
-  5: |-
+  6: |-
     §6Custom Items §7Info
 
     §71. Alle §6Custom Items §7sind Unzerstörbar.
@@ -64,7 +71,7 @@ pages:
 
     §73. Änderungen bleiben vorbehalten.
 
-  6: |-
+  7: |-
     §6Custom Items §7Waffen
 
     §74. Jede §6legendäre Waffe §7kann nur einmal gecraftet werden.
@@ -73,7 +80,7 @@ pages:
 
     §76. Jede §6legendäre Waffe §7besitzt besondere Fähigkeiten.
 
-  7: |-
+  8: |-
     §6Custom Items §7Extras
 
     §77. Alle §6Ingredients §7können beliebig oft gecraftet werden.
@@ -82,13 +89,22 @@ pages:
 
     §79. Jedes §6Rüstungsteil §7kann nur einmal erlangt werden.
 
-  8: |-
-    §cGebannte Items§7:
+  9: |-
+    §4Gebannte Items§7:
+    
     - Mace
     - Potions
     - Anchor
     - End Crystal 
     - TNT-Minecart
 
-    §cGebannte Funktionen§7:
+    §4Gebannte Funktionen§7:
+    
     - Bett im Nether
+
+  10: |-
+    §6§lEine letzte Bitte§7:
+    
+    Da dies die erste Version des Events ist bitten wir um §6Feedback §7und §6Vorschläge§7.
+    
+    Dies könnt ihr während des §6Events §7mit /report <Type> <Kurztext> §6schnell §7an uns §6weiterleiten§7.
