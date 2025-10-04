@@ -11,7 +11,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("SameParameterValue")
 public final class PassiveItemEffects {
@@ -56,6 +58,12 @@ public final class PassiveItemEffects {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (isNoRelevantMode(p)) continue;
 
+            if(Arrays.stream(p.getInventory().getArmorContents()).filter(Objects::nonNull)
+                    .anyMatch(item -> ItemUtils.isCustomItem(item, CustomItem.UGRONS_CHESTPLATE))){
+                p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE,
+                        SLOW_EFFECT_TICKS, 0, true, false, true));
+            }
+
             ItemStack item = p.getInventory().getItemInMainHand();
             if (item.getType().isAir()) continue;
 
@@ -66,15 +74,14 @@ public final class PassiveItemEffects {
             if (cur != null && cur.getDuration() >= SLOW_REFRESH_TICKS) continue;
 
             if (WorldUtils.isPlayerInCave(p)) {
-                p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION,
-                        SLOW_EFFECT_TICKS, 0, true, false ,true));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, SLOW_EFFECT_TICKS, 0, true, false, true));
             }
         }
     }
 
     private static boolean isNoRelevantMode(Player p) {
         GameMode gm = p.getGameMode();
-        return gm != GameMode.SURVIVAL && gm != GameMode.ADVENTURE && gm != GameMode.CREATIVE;
+        return gm != GameMode.SURVIVAL && gm != GameMode.CREATIVE;
     }
 
     private static void maybeAdd(List<PotionEffect> list, Player p, PotionEffectType type, int amplifier, int duration, int refreshThreshold) {
