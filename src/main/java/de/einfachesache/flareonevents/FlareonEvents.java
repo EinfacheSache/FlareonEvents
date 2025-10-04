@@ -133,7 +133,7 @@ public final class FlareonEvents extends JavaPlugin {
         pm.registerEvents(new BlockUpdateListener(), this);
         pm.registerEvents(new PlayerLoginListener(), this);
         pm.registerEvents(new EnchantItemListener(), this);
-        pm.registerEvents(new UgronDeathListener(), this);
+        pm.registerEvents(new UgronListener(), this);
         pm.registerEvents(new PlayerJoinListener(), this);
         pm.registerEvents(new PlayerMoveListener(), this);
         pm.registerEvents(new PlayerQuitListener(), this);

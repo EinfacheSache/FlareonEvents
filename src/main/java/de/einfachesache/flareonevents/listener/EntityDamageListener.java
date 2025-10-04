@@ -20,24 +20,24 @@ public class EntityDamageListener implements Listener {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
         Entity damager = event.getDamager();
+        Entity target = event.getEntity();
 
-        if (damager instanceof LightningStrike &&
-                (event.getEntity() instanceof Item
-                        || damager.getPersistentDataContainer().has(namespacedKey)
-                        || damager.getPersistentDataContainer().has(new NamespacedKey(FlareonEvents.getPlugin(), "lightning_trident_" + event.getEntity().getName().toLowerCase().replaceAll("[^a-z0-9_.\\-/]", "")), PersistentDataType.BYTE))) {
+        if (damager instanceof LightningStrike && (target instanceof Item
+                || damager.getPersistentDataContainer().has(namespacedKey)
+                || damager.getPersistentDataContainer().has(new NamespacedKey(FlareonEvents.getPlugin(), "lightning_trident_" + target.getName().toLowerCase().replaceAll("[^a-z0-9_.\\-/]", "")), PersistentDataType.BYTE))) {
             event.setCancelled(true);
+            return;
         }
 
-        if (!(event.getEntity() instanceof Player player)) return;
+        if (!(target instanceof Player player)) return;
 
         if (damager.getType() == EntityType.END_CRYSTAL || damager.getType() == EntityType.TNT_MINECART) {
             event.setCancelled(true);
         }
 
-        if (!(damager instanceof Player playerDamager)) return;
-
-        if(TeamHandler.arePlayersOnSameTeam(player, playerDamager))
+        if (damager instanceof Player playerDamager && TeamHandler.arePlayersOnSameTeam(player, playerDamager)) {
             event.setCancelled(true);
+        }
     }
 
     @EventHandler
