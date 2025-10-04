@@ -138,7 +138,7 @@ public class Config {
                 String text = infoBookFile.get("pages." + pageNumber);
                 infoBookSorted.put(pageNumber, Component.text(text));
             } catch (NumberFormatException e) {
-                FlareonEvents.getLogManager().warn("Ungültiger Seiten-Key: " + page);
+                FlareonEvents.getLogManager().warn("Invalid page key: " + page);
             }
         });
     }
@@ -154,7 +154,7 @@ public class Config {
 
         nextTeamId = teamsFile.getInt("next-team-id", 1);
         maxTeamSize = teamsFile.getInt("max-team-size", 3);
-        maxInviteDistanz = teamsFile.getInt("max-invite-distance", 30);
+        maxInviteDistanz = teamsFile.getInt("max-invite-distance", 45);
 
         ConfigurationSection teamSection = teamsFile.getConfigurationSection("teams");
         if (teamSection != null) {
@@ -186,7 +186,7 @@ public class Config {
 
         World world = Bukkit.getWorld(worldName);
         if (world == null) {
-            FlareonEvents.getLogManager().warn("❌ Welt '" + worldName + "' nicht gefunden!");
+            FlareonEvents.getLogManager().warn("❌ World '" + worldName + "' not found!");
             return;
         }
 
@@ -199,7 +199,7 @@ public class Config {
 
         ConfigurationSection section = locationsFile.getConfigurationSection("player-spawns");
         if (section == null) {
-            FlareonEvents.getLogManager().warn("Keine 'player-spawns' Sektion in der Config gefunden.");
+            FlareonEvents.getLogManager().warn("No 'player-spawns' section found in the config.");
             return;
         }
 
@@ -217,7 +217,7 @@ public class Config {
 
                     World world = Bukkit.getWorld(worldName);
                     if (world == null) {
-                        FlareonEvents.getLogManager().warn("❌ Welt '" + worldName + "' für Spawn #" + key + " wurde nicht gefunden.");
+                        FlareonEvents.getLogManager().warn("❌ World '" + worldName + "' for spawn #" + key + " was not found.");
                         return;
                     }
 
