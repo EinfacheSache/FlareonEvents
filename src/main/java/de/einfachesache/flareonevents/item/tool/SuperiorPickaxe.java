@@ -1,10 +1,10 @@
 package de.einfachesache.flareonevents.item.tool;
 
 import de.einfachesache.flareonevents.FlareonEvents;
-import de.einfachesache.flareonevents.util.WorldUtils;
 import de.einfachesache.flareonevents.item.CustomItem;
-import de.einfachesache.flareonevents.util.ItemUtils;
 import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
+import de.einfachesache.flareonevents.util.ItemUtils;
+import de.einfachesache.flareonevents.util.WorldUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
@@ -215,7 +215,7 @@ public class SuperiorPickaxe implements Listener {
             }
 
             xrayBlocks.put(player.getUniqueId(), fake);
-            player.sendMessage("§eX-Ray (Radius " + XRAY_RADIUS + ") aktiviert für §6" + XRAY_ENABLED_TIME + "§e Sekunden.");
+            player.sendMessage("§4X-Ray §eaktiviert für §6" + XRAY_ENABLED_TIME + "§e Sekunden. §7(Radius " + XRAY_RADIUS + ") ");
 
             Bukkit.getScheduler().runTaskLaterAsynchronously(FlareonEvents.getPlugin(), () -> {
                 for (Location loc : locations) {
@@ -223,7 +223,7 @@ public class SuperiorPickaxe implements Listener {
                     player.sendBlockChange(loc, current);
                 }
                 xrayBlocks.remove(player.getUniqueId());
-                player.sendMessage("§aX-Ray beendet.");
+                player.sendMessage(Component.text("§4X-Ray §cbeendet!"));
             }, XRAY_ENABLED_TIME * 20L);
         });
     }
