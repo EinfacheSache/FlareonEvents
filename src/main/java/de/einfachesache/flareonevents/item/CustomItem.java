@@ -7,7 +7,6 @@ import de.einfachesache.flareonevents.item.misc.SoulHeartCrystal;
 import de.einfachesache.flareonevents.item.tool.ReinforcedPickaxe;
 import de.einfachesache.flareonevents.item.tool.SuperiorPickaxe;
 import de.einfachesache.flareonevents.item.vanilla.Anvil;
-import de.einfachesache.flareonevents.item.vanilla.Apple;
 import de.einfachesache.flareonevents.item.vanilla.GoldenApple;
 import de.einfachesache.flareonevents.item.weapon.BloodSword;
 import de.einfachesache.flareonevents.item.weapon.IceBow;
@@ -45,7 +44,6 @@ public enum CustomItem {
     DEMON_SOUL(DemonSoul.NAMESPACED_KEY, CustomItemType.INGREDIENT, DemonSoul.getShapedRecipe(), DemonSoul.ITEM::clone),
     REINFORCED_STICK(ReinforcedStick.NAMESPACED_KEY, CustomItemType.INGREDIENT, ReinforcedStick.getShapedRecipe(), ReinforcedStick.ITEM::clone),
 
-    APPLE(Apple.NAMESPACED_KEY, CustomItemType.VANILLA, Apple.getShapedRecipe(), Apple.ITEM::clone),
     GOLDEN_APPLE(GoldenApple.NAMESPACED_KEY, CustomItemType.VANILLA, GoldenApple.getShapedRecipe(), GoldenApple.ITEM::clone),
     ANVIL(Anvil.NAMESPACED_KEY, CustomItemType.VANILLA, Anvil.getShapedRecipe(), Anvil.ITEM::clone),
 
